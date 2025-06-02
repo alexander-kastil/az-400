@@ -1,5 +1,5 @@
 {
-  "name": "Angular 20 and .NET 9 Development",
+  "name": "Azure Development",
   "dockerComposeFile": "docker-compose.yml",
   "service": "devcontainer",
   "workspaceFolder": "/workspace",
@@ -14,6 +14,17 @@
         "ms-dotnettools.vscode-dotnet-runtime",
         "ms-dotnettools.vscodeintellicode-csharp",
         "adrianwilczynski.asp-net-core-snippet-pack",
+        // Python extensions
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        // Azure extensions
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.azure-dev",
+        "ms-azuretools.vscode-bicep",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.azurecli",
         // SQL extensions for EF Core/SQLite support
         "qwtel.sqlite-viewer",
         // General development extensions
@@ -41,6 +52,23 @@
         "[csharp]": {
           "editor.defaultFormatter": "ms-dotnettools.csharp"
         },
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.python",
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+          }
+        }, // Python settings
+        "python.defaultInterpreterPath": "/usr/local/bin/python3.11",
+        "python.terminal.activateEnvironment": true,
+        "python.analysis.autoImportCompletions": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        // Azure Functions settings
+        "azureFunctions.deploySubpath": ".",
+        "azureFunctions.scmDoBuildDuringDeployment": true,
+        "azureFunctions.pythonVenv": ".venv",
+        "azureFunctions.projectLanguage": "Python",
+        "azureFunctions.projectRuntime": "~4",
         // GitHub Copilot settings
         "github.copilot.chat.codeGeneration.instructions": [
           {
@@ -95,7 +123,6 @@
         "github.copilot.nextEditSuggestions.enabled": true,
         "github.copilot.selectedCompletionModel": "",
         "window.zoomLevel": 1.1,
-        "python.defaultInterpreterPath": "c:\\Python311\\python.exe",
         "githubIssues.queries": [
           {
             "label": "My Issues",
@@ -132,7 +159,8 @@
   "forwardPorts": [
     4200,
     5000,
-    5001
+    5001,
+    7071
   ],
   "postCreateCommand": "bash ./.devcontainer/post-create.sh"
 }
