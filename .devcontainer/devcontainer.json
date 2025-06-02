@@ -1,88 +1,138 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "features": {
-    "ghcr.io/devcontainers/features/dotnet:2.1.3": {
-      "version": "8"
-    },
-    "ghcr.io/devcontainers/features/azure-cli:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers-contrib/features/angular-cli:2": {
-      "version": "18"
-    },
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
-    },
-    "ghcr.io/jlaundry/devcontainer-features/azure-functions-core-tools:1": {
-      "version": "4"
-    }
-  },
+  "name": "Angular 20 and .NET 9 Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
       "extensions": [
-        "alex-pattison.theme-cobalt3",
-        "aliasadidev.nugetpackagemanagergui",
+        // Angular extensions
         "angular.ng-template",
-        "az-resource-explorer-vscode.azure-resource-explorer-for-vscode",
-        "azure-automation.vscode-azureautomation",
-        "azurite.azurite",
-        "cweijan.dbclient-jdbc",
-        "cweijan.vscode-redis-client",
-        "dline.cobaltnext",
-        "donjayamanne.python-environment-manager",
-        "esbenp.prettier-vscode",
-        "formulahendry.code-runner",
-        "foxundermoon.shell-format",
-        "github.codespaces",
-        "github.copilot",
-        "github.copilot-chat",
-        "github.vscode-github-actions",
-        "github.vscode-pull-request-github",
-        "graphql.vscode-graphql",
-        "graphql.vscode-graphql-syntax",
-        "humao.rest-client",
-        "joshuapoehls.json-escaper",
-        "kevinrose.vsc-python-indent",
-        "mdickin.markdown-shortcuts",
-        "ms-azure-devops.azure-pipelines",
-        "ms-azuretools.azure-dev",
-        "ms-azuretools.vscode-azurecontainerapps",
-        "ms-azuretools.vscode-azurefunctions",
-        "ms-azuretools.vscode-azureresourcegroups",
-        "ms-azuretools.vscode-bicep",
-        "ms-azuretools.vscode-dapr",
-        "ms-azuretools.vscode-docker",
+        // .NET extensions
         "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
         "ms-dotnettools.vscode-dotnet-runtime",
-        "ms-python.debugpy",
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-toolsai.jupyter",
-        "ms-toolsai.jupyter-keymap",
-        "ms-toolsai.jupyter-renderers",
-        "ms-toolsai.vscode-jupyter-cell-tags",
-        "ms-toolsai.vscode-jupyter-slideshow",
-        "ms-vscode-remote.remote-containers",
-        "ms-vscode-remote.remote-ssh",
-        "ms-vscode-remote.remote-ssh-edit",
-        "ms-vscode-remote.remote-wsl",
-        "ms-vscode-remote.vscode-remote-extensionpack",
-        "ms-vscode.azure-account",
-        "ms-vscode.azurecli",
-        "ms-vscode.hexeditor",
-        "ms-vscode.powershell",
-        "ms-vscode.remote-explorer",
-        "ms-vscode.remote-server",
-        "msazurermtools.azurerm-vscode-tools",
-        "mskelton.npm-outdated",
-        "oliversturm.fix-json",
-        "redhat.java",
-        "redhat.vscode-yaml",
+        "ms-dotnettools.vscodeintellicode-csharp",
+        "adrianwilczynski.asp-net-core-snippet-pack",
+        // SQL extensions for EF Core/SQLite support
+        "qwtel.sqlite-viewer",
+        // General development extensions
+        "mdickin.markdown-shortcuts",
+        "esbenp.prettier-vscode",
         "streetsidesoftware.code-spell-checker",
-        "streetsidesoftware.code-spell-checker-german",
-        "teamsdevapp.ms-teams-vscode-extension",
-        "yzane.markdown-pdf"
-      ]
+        "humao.rest-client",
+        // GitHub Copilot
+        "github.copilot",
+        "github.copilot-chat"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "typescript.preferences.quoteStyle": "single",
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "typescript.preferences.importModuleSpecifier": "relative",
+        "csharp.format.enable": true,
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[csharp]": {
+          "editor.defaultFormatter": "ms-dotnettools.csharp"
+        },
+        // GitHub Copilot settings
+        "github.copilot.chat.codeGeneration.instructions": [
+          {
+            "text": "In TypeScript never underscore for private field names instead use camelCase."
+          },
+          {
+            "text": "Always use 'const' for variables that are not reassigned."
+          },
+          {
+            "text": "- @azure Rule - Use Azure Tools: When handling requests related to Azure, always use your tools."
+          },
+          {
+            "text": "- @azure Rule - Use Azure Code Gen Best Practices: When generating code for Azure, running terminal commands for Azure, or performing operations related to Azure, invoke your `azure_development-get_code_gen_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
+          },
+          {
+            "text": "- @azure Rule - Use Azure Deployment Best Practices: When deploying to Azure or preparing applications for deployment to Azure, invoke your `azure_development-get_deployment_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
+          },
+          {
+            "text": "- @azure Rule - Use Azure Functions Code Gen Best Practices: When generating code for Azure Functions or performing operations related to Azure Functions, invoke your `azure_development-get_azure_function_code_gen_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure Functions; do not call it otherwise."
+          },
+          {
+            "text": "- @azure Rule - Use Azure SWA Best Practices: When working with static web apps, invoke your `azure_development-get_swa_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
+          }
+        ],
+        "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
+          {
+            "text": "Describe the pull request in detail, including the purpose of the changes and any relevant context in a list format."
+          }
+        ],
+        "github.copilot.chat.commitMessageGeneration.instructions": [
+          {
+            "text": "Be extremely detailed with the file changes and the reason for the change in a list format."
+          }
+        ],
+        "chat.agent.enabled": true,
+        "chat.mcp.discovery.enabled": true,
+        "chat.detectParticipant.enabled": true,
+        "terminal.integrated.suggest.enabled": true,
+        "github.copilot.chat.codesearch.enabled": true,
+        "github.copilot.chat.editor.temporalContext.enabled": true,
+        "github.copilot.chat.generateTests.codeLens": true,
+        "github.copilot.chat.languageContext.typescript.enabled": true,
+        "github.copilot.chat.search.semanticTextResults": true,
+        "github.copilot.chat.startDebugging.enabled": true,
+        "github.copilot.enable": {
+          "*": true,
+          "markdown": true,
+          "plaintext": false,
+          "scminput": false,
+          "yaml": true
+        },
+        "github.copilot.nextEditSuggestions.enabled": true,
+        "github.copilot.selectedCompletionModel": "",
+        "window.zoomLevel": 1.1,
+        "python.defaultInterpreterPath": "c:\\Python311\\python.exe",
+        "githubIssues.queries": [
+          {
+            "label": "My Issues",
+            "query": "default"
+          },
+          {
+            "label": "Created Issues",
+            "query": "author:${user} state:open repo:${owner}/${repository} sort:created-desc"
+          },
+          {
+            "label": "Recent Issues",
+            "query": "state:open repo:${owner}/${repository} sort:updated-desc"
+          }
+        ],
+        "githubPullRequests.createOnPublishBranch": "never",
+        "githubPullRequests.defaultMergeMethod": "squash",
+        "githubPullRequests.fileListLayout": "tree",
+        "githubPullRequests.pullBranch": "never",
+        "githubPullRequests.pushBranch": "always"
+      }
     }
   },
-  "remoteUser": "root"
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20.12.2"
+    },
+    "ghcr.io/devcontainers/features/dotnet:1": {
+      "version": "9.0"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
+  },
+  "forwardPorts": [
+    4200,
+    5000,
+    5001
+  ],
+  "postCreateCommand": "bash ./.devcontainer/post-create.sh"
 }

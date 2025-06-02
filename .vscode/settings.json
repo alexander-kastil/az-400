@@ -1,0 +1,11 @@
+{
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "file": ".github/copilot.instructions.md"
+        }
+    ],
+    "github.copilot.chat.setupTests.enabled": true,
+    "github.copilot.chat.startDebugging.enabled": true,
+    "chat.commandCenter.enabled": true,
+    "git.ignoreLimitWarning": true
+}
