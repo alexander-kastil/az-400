@@ -1,5 +1,5 @@
 @page
-@model StudentIndexModel
+@model SKFunctionCalling.StudentIndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -22,27 +22,34 @@
             <th>
                 @Html.DisplayNameFor(model => model.Student[0].School)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Student[0].Age)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Student) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.School)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.StudentId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.StudentId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.StudentId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Student)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.School)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Age)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.StudentId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.StudentId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.StudentId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
