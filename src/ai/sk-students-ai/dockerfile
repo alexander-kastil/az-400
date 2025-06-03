@@ -11,10 +11,10 @@ COPY --from=build /app .
 ENTRYPOINT ["dotnet", "sk-students-ai.dll"]
 
 # Build Image
-# docker build --rm -f dockerfile -t sk-students-ai .
+# podman build --rm -f dockerfile -t sk-students-ai .
 
 # Run Image without env vars
-# docker run -it --rm -p 5051:8080 sk-students-ai
+# podman run -it --rm -p 5051:8080 sk-students-ai
 
 # Run Image with env vars
-# docker run -it --rm -p 5051:8080 sk-students-ai -e "Endpoint=true" -e "Key=true" -e "Model=true"
+# podman run -it --rm -p 5051:8080 sk-students-ai -e "ApiKey=<your_api_key>"
