@@ -10,9 +10,9 @@ variables:
   azCon: scIdentityWorkload
   appPath: src/services/catalog-service/api/
   appService: catalog-service-bicep
-  templateFile: deploy/bicep/webapp-windows.bicep
+  templateFile: infra/bicep/webapp-windows.bicep
   rg: az400-dev
-  loc: 'westeurope'
+  loc: "westeurope"
   subscriptionId: 78033352-805c-4acd-af80-f8f95083268d
 
 pool:
@@ -29,21 +29,21 @@ stages:
               cfg: $(buildConfiguration)
               folder: $(appPath)
               project: catalog-service
-      
+
       - job: Provision
         steps:
-        - task: AzureResourceManagerTemplateDeployment@3
-          inputs:
-            deploymentScope: 'Resource Group'
-            azureResourceManagerConnection: $(azCon)
-            subscriptionId: '$(subscriptionId)'
-            action: 'Create Or Update Resource Group'
-            resourceGroupName: '$(rg)'
-            location: '$(loc)'
-            templateLocation: 'Linked artifact'
-            csmFile: '$(templateFile)'
-            deploymentMode: 'Incremental'
-            overrideParameters: '-webAppName $(appService)'
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: "Resource Group"
+              azureResourceManagerConnection: $(azCon)
+              subscriptionId: "$(subscriptionId)"
+              action: "Create Or Update Resource Group"
+              resourceGroupName: "$(rg)"
+              location: "$(loc)"
+              templateLocation: "Linked artifact"
+              csmFile: "$(templateFile)"
+              deploymentMode: "Incremental"
+              overrideParameters: "-webAppName $(appService)"
 
   - stage: Deploy
     displayName: Deploy

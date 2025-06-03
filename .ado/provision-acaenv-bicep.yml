@@ -5,11 +5,11 @@ pr: none
 
 variables:
   azCon: scIdentityWorkload
-  templateFile: deploy/bicep/aca-env.bicep
+  templateFile: infra/bicep/aca-env.bicep
   acaEnv: foodappACAEnv
   acr: foodappacr
   rg: az400-dev
-  loc: 'westeurope'
+  loc: "westeurope"
   subscriptionId: 78033352-805c-4acd-af80-f8f95083268d
 
 pool:
@@ -18,18 +18,18 @@ pool:
 stages:
   - stage: IaC
     displayName: Provision ACA Environment
-    jobs:      
+    jobs:
       - job: Provision
         steps:
-        - task: AzureResourceManagerTemplateDeployment@3
-          inputs:
-            deploymentScope: 'Resource Group'
-            azureResourceManagerConnection: $(azCon)
-            subscriptionId: '$(subscriptionId)'
-            action: 'Create Or Update Resource Group'
-            resourceGroupName: '$(rg)'
-            location: '$(loc)'
-            templateLocation: 'Linked artifact'
-            csmFile: '$(templateFile)'
-            deploymentMode: 'Incremental'
-            overrideParameters: '-acaEnvName $(acaEnv) -acrName $(acr) -rgLocation $(loc)'
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: "Resource Group"
+              azureResourceManagerConnection: $(azCon)
+              subscriptionId: "$(subscriptionId)"
+              action: "Create Or Update Resource Group"
+              resourceGroupName: "$(rg)"
+              location: "$(loc)"
+              templateLocation: "Linked artifact"
+              csmFile: "$(templateFile)"
+              deploymentMode: "Incremental"
+              overrideParameters: "-acaEnvName $(acaEnv) -acrName $(acr) -rgLocation $(loc)"

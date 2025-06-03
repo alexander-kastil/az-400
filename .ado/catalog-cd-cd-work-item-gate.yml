@@ -12,14 +12,14 @@ trigger: none
 pr: none
 
 variables:
-  dotnetSdkVersion:  "8.x"
+  dotnetSdkVersion: "8.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: scFood
   rg: az400-dev
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-gate
-  templateFile: deploy/bicep/webapp-windows.bicep
+  templateFile: infra/bicep/webapp-windows.bicep
 
 pool:
   vmImage: "ubuntu-latest"
@@ -34,21 +34,21 @@ stages:
             parameters:
               cfg: $(buildConfiguration)
               folder: $(appPath)
-      
+
       - job: Provision
 
         steps:
-        - task: AzureCLI@2
-          displayName: 'Provision AppService'
-          inputs:
-            azureSubscription: '$(azSubscription)'
-            scriptType: 'bash'
-            scriptLocation: 'inlineScript'
-            inlineScript: |
-              az deployment group create \
-                --resource-group $(rg) \
-                --template-file $(templateFile) \
-                --parameters webAppName=$(appService)             
+          - task: AzureCLI@2
+            displayName: "Provision AppService"
+            inputs:
+              azureSubscription: "$(azSubscription)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az deployment group create \
+                  --resource-group $(rg) \
+                  --template-file $(templateFile) \
+                  --parameters webAppName=$(appService)
 
   - stage: Gate
     jobs:
@@ -58,9 +58,9 @@ stages:
         steps:
           - task: queryWorkItems@0
             inputs:
-              queryId: '1'
-              maxThreshold: '0'
-              minThreshold: '0'
+              queryId: "1"
+              maxThreshold: "0"
+              minThreshold: "0"
 
   - stage: Deploy
     displayName: Deploy to AppService
@@ -88,4 +88,4 @@ stages:
                     azureSubscription: $(azSubscription)
                     appType: "webApp"
                     WebAppName: $(appService)
-                    packageForLinux: "$(System.ArtifactsDirectory)/**/*.zip"                  
+                    packageForLinux: "$(System.ArtifactsDirectory)/**/*.zip"
