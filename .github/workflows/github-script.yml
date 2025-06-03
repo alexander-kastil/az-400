@@ -17,7 +17,7 @@ jobs:
               repo: context.repo.repo,
               body: ":thumbsup: Thank you for reporting this issue"
             })
-            
+
   apply-label:
     runs-on: ubuntu-latest
     steps:
@@ -30,12 +30,3 @@ jobs:
               repo: context.repo.repo,
               labels: ['needs-classification']
             })
-            
-  auto-assign:
-        runs-on: ubuntu-latest
-        steps:
-            - name: 'Auto-assign issue'
-              uses: pozil/auto-assign-issue@v1
-              with:
-                  repo-token: ${{ secrets.ISSUES_SECRET }}
-                  assignees: ${{ secrets.DEFAULT_ISSUE_ASSIGNEE }}
