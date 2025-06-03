@@ -12,8 +12,8 @@
 
 - Assign Key Vault Permissions for Workload Identity
 
-    ![app-reg.png](_images/app-reg.png)
+  ![app-reg.png](_images/app-reg.png)
 
-    ![kv-perms](_images/kv-perms.png) 
+  ![kv-perms](_images/kv-perms.png)
 
-- Import pipeline [spfx-ci-cd-kv.yml](/deploy/pipelines/spfx-ci-cd-kv.yml)
+- Import pipeline [spfx-ci-cd-kv.yml](/.ado/spfx-ci-cd-kv.yml)

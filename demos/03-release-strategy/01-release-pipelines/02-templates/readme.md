@@ -1,5 +1,5 @@
 # Using Templates
 
-- Show [/deploy/pipelines/catalog-ci-test-template.yml](/deploy/pipelines/catalog-ci-test-template.yml)
+- Show [/.ado/catalog-ci-test-template.yml](/.ado/catalog-ci-test-template.yml)
 
-- Show [/deploy/pipelines/spfx-ci-cd-template.yml](/deploy/pipelines/spfx-ci-cd-template.yml). Explain caching in node based projects.
+- Show [/.ado/spfx-ci-cd-template.yml](/.ado/spfx-ci-cd-template.yml). Explain caching in node based projects.

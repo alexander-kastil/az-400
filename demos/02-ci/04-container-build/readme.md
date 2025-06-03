@@ -12,13 +12,13 @@
 
 ## Demos
 
-- Build .NET WebApi -> [deploy/pipelines/catalog-docker-img.yml](/deploy/pipelines/catalog-docker-img.yml)
+- Build .NET WebApi -> [.ado/catalog-docker-img.yml](/.ado/catalog-docker-img.yml)
 
-- Build Angular FrontEnd -> [deploy/pipeline/food-shop-docker-img.yml](/deploy/pipelines/food-shop-docker-img.yml)
+- Build Angular FrontEnd -> [deploy/pipeline/food-shop-docker-img.yml](/.ado/food-shop-docker-img.yml)
 
-- Build Azure Function Python -> [deploy/pipeline/payment-py-docker-img.yml](/deploy/pipelines/payment-py-docker-img.yml)
+- Build Azure Function Python -> [deploy/pipeline/payment-py-docker-img.yml](/.ado/payment-py-docker-img.yml)
 
-- Build Spring Boot Job -> [deploy/pipeline/blob-console-img.yml](/deploy/pipelines/blob-console-img.yml)
+- Build Spring Boot Job -> [deploy/pipeline/blob-console-img.yml](/.ado/blob-console-img.yml)
 
 ## Additional Labs & Walkthroughs
 

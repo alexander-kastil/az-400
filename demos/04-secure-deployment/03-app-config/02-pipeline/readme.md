@@ -1,6 +1,6 @@
 # Using App Configuration in Azure Pipelines
 
-- Explain [catalog-ci-cd-app-cfg.yml](/deploy/pipelines/catalog-ci-cd-app-cfg.yml) which demonstrates the use of Azure App Configuration in Azure Pipelines.
+- Explain [catalog-ci-cd-app-cfg.yml](/.ado/catalog-ci-cd-app-cfg.yml) which demonstrates the use of Azure App Configuration in Azure Pipelines.
 
 ## Extensions & Tools
 
