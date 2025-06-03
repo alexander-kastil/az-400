@@ -1,0 +1,42 @@
+name: run cypress tests
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-20.04"
+  demands:
+    - npm  
+
+variables: 
+  cypath: '/src/cypress-e2e/cypress'    
+
+stages:
+  - stage: cypress
+    displayName: "Execute End to End tests"
+    jobs:
+      - job: e2e
+        steps:
+        - task: NodeTool@0
+          displayName: 'Use Node 16.x'
+          inputs:
+            versionSpec: 16.x
+
+        - task: Npm@1
+          displayName: 'npm install'
+          inputs:
+            workingDir: '$(System.DefaultWorkingDirectory)/$(cypath)'
+            verbose: false
+
+        - task: Npm@1
+          displayName: 'run electron tests'
+          inputs:
+            command: custom
+            workingDir: '$(System.DefaultWorkingDirectory)/$(cypath)'
+            verbose: false
+            customCommand: 'run script-electron'
+
+        - task: PublishTestResults@2
+          displayName: 'Publish Test Results'
+          inputs:
+            testResultsFiles: '**/combined-report.xml'

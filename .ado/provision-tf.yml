@@ -1,0 +1,57 @@
+name: provisioning-tf
+
+trigger: none
+pr: none
+
+variables:
+  dotnetSdkVersion: "8.x"
+  buildConfiguration: Release
+  releaseBranchName: master
+  azSubscription: scFood
+  appPath: deploy/terraform
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+- stage: Plan
+  displayName: 'Terraform Plan'
+  jobs:
+  - job: TerraformPlan
+    displayName: 'Terraform Plan'
+    steps:
+    - task:  TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+
+    - bash: |
+        terraform --version
+        terraform init
+        terraform plan -out=tfplan
+      env:
+        ARM_CLIENT_ID: $(client_id)
+        ARM_CLIENT_SECRET: $(client_secret)
+        ARM_SUBSCRIPTION_ID: $(subscription_id)
+        ARM_TENANT_ID: $(tenant_id)
+      workingDirectory: $(appPath) 
+      displayName: 'Terraform Init and Plan'
+      
+- stage: Apply
+  displayName: 'Terraform Apply'
+  jobs:
+  - job: TerraformApply
+    displayName: 'Terraform Apply'
+    steps:
+    - task:  TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+    - bash: |
+        terraform init    
+        terraform apply -auto-approve
+      env:
+        ARM_CLIENT_ID: $(client_id)
+        ARM_CLIENT_SECRET: $(client_secret)
+        ARM_SUBSCRIPTION_ID: $(subscription_id)
+        ARM_TENANT_ID: $(tenant_id)
+      workingDirectory: $(appPath)
+      displayName: 'Terraform Apply'

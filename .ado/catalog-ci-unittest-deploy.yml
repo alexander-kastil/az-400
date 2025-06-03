@@ -1,0 +1,105 @@
+name: catalog-ci-unittest-deploy
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/services/catalog-service/*
+
+trigger: none
+pr: none
+
+variables:
+  dotnetSdkVersion: "8.x"
+  buildConfiguration: Release
+  releaseBranchName: master
+  azSubscription: scFood
+  appPath: src/services/catalog-service/api/
+  appTests: src/services/catalog-service/tests/
+  appService: food-catalog-api-yaml
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: "Build"
+    displayName: "Build"
+    jobs:
+      - job: "Build"
+        displayName: "Build job"
+
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET Core SDK $(dotnetSdkVersion)"
+            inputs:
+              version: "$(dotnetSdkVersion)"
+
+          - task: DotNetCoreCLI@2
+            displayName: "Restore project dependencies"
+            inputs:
+              command: "restore"
+              projects: "$(appPath)/*.csproj"
+
+          - task: DotNetCoreCLI@2
+            displayName: "Build the project - $(buildConfiguration)"
+            inputs:
+              command: "build"
+              arguments: "--no-restore --configuration $(buildConfiguration)"
+              projects: "$(appPath)/*.csproj"
+
+          - task: DotNetCoreCLI@2
+            displayName: "Publish the project - $(buildConfiguration)"
+            inputs:
+              command: "publish"
+              projects: "$(appPath)/*.csproj"
+              publishWebProjects: false
+              arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
+              zipAfterPublish: true
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "drop"
+              publishLocation: "Container"
+  
+  - stage: "Test"
+    displayName: "Unit Test"
+    dependsOn: []
+
+    jobs:
+      - job: test
+        displayName: Test .NET
+
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET Core SDK $(dotnetSdkVersion)"
+            inputs:
+              version: "$(dotnetSdkVersion)"
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              projects: "$(appTests)/catalog-service-tests.csproj"
+              arguments: "--configuration $(buildConfiguration)"
+
+  - stage: "Deploy"
+    displayName: "Deploy"
+    dependsOn: [Build, Test]
+
+    jobs:
+      - deployment: DeployAppService
+        displayName: Deploy to prod AppService
+        environment: catalog-api-production
+        strategy:
+          runOnce:
+            deploy:
+              steps:                          
+              - task: AzureRmWebAppDeployment@4
+                displayName: "Azure App Service Deploy: $(appservice)"
+                inputs:
+                  ConnectionType: "AzureRM"
+                  azureSubscription: $(azSubscription)
+                  appType: "webApp"
+                  WebAppName: $(appservice)
+                  packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"

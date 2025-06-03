@@ -1,0 +1,43 @@
+name: 03-01-catalog-cd-aca
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - apps/catalog-api/*
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  acrName: 'az400acrdev'
+  image: 'az400acrdev.azurecr.io/catalog-service'
+  app: 'catalog-service-v1'
+  grp: 'az400-dev'
+  acaenv: 'az400acaenv'
+
+stages:
+  - stage: Deploy
+    jobs:
+      - job: Deploy
+        displayName: Deploy to ACA
+        steps:
+          - checkout: none
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'scFood'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az containerapp create -n $(app) -g $(grp) --image $(image) \
+                    --environment $(acaenv) \
+                    --target-port 8080 \
+                    --ingress external \
+                    --registry-server $(acrName).azurecr.io \
+                    --registry-username $(acrName) \
+                    --registry-password $(acrPassword)

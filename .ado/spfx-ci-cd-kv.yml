@@ -1,0 +1,65 @@
+name: spfx-ci-cd-kv
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - food-spfx-wp/*
+#     exclude:
+#       - az-pipelines/*
+#       - _images/*
+
+trigger: none
+pr: none
+
+variables:
+  package: foodlist-wp.sppkg
+  packageLocation: /drop/src/teams/food-list/sharepoint/solution
+  appPath: src/teams/food-list/ 
+  environment: m365-integrationsonline
+  nodeVersion: "14.x"
+  azSubscription: scFood
+  vault: az400-vault-dev
+  # Do NOT set pipeline vars: username, password
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildJob
+        displayName: Build SPFx Package
+        steps:
+          - template: templates/t-spfx-build.yaml
+            parameters:
+              nodeVersion: $(nodeVersion)
+              pkg: $(package)
+              fld: $(appPath)
+
+  - stage: Deploy
+    displayName: Deploy to M365
+    dependsOn: Build
+    jobs:
+      - deployment: DeployM365
+        displayName: Deploy to M365
+        environment: $(environment)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureKeyVault@1
+                  displayName: 'Azure Key Vault: $(vault)'
+                  inputs:
+                    azureSubscription: $(azSubscription)
+                    KeyVaultName: $(vault)
+
+                - template: templates/t-spfx-deploy-cli.yaml
+                  parameters:
+                    nodeVersion: $(nodeVersion)
+                    pkg: $(package)
+                    pkgLocation: $(packageLocation)
+                    username: $(m365user)
+                    password: $(m365pwd)

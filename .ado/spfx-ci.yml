@@ -1,0 +1,60 @@
+name: spfx-ci
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/teams/food-list/*
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  appPath: src/teams/food-list/  
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        displayName: "Build SPFx Package"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: 14.x
+            displayName: Install Node.js
+          - task: CmdLine@2
+            displayName: npm install
+            inputs:
+              script: "npm install"
+              workingDirectory: "$(appPath)/"
+
+          - task: gulp@1
+            displayName: "gulp bundel"
+            inputs:
+              gulpFile: "$(appPath)/gulpfile.js"
+              targets: "bundle"
+              arguments: "--ship"
+              enableCodeCoverage: false
+
+          - task: gulp@1
+            displayName: "gulp package solution"
+            inputs:
+              gulpFile: "$(appPath)/gulpfile.js"
+              targets: "package-solution"
+              arguments: "--ship"
+
+          - task: CopyFiles@2
+            displayName: "Copy Files to: $(build.artifactstagingdirectory)/drop"
+            inputs:
+              Contents: "$(appPath)/sharepoint/solution/*.sppkg"
+              TargetFolder: "$(build.artifactstagingdirectory)/drop"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish artifacts: drop"
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)/drop"

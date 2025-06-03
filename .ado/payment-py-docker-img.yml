@@ -1,0 +1,46 @@
+name: payment-py-docker-img
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/functions/payment-py/*
+
+trigger: none      
+pr: none
+
+variables:
+  appPath: src/functions/payment-py/
+  imageName: payment-func-py
+  acr: scACR
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: "BuildImg"
+    displayName: "Build Payment Service Python"
+    jobs:
+      - job: "Build"
+        steps:
+          - task: Docker@2
+            displayName: Login to ACR
+            inputs:
+              command: login
+              containerRegistry: $(acr)
+
+          - task: Docker@2
+            displayName: Build and Push
+            inputs:
+              repository: '$(imageName)'
+              command: 'buildAndPush'
+              Dockerfile: '$(appPath)Dockerfile'
+              tags: 'latest'
+
+          - task: Docker@2
+            displayName: Logout of ACR
+            inputs:
+              command: logout
+              containerRegistry: $(acr)
