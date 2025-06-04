@@ -11,3 +11,8 @@ public class Card
     public string Expiry { get; set; }
     public string CVV { get; set; }
 }
+
+public class PaymentRequest
+{
+    public Payment Payment { get; set; }
+}
