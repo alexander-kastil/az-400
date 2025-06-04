@@ -29,7 +29,7 @@ stages:
   jobs:
     -  deployment:
        displayName: Dev deploy job
-       environment: DevEnv
+       environment: deployment-job-dev
        strategy:
           runOnce:
             deploy:
@@ -44,7 +44,7 @@ stages:
   jobs:
     -  deployment:
        displayName: Staging deploy job
-       environment: StagingEnv
+       environment: deployment-job-staging
        strategy:
           runOnce:
             deploy:
@@ -59,7 +59,7 @@ stages:
   jobs:
     -  deployment:
        displayName: Staging deploy job
-       environment: ProdEnv
+       environment: deployment-job-prod
        strategy:
           runOnce:
             deploy:
