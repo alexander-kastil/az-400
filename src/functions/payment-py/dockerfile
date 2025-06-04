@@ -1,0 +1,32 @@
+# Use the official Azure Functions Python base image
+# This image includes the Azure Functions runtime and Python 3.11
+FROM mcr.microsoft.com/azure-functions/python:4-python3.11
+
+# Set environment variables for Azure Functions
+ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
+    AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
+    FUNCTIONS_WORKER_RUNTIME=python
+
+# Create and set the working directory
+WORKDIR /home/site/wwwroot
+
+# Copy requirements first for better Docker layer caching
+COPY requirements.txt .
+
+# Install Python dependencies
+# Using --no-cache-dir to reduce image size
+# Using --user flag is not needed in containers
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the function app files
+COPY . .
+
+# Set proper permissions for the Azure Functions runtime
+# The Azure Functions runtime runs as a non-root user
+RUN chmod -R 755 /home/site/wwwroot
+
+# Expose the default port that Azure Functions uses
+EXPOSE 80
+
+# The CMD is not needed as the base image already sets it up
+# The Azure Functions runtime will automatically start the host
