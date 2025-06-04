@@ -15,7 +15,7 @@ variables:
   dotnetSdkVersion: "8.x"
   buildConfiguration: Release
   releaseBranchName: master
-  azSubscription: scFood
+  azSubscription: wi-az400
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
 
