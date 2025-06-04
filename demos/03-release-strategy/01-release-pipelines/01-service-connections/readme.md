@@ -12,39 +12,39 @@
 
 - Create a Workload Identity Service Connection manually in Azure DevOps.
 
-    ![create](_images/create.jpg)
+  ![create](_images/create.jpg)
 
-- Use Script create-principal.ps1 to create the Service Principal.
+- Use Script `create-workload-identity.ps1` to create the Service Principal.
 
-    ```bash
-    grp=az400-dev
-    subscriptionId=78033352-805c-4acd-af80-f8f95083268d
-    resourceGroupScope="/subscriptions/$subscriptionId/resourcegroups/$grp"
-    identityName=scIdentityWorkload
-    federatedCredentialName="AzureDevOps"
-    audience="api://AzureADTokenExchange"
-    issuerUrl="https://vstoken.dev.azure.com/99e5794d-47e1-4b9b-86eb-937aa20e4e11"
-    subjectIdentifier="sc://integrations-development/az-400/scIdentityWorkload"
-    contributorRoleId=b24988ac-6180-42a0-ab88-20f7382dd24c
+  ```bash
+  grp=az400-dev
+  subscriptionId=78033352-805c-4acd-af80-f8f95083268d
+  resourceGroupScope="/subscriptions/$subscriptionId/resourcegroups/$grp"
+  identityName=scIdentityWorkload
+  federatedCredentialName="AzureDevOps"
+  audience="api://AzureADTokenExchange"
+  issuerUrl="https://vstoken.dev.azure.com/99e5794d-47e1-4b9b-86eb-937aa20e4e11"
+  subjectIdentifier="sc://integrations-development/az-400/scIdentityWorkload"
+  contributorRoleId=b24988ac-6180-42a0-ab88-20f7382dd24c
 
-    # Create a managed identity
-    principalId=$(az identity create --name $identityName --resource-group $grp --query principalId -o tsv)
+  # Create a managed identity
+  principalId=$(az identity create --name $identityName --resource-group $grp --query principalId -o tsv)
 
-    # Get the client id
-    clientId=$(az identity show --name $identityName --resource-group $grp --query clientId -o tsv)
+  # Get the client id
+  clientId=$(az identity show --name $identityName --resource-group $grp --query clientId -o tsv)
 
-    # Assign the managed identity the contributor role
-    az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope
+  # Assign the managed identity the contributor role
+  az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope
 
-    # Create a federated credential
-    az identity federated-credential create --name $federatedCredentialName --identity-name $identityName --resource-group $grp --issuer $issuerUrl --subject $subjectIdentifier --audiences $audience
-    ```    
+  # Create a federated credential
+  az identity federated-credential create --name $federatedCredentialName --identity-name $identityName --resource-group $grp --issuer $issuerUrl --subject $subjectIdentifier --audiences $audience
+  ```
 
-    >Note: Copy Issuer and Subject Identifier from the Service Connection UI in Azure DevOps.    
+  > Note: Copy Issuer and Subject Identifier from the Service Connection UI in Azure DevOps.
 
-    >Note: Service Principal Id is the client id of the Service Principal created.
+  > Note: Service Principal Id is the client id of the Service Principal created.
 
-    ![create](_images/create-details.jpg)
+  ![create](_images/create-details.jpg)
 
 - Adjust RBAC permissions on Resource Group as required. Role Ids are available [here](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles)
 
