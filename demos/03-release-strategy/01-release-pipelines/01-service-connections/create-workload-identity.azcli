@@ -1,13 +1,13 @@
 grp=az400-dev
-subscriptionId=78033352-805c-4acd-af80-f8f95083268d
+subscriptionId=fd7fb70b-e991-4c93-953e-e886357635a8
 loc=westeurope
-identityName=scIdentityWorkload
+identityName=wi-az400
 
 resourceGroupScope="/subscriptions/$subscriptionId/resourcegroups/$grp"
 federatedCredentialName="AzureDevOps"
 audience="api://AzureADTokenExchange"
 issuerUrl="https://vstoken.dev.azure.com/99e5794d-47e1-4b9b-86eb-937aa20e4e11"
-subjectIdentifier="sc://integrations-development/az-400/$identityName"
+subjectIdentifier="sc://cloud-agents/az-400/$identityName"
 contributorRoleId=b24988ac-6180-42a0-ab88-20f7382dd24c
 
 # Create resource group
