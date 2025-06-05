@@ -12,7 +12,7 @@ trigger: none
 pr: none
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: ubuntu-22.04
 
 variables:
   proj: az-400
@@ -22,6 +22,7 @@ variables:
   releaseBranchName: master
   azSubscription: scFood
   appPath: src/services/food-app-common/
+
 
 stages:
   - stage: BuildToFeed
@@ -51,6 +52,7 @@ stages:
             inputs:
               command: "pack"
               packagesToPack: "$(appPath)/*.csproj"
+              arguments: '--version-suffix "" /p:PackageVersion=9.0.0'
             displayName: Create nuget package
 
           - task: NuGetCommand@2
