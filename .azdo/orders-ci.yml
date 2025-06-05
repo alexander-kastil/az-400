@@ -17,7 +17,7 @@ pool:
 variables:
   proj: az-400
   feed: food-packages
-  dotnetSdkVersion: "8.x"
+  dotnetSdkVersion: "9.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: scFood
@@ -41,24 +41,24 @@ stages:
           - task: NuGetCommand@2
             displayName: "Restore project dependencies"
             inputs:
-              command: 'restore'
+              command: "restore"
               restoreSolution: $(appPath)/*.csproj
-              feedsToUse: 'select'
+              feedsToUse: "select"
               vstsFeed: $(proj)/$(feed)
-              includeNuGetOrg: true 
+              includeNuGetOrg: true
           - task: DotNetCoreCLI@2
             displayName: "Build"
             inputs:
-              command: 'build'
-              projects: '$(appPath)/*.csproj'
-              arguments: '--no-restore --configuration $(buildConfiguration)'
+              command: "build"
+              projects: "$(appPath)/*.csproj"
+              arguments: "--no-restore --configuration $(buildConfiguration)"
           - task: DotNetCoreCLI@2
             displayName: "Publish"
             inputs:
-              command: 'publish'
+              command: "publish"
               publishWebProjects: false
-              projects: '$(appPath)/*.csproj'
-              arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+              projects: "$(appPath)/*.csproj"
+              arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)"
           - task: PublishPipelineArtifact@1
             inputs:
               artifactName: drop

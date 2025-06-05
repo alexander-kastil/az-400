@@ -21,7 +21,7 @@ stages:
             displayName: "Install .NET 8 SDK"
             inputs:
               packageType: "sdk"
-              version: "8.x"
+              version: "9.x"
 
           - task: DotNetCoreCLI@2
             displayName: dotnet build
@@ -40,5 +40,5 @@ stages:
           - task: PublishPipelineArtifact@1
             inputs:
               artifactName: drop
-              targetPath: '$(Build.ArtifactStagingDirectory)'
+              targetPath: "$(Build.ArtifactStagingDirectory)"
             displayName: "Publish Artifact: drop"

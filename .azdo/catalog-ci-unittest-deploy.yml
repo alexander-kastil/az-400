@@ -12,7 +12,7 @@ trigger: none
 pr: none
 
 variables:
-  dotnetSdkVersion: "8.x"
+  dotnetSdkVersion: "9.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: scFood
@@ -63,7 +63,7 @@ stages:
               PathtoPublish: "$(Build.ArtifactStagingDirectory)"
               ArtifactName: "drop"
               publishLocation: "Container"
-  
+
   - stage: "Test"
     displayName: "Unit Test"
     dependsOn: []
@@ -94,12 +94,12 @@ stages:
         strategy:
           runOnce:
             deploy:
-              steps:                          
-              - task: AzureRmWebAppDeployment@4
-                displayName: "Azure App Service Deploy: $(appservice)"
-                inputs:
-                  ConnectionType: "AzureRM"
-                  azureSubscription: $(azSubscription)
-                  appType: "webApp"
-                  WebAppName: $(appservice)
-                  packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"
+              steps:
+                - task: AzureRmWebAppDeployment@4
+                  displayName: "Azure App Service Deploy: $(appservice)"
+                  inputs:
+                    ConnectionType: "AzureRM"
+                    azureSubscription: $(azSubscription)
+                    appType: "webApp"
+                    WebAppName: $(appservice)
+                    packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"

@@ -12,7 +12,7 @@ trigger: none
 pr: none
 
 variables:
-  dotnetSdkVersion: "8.x"
+  dotnetSdkVersion: "9.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: scWorkload
@@ -22,19 +22,19 @@ variables:
 pool:
   vmImage: ubuntu-latest
 
-stages: 
+stages:
   - stage: Build
     displayName: Build and Update Config
-    
+
     jobs:
       - job: Build
         steps:
           - task: FileTransform@1
             displayName: Update Configuration
             inputs:
-              folderPath: '$(System.DefaultWorkingDirectory)/$(appPath)'
-              fileType: 'json'
-              targetFiles: '**/appsettings.json'
+              folderPath: "$(System.DefaultWorkingDirectory)/$(appPath)"
+              fileType: "json"
+              targetFiles: "**/appsettings.json"
 
           - template: templates/t-net-build.yaml
             parameters:
@@ -44,7 +44,7 @@ stages:
   - stage: Deploy
     displayName: Deploy
     dependsOn: Build
-    
+
     jobs:
       - deployment: Deploy
         displayName: Deploy to AppService

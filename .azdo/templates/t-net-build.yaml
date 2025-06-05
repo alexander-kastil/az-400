@@ -16,7 +16,7 @@ steps:
     displayName: "Install .NET 8 SDK"
     inputs:
       packageType: "sdk"
-      version: "8.x"
+      version: "9.x"
 
   - task: DotNetCoreCLI@2
     displayName: "Restore project dependencies"
