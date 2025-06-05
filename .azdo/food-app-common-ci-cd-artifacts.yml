@@ -23,6 +23,7 @@ variables:
   azSubscription: scFood
   appPath: src/services/food-app-common/
 
+
 stages:
   - stage: BuildToFeed
     jobs:
