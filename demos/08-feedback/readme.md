@@ -15,8 +15,9 @@
 - Application Insights
 - Work Items as Gate
 - Teams Integration
+- Agentic DevOps (optional)
 
-# Lab
+## Additional Labs & Walkthroughs
 
 [Monitor the health of your Azure virtual machine by using Azure Metrics Explorer and metric alerts](https://docs.microsoft.com/en-us/learn/modules/monitor-azure-vm-using-diagnostic-data/)
 
