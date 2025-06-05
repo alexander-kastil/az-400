@@ -16,14 +16,14 @@ pool:
 
 variables:
   proj: az-400
-  dotnetSdkVersion: "8.x"
+  dotnetSdkVersion: "9.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: scFood
   acr: scACR
   appPath: src/services/order-service/
   vault: az400-vault-dev
-  imageName: 'order-service'
+  imageName: "order-service"
 
 stages:
   - stage: "Build"
@@ -31,7 +31,7 @@ stages:
       - job: "Build"
         steps:
           - task: AzureKeyVault@1
-            displayName: 'Azure Key Vault: $(vault)'
+            displayName: "Azure Key Vault: $(vault)"
             inputs:
               azureSubscription: $(azSubscription)
               KeyVaultName: $(vault)
@@ -46,12 +46,12 @@ stages:
             displayName: Build and Push
             inputs:
               containerRegistry: $(acr)
-              repository: '$(imageName)'
-              command: 'buildAndPush'
-              Dockerfile: '$(appPath)dockerfile'
-              tags: 'latest'
-              arguments: '--build-arg PAT=$(PATToken)'
-              
+              repository: "$(imageName)"
+              command: "buildAndPush"
+              Dockerfile: "$(appPath)dockerfile"
+              tags: "latest"
+              arguments: "--build-arg PAT=$(PATToken)"
+
           - task: Docker@2
             displayName: Logout of ACR
             inputs:

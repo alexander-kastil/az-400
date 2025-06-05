@@ -54,7 +54,7 @@
 
 ```yaml
 variables:
-  dotnetSdkVersion: "8.x"
+  dotnetSdkVersion: "9.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: scWorkload

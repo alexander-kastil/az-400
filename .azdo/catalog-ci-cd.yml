@@ -12,7 +12,7 @@ trigger: none
 pr: none
 
 variables:
-  dotnetSdkVersion: "8.x"
+  dotnetSdkVersion: "9.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: wi-az400
@@ -61,7 +61,7 @@ stages:
             inputs:
               PathtoPublish: "$(Build.ArtifactStagingDirectory)"
               ArtifactName: "drop"
-              publishLocation: "Container"  
+              publishLocation: "Container"
 
   - stage: "Deploy"
     displayName: "Deploy"
@@ -74,12 +74,12 @@ stages:
         strategy:
           runOnce:
             deploy:
-              steps:                          
-              - task: AzureRmWebAppDeployment@4
-                displayName: "Azure App Service Deploy: $(appService)"
-                inputs:
-                  ConnectionType: "AzureRM"
-                  azureSubscription: $(azSubscription)
-                  appType: "webApp"
-                  WebAppName: $(appService)
-                  packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"
+              steps:
+                - task: AzureRmWebAppDeployment@4
+                  displayName: "Azure App Service Deploy: $(appService)"
+                  inputs:
+                    ConnectionType: "AzureRM"
+                    azureSubscription: $(azSubscription)
+                    appType: "webApp"
+                    WebAppName: $(appService)
+                    packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"
