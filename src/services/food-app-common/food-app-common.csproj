@@ -4,6 +4,11 @@
         <RootNamespace>FoodApp</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
+        <PackageId>food-app-common</PackageId>
+        <Version>9.0.0</Version>
+        <PackageVersion>9.0.0</PackageVersion>
+        <AssemblyVersion>9.0.0</AssemblyVersion>
+        <FileVersion>9.0.0</FileVersion>
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
