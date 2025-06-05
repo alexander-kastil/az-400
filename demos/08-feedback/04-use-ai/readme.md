@@ -1,8 +1,10 @@
 # Use AI for DevOps
 
+## Use MCPs
+
 - Explain registration of MCP Servers using mcp.json
 
-## GitHub MCP
+### GitHub MCP
 
 - list all my repos
 - what was the latest pull request on REPO_NAME
