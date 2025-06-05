@@ -1,4 +1,6 @@
-# Use AI for DevOps
+# Agentic DevOps
+
+[Agentic DevOps](https://azure.microsoft.com/en-us/blog/agentic-devops-evolving-software-development-with-github-copilot-and-microsoft-azure/) is a set of tools and techniques to help you manage your DevOps tasks using AI.
 
 ## Write Docs using reusable prompts
 
