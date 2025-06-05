@@ -1,4 +1,4 @@
-## Azure CLI
+# Azure CLI
 
 - Azure CLI Script
 - Using Azure CLI Task in pipeline

@@ -1,3 +1,4 @@
+D:\git-classes\az-400\src\services\order-service\bin\Debug\net8.0\order-service.staticwebassets.endpoints.json
 D:\git-classes\az-400\src\services\order-service\bin\Debug\net8.0\Microsoft.Azure.Cosmos.ServiceInterop.dll
 D:\git-classes\az-400\src\services\order-service\bin\Debug\net8.0\Cosmos.CRTCompat.dll
 D:\git-classes\az-400\src\services\order-service\bin\Debug\net8.0\msvcp140.dll
@@ -60,14 +61,16 @@ D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\order-service.
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\order-service.MvcApplicationPartsAssemblyInfo.cs
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\order-service.MvcApplicationPartsAssemblyInfo.cache
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\order-service.sourcelink.json
+D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\scopedcss\bundle\order-service.styles.css
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets.build.json
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets.development.json
+D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets\msbuild.order-service.Microsoft.AspNetCore.StaticWebAssets.props
+D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets\msbuild.order-service.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets\msbuild.build.order-service.props
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.order-service.props
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.order-service.props
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\staticwebassets.pack.json
-D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\scopedcss\bundle\order-service.styles.css
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\order-se.D82BC0D8.Up2Date
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\order-service.dll
 D:\git-classes\az-400\src\services\order-service\obj\Debug\net8.0\refint\order-service.dll
