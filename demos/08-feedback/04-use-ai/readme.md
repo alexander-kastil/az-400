@@ -4,7 +4,11 @@
 
 Use a re-usable prompt `create-docs.prompt.md` to write documentation for your project:
 
-## Use MCPs
+## Write Unit Tests
+
+AI can help you write unit tests for your code.
+
+## Use MCPs to complete tasks
 
 - Explain registration of MCP Servers using mcp.json
 
@@ -24,3 +28,9 @@ Use a re-usable prompt `create-docs.prompt.md` to write documentation for your p
 - create a Mermaid diagram of the src directory
 
 > Note: A [log](mermaid-log.md) of the Mermaid MCP is available.
+
+## Advise on Upgrades
+
+As about breaking changes in your dependencies and how to upgrade them.
+
+![Upgrade](_images/upgrade.png)
