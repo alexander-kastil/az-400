@@ -8,3 +8,7 @@
 
 - list all my repos
 - what was the latest pull request on REPO_NAME
+
+### Mermaid MCP
+
+- create a Mermaid diagram of the src directory
