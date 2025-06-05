@@ -16,7 +16,7 @@ AI can help you write unit tests for your code.
 
 [Model Control Protocol (MCP)](https://modelcontextprotocol.io/introduction)
 
-[MCP Servers](https://modelcontextprotocol.io/servers) are used to provide a context for AI models to work with. They can be registered in the `mcp.json` file in the root of your project.
+[MCP Servers](https://github.com/modelcontextprotocol/servers) are used to provide a context for AI models to work with. They can be registered in the `mcp.json` file in the root of your project.
 
 [Smithery](https://smithery.ai/)
 
