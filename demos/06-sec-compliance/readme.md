@@ -3,11 +3,10 @@
 ## Demos
 
 - Thread Modelling
-- Software Composition Analysis 
+- Software Composition Analysis
 - Static Analysis
 - Technical Debt
 - Azure Policy
-- Azure Blueprint (Optional)
 
 ## Additional Labs & Walkthroughs
 
