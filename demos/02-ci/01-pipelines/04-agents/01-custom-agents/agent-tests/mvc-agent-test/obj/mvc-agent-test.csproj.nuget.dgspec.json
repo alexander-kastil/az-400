@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "H:\\Classes\\AZ-400\\Demos\\04-AzurePipelines\\Demo-06\\agent-tests\\mvc-agent-test\\mvc-agent-test.csproj": {}
+    "/home/runner/work/az-400/az-400/demos/02-ci/01-pipelines/04-agents/01-custom-agents/agent-tests/mvc-agent-test/mvc-agent-test.csproj": {}
   },
   "projects": {
-    "H:\\Classes\\AZ-400\\Demos\\04-AzurePipelines\\Demo-06\\agent-tests\\mvc-agent-test\\mvc-agent-test.csproj": {
+    "/home/runner/work/az-400/az-400/demos/02-ci/01-pipelines/04-agents/01-custom-agents/agent-tests/mvc-agent-test/mvc-agent-test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\Classes\\AZ-400\\Demos\\04-AzurePipelines\\Demo-06\\agent-tests\\mvc-agent-test\\mvc-agent-test.csproj",
+        "projectUniqueName": "/home/runner/work/az-400/az-400/demos/02-ci/01-pipelines/04-agents/01-custom-agents/agent-tests/mvc-agent-test/mvc-agent-test.csproj",
         "projectName": "mvc-agent-test",
-        "projectPath": "H:\\Classes\\AZ-400\\Demos\\04-AzurePipelines\\Demo-06\\agent-tests\\mvc-agent-test\\mvc-agent-test.csproj",
-        "packagesPath": "C:\\Users\\AlexanderPajer\\.nuget\\packages\\",
-        "outputPath": "H:\\Classes\\AZ-400\\Demos\\04-AzurePipelines\\Demo-06\\agent-tests\\mvc-agent-test\\obj\\",
+        "projectPath": "/home/runner/work/az-400/az-400/demos/02-ci/01-pipelines/04-agents/01-custom-agents/agent-tests/mvc-agent-test/mvc-agent-test.csproj",
+        "packagesPath": "/home/runner/work/az-400/.codeql-scratch/dbs/csharp/working/packages",
+        "outputPath": "/home/runner/work/az-400/az-400/demos/02-ci/01-pipelines/04-agents/01-custom-agents/agent-tests/mvc-agent-test/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\AlexanderPajer\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net5.0"
+          "net6.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net5.0": {
-            "targetAlias": "net5.0",
+          "net6.0": {
+            "targetAlias": "net6.0",
             "projectReferences": {}
           }
         },
@@ -32,21 +32,42 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
-        "net5.0": {
-          "targetAlias": "net5.0",
+        "net6.0": {
+          "targetAlias": "net6.0",
           "imports": [
             "net461",
             "net462",
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -55,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.100/RuntimeIdentifierGraph.json"
         }
       }
     }
