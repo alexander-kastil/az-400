@@ -6,16 +6,9 @@ using Newtonsoft.Json;
 
 namespace FoodApp
 {
-    public class AILogger
+    public class AILogger(TelemetryClient ai, IConfiguration cfg)
     {
-        private TelemetryClient ai;
-        private string title;
-
-        public AILogger(TelemetryClient tc, IConfiguration cfg)
-        {
-            ai = tc;
-            title = cfg.GetValue<string>("title");
-        }
+        private readonly string title = cfg.GetValue<string>("title");
         
         public void LogEvent(string text, object item, bool logToConsole = false)
         {

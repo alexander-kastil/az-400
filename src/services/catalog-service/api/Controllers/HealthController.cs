@@ -8,18 +8,9 @@ namespace FoodApp
 {
     [Route("[controller]")]
     [ApiController]
-    public class HealthController : ControllerBase
+    public class HealthController(IConfiguration cfg, ILogger<HealthController> logger) : ControllerBase
     {        
-
-        IConfiguration cfg;
-        ILogger<HealthController> logger;
         private static List<string> logs = new List<string>();
-
-        public HealthController(IConfiguration config, ILogger<HealthController> log)
-        {
-            cfg=config;
-            logger=log;
-        }
 
         private void LogProbe(string message)
         {

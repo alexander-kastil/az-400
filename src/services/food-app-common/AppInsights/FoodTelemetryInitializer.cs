@@ -4,13 +4,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace FoodApp
 {
-    public class FoodTelemetryInitializer : ITelemetryInitializer{
-
-        string title;
-        public FoodTelemetryInitializer(IConfiguration cfg)
-        {
-            title = cfg.GetValue<string>("title");            
-        }
+    public class FoodTelemetryInitializer(IConfiguration cfg) : ITelemetryInitializer
+    {
+        private readonly string title = cfg.GetValue<string>("title");
 
         public void Initialize(ITelemetry telemetry)
         {            

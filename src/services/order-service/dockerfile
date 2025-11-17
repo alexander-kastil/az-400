@@ -1,5 +1,5 @@
 # Build Image
-FROM mcr.microsoft.com/dotnet/sdk:9.0-jammy AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-jammy AS build
 WORKDIR /build
 COPY . .
 
@@ -15,7 +15,7 @@ RUN dotnet restore -s "${FEED_URL}" "order-service.csproj"
 RUN dotnet publish -c Release -o /app
 
 # Runtime Image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-jammy-chiseled AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-jammy-chiseled AS final
 WORKDIR /app
 COPY --from=build /app .
 ENTRYPOINT ["dotnet", "order-service.dll"]
