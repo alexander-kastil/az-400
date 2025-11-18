@@ -16,6 +16,8 @@
 
 [Build and release retention policies](https://learn.microsoft.com/en-us/azure/devops/pipelines/policies/retention?view=azure-devops&tabs=yaml)
 
+[Using resources in pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/about-resources?view=azure-devops&tabs=yaml#use-resources-to-enhance-security)
+
 ## Demos
 
 - .NET MVC / WebApi Continuous Integration
