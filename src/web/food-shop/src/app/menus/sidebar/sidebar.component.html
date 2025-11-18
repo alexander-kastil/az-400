@@ -5,15 +5,16 @@
 </mat-toolbar>
 
 <div class="info">
-  <ng-container *ngIf="this.cart.getItems() | async as items">
+  @if (this.cart.getItems() | async; as items) {
     <h3>{{ ct | async }} items in cart</h3>
     <h3>Sum Total: {{ total | async | toEuro }}</h3>
-    <mat-slide-toggle
-      *ngIf="persistCart"
-      [formControl]="fcSaveCart"
-      color="accent"
-      >Keep cart
-    </mat-slide-toggle>
+    @if (persistCart) {
+      <mat-slide-toggle
+        [formControl]="fcSaveCart"
+        color="accent"
+        >Keep cart
+      </mat-slide-toggle>
+    }
     <button
       mat-raised-button
       (click)="doCheckout()"
@@ -21,14 +22,14 @@
       color="accent">
       <mat-icon>shopping_cart_checkout</mat-icon><span>Checkout</span>
     </button>
-  </ng-container>
-  <ng-container *ngIf="authEnabled | async">
+  }
+  @if (authEnabled | async) {
     <app-current-user></app-current-user>
-    <button 
-    mat-raised-button 
-    (click)="logout()" 
-    color="accent">
+    <button
+      mat-raised-button
+      (click)="logout()"
+      color="accent">
       <mat-icon>logout</mat-icon><span>Logout</span>
     </button>
-  </ng-container>
+  }
 </div>

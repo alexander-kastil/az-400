@@ -1,4 +1,8 @@
 <div class="container">
-  <app-checkout-form *ngIf="order.items.length>0" [order]="order " (onCheckout)="completeCheckout($event)"></app-checkout-form>
-  <app-checkout-response *ngIf="response!=null && order.items.length==0" [response]="response"></app-checkout-response>
+  @if (order.items.length>0) {
+    <app-checkout-form [order]="order " (onCheckout)="completeCheckout($event)"></app-checkout-form>
+  }
+  @if (response!=null && order.items.length==0) {
+    <app-checkout-response [response]="response"></app-checkout-response>
+  }
 </div>

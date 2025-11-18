@@ -10,7 +10,7 @@ import { CurrentUserComponent } from '../../auth/components/current-user/current
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { environment } from '../../../environments/environment';
 
@@ -21,15 +21,14 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [
     MatToolbarModule,
-    NgIf,
     MatSlideToggleModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
     CurrentUserComponent,
     AsyncPipe,
-    EuroPipe,
-  ],
+    EuroPipe
+],
 })
 export class SidebarComponent {
   cart = inject(CartFacade);

@@ -10,8 +10,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { EntityDataModule } from '@ngrx/data';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { NavbarComponent } from './menus/navbar/navbar.component';
-import { SidebarComponent } from './menus/sidebar/sidebar.component';
 import { apimInterceptor } from './apim.interceptor';
 import { ErrHandlerService } from './shared/err-handler/err-handler.service';
 import { reducers, metaReducers } from './state/state';
@@ -41,9 +39,7 @@ export const appConfig: ApplicationConfig = {
             EntityDataModule.forRoot({}),
             !environment.production ? StoreDevtoolsModule.instrument({ connectInZone: true }) : [],
             MsalAuthUtilModule,
-            MatSidenavModule,
-            NavbarComponent,
-            SidebarComponent
+            MatSidenavModule
         )
     ]
 };

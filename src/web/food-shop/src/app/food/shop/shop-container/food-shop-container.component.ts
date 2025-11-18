@@ -1,4 +1,4 @@
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -21,10 +21,9 @@ import { AILoggerService } from 'src/app/logger/ai-logger.service';
   styleUrls: ['./food-shop-container.component.scss'],
   standalone: true,
   imports: [
-    NgFor,
     ShopItemComponent,
-    AsyncPipe,
-  ],
+    AsyncPipe
+],
 })
 export class FoodShopContainerComponent implements OnInit {
   destroyRef = inject(DestroyRef);

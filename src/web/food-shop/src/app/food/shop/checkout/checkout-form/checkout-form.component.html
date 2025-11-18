@@ -52,14 +52,14 @@
   </div>
 
   <div formArrayName="items" border>
-    <ng-container *ngFor="let cartItemForm of this.orderForm.controls['items'].controls; let i = index">
+    @for (cartItemForm of this.orderForm.controls['items'].controls; track cartItemForm; let i = $index) {
       <div formGroupName="{{i}}" class="row">
         <input type="text" formControlName="itemQuantity" class="quantity" />
         <input type="text" formControlName="itemName" class="name" />
         <label>item price:</label>
         <input type="text" formControlName="itemPrice" class="price"/>
       </div>
-    </ng-container>
+    }
   </div>
   <div border>
     Total: {{ order.total | toEuro }}
@@ -71,7 +71,7 @@
     color="primary"
     [disabled]="!orderForm.valid"
     type="submit"
-  >
+    >
     Complete Checkout
   </button>
 </form>

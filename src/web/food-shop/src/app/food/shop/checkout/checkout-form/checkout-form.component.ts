@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+
 import { Component, EventEmitter, Input, Output, SimpleChanges, inject } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +15,7 @@ import { Order } from '../../order/order.model';
   templateUrl: './checkout-form.component.html',
   styleUrls: ['./checkout-form.component.scss'],
   standalone: true,
-  imports: [MatToolbarModule, ReactiveFormsModule, BorderDirective, ColumnDirective, MatFormFieldModule, MatInputModule, NgFor, MatButtonModule, EuroPipe]
+  imports: [MatToolbarModule, ReactiveFormsModule, BorderDirective, ColumnDirective, MatFormFieldModule, MatInputModule, MatButtonModule, EuroPipe]
 })
 export class CheckoutFormComponent {
   @Input({ required: true }) order: Order = new Order();

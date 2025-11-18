@@ -10,7 +10,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CatalogItem } from '../../catalog-item.model';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
@@ -21,13 +21,12 @@ import { MatCardModule } from '@angular/material/card';
     styleUrls: ['./food-edit.component.scss'],
     standalone: true,
     imports: [
-        ReactiveFormsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        NgIf,
-        MatButtonModule,
-    ],
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+],
 })
 export class FoodEditComponent implements OnChanges {
   @Input() food: CatalogItem = new CatalogItem();

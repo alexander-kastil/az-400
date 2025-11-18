@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { SidenavFacade } from '../../state/sidenav/sidenav.facade';
 import { NavItem } from './nav-item.model';
 import { RouterLinkActive, RouterLink } from '@angular/router';
-import { NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -13,13 +13,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     styleUrls: ['./navbar.component.scss'],
     standalone: true,
     imports: [
-        MatToolbarModule,
-        MatIconModule,
-        NgFor,
-        RouterLinkActive,
-        RouterLink,
-        AsyncPipe,
-    ],
+    MatToolbarModule,
+    MatIconModule,
+    RouterLinkActive,
+    RouterLink,
+    AsyncPipe
+],
 })
 export class NavbarComponent {
   http = inject(HttpClient);

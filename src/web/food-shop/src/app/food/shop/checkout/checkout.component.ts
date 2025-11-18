@@ -5,7 +5,7 @@ import { CartFacade } from '../../state/cart/cart.facade';
 import { mockOrder } from '../../state/cart/mock-data';
 import { Order } from '../order/order.model';
 import { CheckoutFormComponent } from './checkout-form/checkout-form.component';
-import { NgIf } from '@angular/common';
+
 import { OrdersService } from '../order/orders.service';
 import { OrderEventResponse } from '../order/order-event-response';
 import { CheckoutResponseComponent } from '../checkout-response/checkout-response.component';
@@ -15,7 +15,7 @@ import { CheckoutResponseComponent } from '../checkout-response/checkout-respons
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss'],
   standalone: true,
-  imports: [NgIf, CheckoutFormComponent, CheckoutResponseComponent],
+  imports: [CheckoutFormComponent, CheckoutResponseComponent],
 })
 export class CheckoutComponent {
   fb = inject(FormBuilder);
