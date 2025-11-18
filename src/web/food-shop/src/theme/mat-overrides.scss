@@ -38,15 +38,15 @@ $medium-toolbar: 45px;
 
 //Toolbar
 .mat-toolbar {
-    margin-bottom: 1.5rem;
-    // Todo: change to theme color
-    background-color: mat.m2-get-color-from-palette($primary);
-    color: whitesmoke;
+  margin-bottom: 1.5rem;
+  // Todo: change to theme color
+  background-color: mat.m2-get-color-from-palette($primary);
+  color: whitesmoke;
 }
 
 //Card
 .mat-mdc-card {
-//   background-color: mat.get-color-from-palette($primary);
+  //   background-color: mat.get-color-from-palette($primary);
   margin-bottom: $big-gap;
   padding: 0 !important;
 }
