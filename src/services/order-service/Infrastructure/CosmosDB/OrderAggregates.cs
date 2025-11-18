@@ -6,14 +6,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace FoodApp
 {
-    public class OrderAggregates : IOrderAggregates
+    public class OrderAggregates(IConfiguration config) : IOrderAggregates
     {
-        private Container container;
-        public OrderAggregates(IConfiguration config)
+        private readonly Container container = InitializeContainer(config);
+
+        private static Container InitializeContainer(IConfiguration config)
         {
             AppConfig cfg = config.Get<AppConfig>();
             CosmosClient client = new CosmosClient(cfg.CosmosDB.GetConnectionString());
-            container = client.GetContainer(cfg.CosmosDB.DBName, cfg.CosmosDB.OrderAggregatesContainer);
+            return client.GetContainer(cfg.CosmosDB.DBName, cfg.CosmosDB.OrderAggregatesContainer);
         }
     
         public async Task<Order> GetOrderByIdAsync(string id, string customerId)

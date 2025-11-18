@@ -8,32 +8,24 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\AlexanderKastil\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/home/runner/work/az-400/.codeql-scratch/dbs/csharp/working/packages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\git-play\\azd-intro\\src\\web\\web.csproj",
+      "projectUniqueName": "/home/runner/work/az-400/az-400/demos/05-iac/04-azd/azd-intro/src/web/web.csproj",
       "projectName": "web",
-      "projectPath": "D:\\git-play\\azd-intro\\src\\web\\web.csproj",
-      "packagesPath": "C:\\Users\\AlexanderKastil\\.nuget\\packages\\",
-      "outputPath": "D:\\git-play\\azd-intro\\src\\web\\obj\\",
+      "projectPath": "/home/runner/work/az-400/az-400/demos/05-iac/04-azd/azd-intro/src/web/web.csproj",
+      "packagesPath": "/home/runner/work/az-400/.codeql-scratch/dbs/csharp/working/packages",
+      "outputPath": "/home/runner/work/az-400/az-400/demos/05-iac/04-azd/azd-intro/src/web/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\AlexanderKastil\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/runner/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -51,7 +43,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -67,6 +60,20 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.linux-x64",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -75,7 +82,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

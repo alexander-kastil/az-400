@@ -7,17 +7,8 @@ namespace FoodApp
 {
     [Route("[controller]")]
     [ApiController]
-    public class FoodController : ControllerBase
+    public class FoodController(FoodDBContext ctx, AILogger logger) : ControllerBase
     {
-        AILogger logger;
-
-        public FoodController(FoodDBContext context, AILogger ai)
-        {
-            ctx = context;
-            logger = ai;
-        }
-
-        FoodDBContext ctx;
 
         // http://localhost:PORT/food
         [HttpGet()]

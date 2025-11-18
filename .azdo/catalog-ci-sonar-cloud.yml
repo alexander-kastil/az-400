@@ -4,7 +4,7 @@ trigger: none
 pr: none
 
 variables:
-  dotnetSdkVersion: "9.x"
+  dotnetSdkVersion: "10.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: scFood
