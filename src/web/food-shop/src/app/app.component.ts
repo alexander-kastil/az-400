@@ -7,10 +7,26 @@ import { environment } from '../environments/environment';
 import { MsalAuthFacade } from './auth/state/auth.facade';
 import { SidenavFacade } from './state/sidenav/sidenav.facade';
 
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { NavbarComponent } from './menus/navbar/navbar.component';
+import { SidebarComponent } from './menus/sidebar/sidebar.component';
+import { LoginComponent } from './auth/components/login/login.component';
+
 @Component({
   selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    MatSidenavModule,
+    NavbarComponent,
+    SidebarComponent,
+    LoginComponent
+  ]
 })
 export class AppComponent implements OnDestroy {
   title = environment.title;
