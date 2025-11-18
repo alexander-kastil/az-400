@@ -1,4 +1,4 @@
-# Pipelines & YAML: basics, expressions & conditions, variabes, triggers
+# Pipelines & YAML: basics, expressions & conditions, variables, triggers
 
 Elements of Azure DevOps Pipelines:
 
@@ -19,7 +19,6 @@ Elements of Azure DevOps Pipelines:
 [Azure DevOps Expressions](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops)
 
 [Specify events that trigger pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops)
-
 
 ## Demos
 
