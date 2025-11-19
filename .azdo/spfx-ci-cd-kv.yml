@@ -20,7 +20,7 @@ variables:
   appPath: src/teams/food-list/ 
   environment: m365-integrationsonline
   nodeVersion: "14.x"
-  azSubscription: scFood
+  azSubscription: "wi-az400"
   vault: az400-vault-dev
   # Do NOT set pipeline vars: username, password
 
