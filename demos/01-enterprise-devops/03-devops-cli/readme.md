@@ -15,6 +15,6 @@ az extension add --name azure-devops
 ```
 
 ```bash
-az devops configure --defaults organization=https://dev.azure.com/integrations-development project=az-400
+az devops configure --defaults organization=https://dev.azure.com/integrationsonline project=az-400
 az boards work-item show --id 1486
 ```

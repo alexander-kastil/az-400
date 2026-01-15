@@ -29,9 +29,9 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
-      linuxFxVersion: 'DOTNETCORE|6.0'
+      linuxFxVersion: 'DOTNETCORE|10.0'
     }
   }
-    // Tag used to reference the service in the Azure.yaml file
-    tags: { 'azd-service-name': 'web' }
+  // Tag used to reference the service in the Azure.yaml file
+  tags: { 'azd-service-name': 'web' }
 }

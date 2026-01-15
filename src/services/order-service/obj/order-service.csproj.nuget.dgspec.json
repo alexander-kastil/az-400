@@ -17,21 +17,21 @@
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
+          "D:\\git-classes\\az-400\\src\\services\\order-service\\NuGet.Config",
           "C:\\Users\\AlexanderKastil\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "https://pkgs.dev.azure.com/cloud-agents/az-400/_packaging/food-packages/nuget/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "targetAlias": "net8.0",
+          "net9.0": {
+            "targetAlias": "net9.0",
             "projectReferences": {}
           }
         },
@@ -45,31 +45,31 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "net9.0": {
+          "targetAlias": "net9.0",
           "dependencies": {
             "MediatR": {
               "target": "Package",
-              "version": "[12.4.0, )"
+              "version": "[12.5.0, )"
             },
             "Microsoft.ApplicationInsights.AspNetCore": {
               "target": "Package",
-              "version": "[2.22.0, )"
+              "version": "[2.23.0, )"
             },
             "Microsoft.Azure.Cosmos": {
               "target": "Package",
-              "version": "[3.43.0, )"
+              "version": "[3.51.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.7.3, )"
+              "version": "[8.1.4, )"
             },
             "Swashbuckle.AspNetCore.Annotations": {
               "target": "Package",
-              "version": "[6.7.3, )"
+              "version": "[8.1.4, )"
             },
             "System.Linq": {
               "target": "Package",
@@ -77,7 +77,7 @@
             },
             "food-app-common": {
               "target": "Package",
-              "version": "[1.0.0, )"
+              "version": "[9.0.0, )"
             }
           },
           "imports": [
@@ -99,7 +99,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

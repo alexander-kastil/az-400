@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "VxOXYpv6LeI=",
+  "dgSpecHash": "WhIko1RIK4s=",
   "success": true,
-  "projectFilePath": "D:\\git-play\\azd-intro\\src\\web\\web.csproj",
+  "projectFilePath": "D:\\git-classes\\az-400\\demos\\05-iac\\04-azd\\azd-intro\\src\\web\\web.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

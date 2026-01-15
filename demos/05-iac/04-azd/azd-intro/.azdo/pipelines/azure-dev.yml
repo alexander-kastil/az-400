@@ -13,7 +13,7 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-  - task: setup-azd@0 
+  - task: setup-azd@0
     displayName: Install azd
 
   # If you can't install above task in your organization, you can comment it and uncomment below task to install azd
@@ -23,6 +23,12 @@ steps:
   #     targetType: 'inline'
   #     script: |
   #       curl -fsSL https://aka.ms/install-azd.sh | bash
+
+  - task: UseDotNet@2
+    displayName: "Use .NET 10.0"
+    inputs:
+      packageType: "sdk"
+      version: "10.0.x"
 
   # azd delegate auth to az to use service connection with AzureCLI@2
   - pwsh: |

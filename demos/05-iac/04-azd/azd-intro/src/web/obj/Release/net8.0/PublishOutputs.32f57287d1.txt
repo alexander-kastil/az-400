@@ -1,7 +1,0 @@
-C:\Users\AlexanderKastil\AppData\Local\Temp\azd3382603128\web.exe
-C:\Users\AlexanderKastil\AppData\Local\Temp\azd3382603128\appsettings.Development.json
-C:\Users\AlexanderKastil\AppData\Local\Temp\azd3382603128\appsettings.json
-C:\Users\AlexanderKastil\AppData\Local\Temp\azd3382603128\web.dll
-C:\Users\AlexanderKastil\AppData\Local\Temp\azd3382603128\web.deps.json
-C:\Users\AlexanderKastil\AppData\Local\Temp\azd3382603128\web.runtimeconfig.json
-C:\Users\AlexanderKastil\AppData\Local\Temp\azd3382603128\web.pdb
