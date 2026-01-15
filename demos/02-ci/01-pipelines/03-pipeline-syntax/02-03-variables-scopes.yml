@@ -4,44 +4,43 @@ trigger: none
 pr: none
 
 stages:
+  - stage: Staging
+    displayName: Staging
 
-- stage: Staging
-  displayName: Staging
+    jobs:
+      - job: IaC
+        displayName: Deploy Some Infrastructure
 
-  jobs: 
+        steps:
+          - bash: |
+              as=appService$RANDOM
+              #set var outval to value of $as var
+              echo "##vso[task.setvariable variable=outval;isOutput=true;]$as"
+              echo "provisioned appservice $as"
+            name: mockProvisioning
 
-  - job: IaC
-    displayName: Deploy Some Infrastructure
-    
-    steps:
-    - bash: |
-        as=appService$RANDOM
-        #set var outval to value of $as var
-        echo "##vso[task.setvariable variable=outval;isOutput=true;]$as"
-        echo "provisioned appservice $as"
-      name: mockProvisioning
+      - job: UseIaCVar
+        displayName: Deploy Some Code
+        dependsOn: ["IaC"]
+        variables:
+          appName: $[ dependencies.IaC.outputs['mockProvisioning.outval'] ]
 
-  - job: UseIaCVar
-    displayName: Deploy Some Code
-    dependsOn: ['IaC']
-    variables: 
-      appName: $[ dependencies.IaC.outputs['mockProvisioning.outval'] ]
-    
-    steps: 
-    - bash: |
-        echo "deployed code to:" $(appName)
-      displayName: Check Value
+        steps:
+          - bash: |
+              echo "deployed code to:" $(appName)
+            displayName: Check Value
 
-- stage: Production
-  displayName: Production
-  
-  jobs:
-    - job: ProdJob
-      displayName: productionEval
-      variables:
-        stagingApp: $[ stageDependencies.Staging.IaC.outputs['mockProvisioning.outval'] ]
-     
-      steps:
-      - bash: |
-          echo "the staging app is:" $(stagingApp)
-        displayName: Check Value
+  - stage: Production
+    displayName: Production
+    dependsOn: Staging # ensure Production runs after Staging
+    # Note: outputs are produced by jobs that set isOutput=true and are referenced via stageDependencies
+    jobs:
+      - job: ProdJob
+        displayName: productionEval
+        variables:
+          stagingApp: $[ stageDependencies.Staging.IaC.outputs['mockProvisioning.outval'] ]
+
+        steps:
+          - bash: |
+              echo "the staging app is:" $(stagingApp)
+            displayName: Check Value

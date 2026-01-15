@@ -2,7 +2,7 @@ name: 02-03-pipeline-basics
 # trigger:
 #   branches:
 #     include:
-#       - master    
+#       - master
 #   paths:
 #     include:
 #       - SomePath
@@ -17,7 +17,9 @@ variables:
   # two line syntax
   name: somevar
   value: somevarvalue
-  
+  # control whether stageBJobB runs
+  execJob: "false"
+
   # enable debugging
   System.Debug: true
 
@@ -33,15 +35,15 @@ stages:
     jobs:
       - job: stageAJobA
         # pool:
-          # vmImage: "ubuntu-latest"
+        # vmImage: "ubuntu-latest"
 
         steps:
           - task: Bash@3
             displayName: stageA-jobA
             inputs:
-              targetType: 'inline'
+              targetType: "inline"
               script: echo 'Executing JobA'
-                    
+
       - job: stageAJobB
         dependsOn: []
         # pool:
@@ -50,12 +52,12 @@ stages:
         steps:
           - task: Bash@3
             inputs:
-              targetType: 'inline'
+              targetType: "inline"
               script: echo 'Executing JobB'
 
-  - stage: stageB    
+  - stage: stageB
     # pool:
-    #   vmImage: "ubuntu-latest"  
+    #   vmImage: "ubuntu-latest"
 
     jobs:
       - job: stageBJobA
@@ -63,15 +65,14 @@ stages:
         steps:
           - task: Bash@3
             inputs:
-              targetType: 'inline'
+              targetType: "inline"
               script: echo 'Executing JobA'
-  
 
       - job: stageBJobB
-        condition: eq(variables.exectJob, true)
+        condition: and(succeeded(), eq(variables['execJob'], 'true'))
 
         steps:
           - task: Bash@3
             inputs:
-              targetType: 'inline'
+              targetType: "inline"
               script: echo 'Executing JobB'

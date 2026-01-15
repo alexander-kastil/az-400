@@ -4,47 +4,49 @@ trigger: none
 pr: none
 
 variables:
-  eval: true
-  name: one
-  value: initialValue
-  #point out m365vars in library
-  group: M365Vars
-  #use expressions and conditions
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')] # runtime expression
-  runStep: false
+  - group: M365Vars # import variable group (managed in Library)
+  - name: eval
+    value: true
+  - name: one
+    value: initialValue
+  # use expressions and conditions
+  - name: isMain
+    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')] # runtime expression
+  - name: runStep
+    value: "false"
 
 pool:
-  vmImage: "ubuntu-20.04"  
+  vmImage: "ubuntu-latest" # use ubuntu-latest (pin only when required)
 
 # stages skipped
 
 jobs:
- - job: vars
-   displayName: Variable Basics
-   steps:
+  - job: vars
+    displayName: Variable Basics
+    steps:
+      - script: |
+          echo ${{ variables.one }} # outputs initialValue
+          echo $(one)
+        displayName: First variable pass
 
-    - script: |
-        echo ${{ variables.one }} # outputs initialValue
-        echo $(one)
-      displayName: First variable pass
-    
-    - bash: echo '##vso[task.setvariable variable=one]updatedValue'
-      displayName: new value one
-    
-    # compare syntax variants
-    - script: |
-        echo ${{ variables.one }} # outputs initialValue
-      displayName: Template Expression
+      - bash: echo '##vso[task.setvariable variable=one]updatedValue'
+        displayName: new value one
 
-    - script: |
-        echo $(one) # outputs updatedValue
-      displayName: Macro Syntax
-      
-    - script: |
-        echo $(M365User)
-      displayName: Var from VarGrp
-    
-    - script: |
-        echo 'running step with condition'
-      displayName: Step with condition
-      condition: and(eq(variables.isMain, true), eq(variables.runStep, true))
+      # compare syntax variants
+      - script: |
+          echo ${{ variables.one }} # outputs initialValue
+        displayName: Template Expression
+
+      - script: |
+          echo $(one) # outputs updatedValue
+        displayName: Macro Syntax
+
+      - script: |
+          echo $(M365User)
+        displayName: Var from VarGrp
+
+      - script: |
+          echo 'running step with condition'
+        displayName: Step with condition
+        # Run only if prior work succeeded, we're on main, and runStep is true
+        condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'), eq(variables['runStep'], 'true'))
