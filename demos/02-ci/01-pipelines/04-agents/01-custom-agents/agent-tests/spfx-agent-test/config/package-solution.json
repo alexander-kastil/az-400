@@ -1,20 +1,40 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "spfx-devops-client-side-solution",
-    "id": "ac022a6c-cbf3-490e-b77a-035808e87c42",
+    "name": "spfx-agent-test-client-side-solution",
+    "id": "e6cf295a-21ec-47b6-b300-da5fb8c0eea5",
     "version": "1.0.0.0",
     "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "developer": {
       "name": "",
       "websiteUrl": "",
       "privacyUrl": "",
       "termsOfUseUrl": "",
-      "mpnId": "Undefined-1.13.0"
-    }
+      "mpnId": "Undefined-1.22.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "spfx-agent-test description"
+      },
+      "longDescription": {
+        "default": "spfx-agent-test description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "spfx-agent-test Feature",
+        "description": "The feature that activates elements of the spfx-agent-test solution.",
+        "id": "3fb8a8d8-ebb1-417c-befe-7612d0c9a240",
+        "version": "1.0.0.0"
+      }
+    ]
   },
   "paths": {
-    "zippedPackage": "solution/spfx-devops.sppkg"
+    "zippedPackage": "solution/spfx-agent-test.sppkg"
   }
 }

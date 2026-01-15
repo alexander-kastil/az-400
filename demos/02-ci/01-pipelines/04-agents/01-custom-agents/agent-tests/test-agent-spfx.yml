@@ -3,7 +3,7 @@ name: test-agent-spfx
 trigger: none
 
 pool:
-    name: linux-selfhosted      
+  name: linux-selfhosted
 
 stages:
   - stage: Build
@@ -12,35 +12,26 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: 14.x
-            displayName: Use Node 14.x
+              versionSpec: 22.x
+            displayName: Use Node 22.x
+
           - task: CmdLine@2
             displayName: npm install
             inputs:
               script: "npm install"
 
-          - task: gulp@1
-            displayName: "gulp bundel"
+          - task: CmdLine@2
+            displayName: "npm run build"
             inputs:
-              gulpFile: "gulpfile.js"
-              targets: "bundle"
-              arguments: "--ship"
-              enableCodeCoverage: false
+              script: |
+                npm run build
 
-          - task: gulp@1
-            displayName: "gulp package solution"
+          - task: CmdLine@2
+            displayName: "package solution (if present)"
             inputs:
-              gulpFile: "gulpfile.js"
-              targets: "package-solution"
-              arguments: "--ship"
-
-          - task: CopyFiles@2
-            displayName: "Copy Files to: $(build.artifactstagingdirectory)/drop"
-            inputs:
-              Contents: "sharepoint/solution/*.sppkg"
-              TargetFolder: "$(build.artifactstagingdirectory)/drop"
-
-          - task: PublishBuildArtifacts@1
-            displayName: "Publish artifacts: drop"
-            inputs:
-              PathtoPublish: "$(Build.ArtifactStagingDirectory)/drop"
+              script: |
+                if npm run 2>&1 | grep -q package-solution; then
+                  npm run package-solution
+                else
+                  echo 'package-solution script not present, skipping'
+                fi
