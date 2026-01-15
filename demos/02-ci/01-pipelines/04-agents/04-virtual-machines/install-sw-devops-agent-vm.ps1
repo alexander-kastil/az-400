@@ -1,38 +1,31 @@
-function Disable-InternetExplorerESC {
-    $AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
-    $UserKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}"
-    Set-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0
-    Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0
-    Stop-Process -Name Explorer
-    Write-Host "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
-}
+# Install tools via winget (simple sequential installs)
+winget --accept-package-agreements --accept-source-agreements install --id Git.Git -e
+winget --accept-package-agreements --accept-source-agreements install --id Google.Chrome -e
+winget --accept-package-agreements --accept-source-agreements install --id Microsoft.VisualStudioCode -e
+winget --accept-package-agreements --accept-source-agreements install --id Microsoft.AzureCLI -e
+winget --accept-package-agreements --accept-source-agreements install --id Microsoft.VisualStudio.2022.BuildTools -e
+winget --accept-package-agreements --accept-source-agreements install --id Microsoft.DotNet.SDK.10 -e
 
-Disable-InternetExplorerESC
+# Install Node 22.12.0
+$nodeVersion = '22.12.0'
+$nodeMsiUrl = "https://nodejs.org/dist/v$nodeVersion/node-v$nodeVersion-x64.msi"
+$nodeMsiPath = Join-Path $env:TEMP "node-v$nodeVersion-x64.msi"
+Invoke-WebRequest -Uri $nodeMsiUrl -OutFile $nodeMsiPath
+Start-Process msiexec.exe -ArgumentList "/i `"$nodeMsiPath`" /qn /norestart" -Wait
 
-# Install Chocolatey
-Set-ExecutionPolicy Bypass -Scope Process -Force; 
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
-Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+# Install Angular CLI 21
+npm install -g @angular/cli@21
+npx -y @angular/cli@21 analytics off
 
-# Install SDKS und Tools
-choco install googlechrome -y
-choco install vscode -y
-choco install git -y
-choco install azure-cli -y
-choco install azurepowershell -y
-choco install dotnetcore-sdk -y
-choco install dotnet-6.0-sdk -y
-choco install visualstudio2019buildtools -y
-choco install nodejs --version=14.15.0 -y
+# Download and extract latest Azure Pipelines agent (simple)
+$agentDir = 'C:\agents'
+New-Item -ItemType Directory -Path $agentDir -Force | Out-Null
+$release = Invoke-RestMethod -Uri 'https://api.github.com/repos/microsoft/azure-pipelines-agent/releases/latest' -UseBasicParsing
+$asset = $release.assets | Where-Object { $_.name -match 'vsts-agent-win-x64.*\.zip$' } | Select-Object -First 1
+$zipUrl = $asset.browser_download_url
+$zipPath = Join-Path $env:TEMP $asset.name
+Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath
+Expand-Archive -Path $zipPath -DestinationPath $agentDir -Force
 
-# Install Azure DevOps Agent
-choco install azure-pipelines-agent --params "'/Directory:c:\agent'" -y
+Write-Host "Agent extracted to $agentDir. Configure it by running .\config.cmd from the agent folder (interactive) or set AZP_URL and AZP_TOKEN and run: .\config.cmd --unattended --url <url> --auth pat --token <token> --pool <pool> --agent <name> --acceptTeeEula --runAsService" -ForegroundColor Green
 
-# Refresh Path Env for npm 
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyInstaller.psm1" -Force
-refreshenv
-
-# Node based toools
-npx @angular/cli@latest analytics off
-npm i -g @angular/cli@14
-npm i -g gulp

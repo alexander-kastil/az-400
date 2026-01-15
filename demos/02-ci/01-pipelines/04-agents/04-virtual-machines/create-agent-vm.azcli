@@ -7,4 +7,5 @@ pwd=TiTp4@dmin1234!
 
 az group create -n $grp -l $loc
 
-az vm create -g $grp -n $vmname --admin-username $user --admin-password $pwd --image  MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest --size Standard_E2s_v5 --public-ip-sku Standard
+# Use newer Windows Server (2025) Gen2 image and a Dv3-series VM that supports nested virtualization (cheapest option: D2s_v3)
+az vm create -g $grp -n $vmname --admin-username $user --admin-password $pwd --image MicrosoftWindowsServer:WindowsServer:2025-datacenter-g2:latest --size Standard_D2s_v3 --public-ip-sku Standard

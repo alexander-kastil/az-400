@@ -29,7 +29,7 @@ Complete the agent config:
 
 ```PowerShell
 cd \agent
-.\config.cmd --unattended --pool "win-selfhosted" --agent $env:COMPUTERNAME --runasservice --work '_work' --url 'https://dev.azure.com/integrations-training/' --projectname 'az-400' --auth PAT --token lz4w2...
+.\config.cmd --unattended --pool "win-selfhosted" --agent $env:COMPUTERNAME --runasservice --work '_work' --url 'https://dev.azure.com/integrationsonline/' --projectname 'az-400' --auth PAT --token lz4w2...
 ```
 
 ![config-agent.jpg](_images/config-agent.jpg)
