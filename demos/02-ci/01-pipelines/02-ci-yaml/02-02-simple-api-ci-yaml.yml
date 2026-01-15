@@ -1,4 +1,4 @@
-name: "simple-api-ci.yaml"
+name: "02-02-simple-api-ci-yaml"
 trigger:
   branches:
     include:
