@@ -21,13 +21,13 @@ stages:
             displayName: "Install .NET 8 SDK"
             inputs:
               packageType: "sdk"
-              version: "9.x"
+              version: "10.x"
 
           - task: DotNetCoreCLI@2
             displayName: dotnet build
             inputs:
               command: build
-              projects: "simple-api/*.csproj"
+              projects: "*.csproj"
               arguments: "--configuration $(buildConfiguration)"
 
           - task: DotNetCoreCLI@2
