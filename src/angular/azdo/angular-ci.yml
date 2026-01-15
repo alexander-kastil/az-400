@@ -1,4 +1,4 @@
-name: angular ci
+name: angular-ci.yml
 
 # trigger:
 #   branches:
@@ -9,36 +9,38 @@ trigger: none
 pr: none
 
 variables:
-  nodeVer: '18.10.0'
+  nodeVer: "22.12.0"
   dist: angular-devops
   pkg: ngapp
+  appRoot: src/angular/angular-devops
 
 pool:
-  vmImage: 'ubuntu-latest'  
+  vmImage: "ubuntu-latest"
 
 stages:
-- stage: build
+  - stage: build
 
-  jobs:
-    - job: Build
-      displayName: Build Angular
+    jobs:
+      - job: Build
+        displayName: Build Angular
 
-      steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(nodeVer)
-        displayName: Install Node $(nodeVer)
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: Install Node $(nodeVer)
 
-      - script: npm install
-        displayName: 'Install Packages'
+          - script: npm install
+            displayName: "Install Packages"
+            workingDirectory: $(appRoot)
 
-      - script:
-          npm run build
-        displayName: 'Build'
+          - script: npm run build
+            displayName: "Build"
+            workingDirectory: $(appRoot)
 
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: 'dist/$(dist)'
-          ArtifactName: $(pkg)
-          publishLocation: 'Container'
-        displayName: 'Publish Artifacts'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/dist/$(dist)"
+              ArtifactName: $(pkg)
+              publishLocation: "Container"
+            displayName: "Publish Artifacts"

@@ -3,6 +3,10 @@ grp=angular-$env
 loc=westeurope
 app=$grp-$env
 
+nodeVersion=22.12.0
+export NODE_VERSION="$nodeVersion"
+echo "Target Node.js runtime: $nodeVersion"
+
 az group create -n $grp -l $loc
 az staticwebapp create -n $app -g $grp
 

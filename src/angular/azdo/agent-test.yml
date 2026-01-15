@@ -1,4 +1,4 @@
-name: agent test
+name: agent-test.yml
 
 # trigger:
 #   branches:
@@ -9,34 +9,36 @@ trigger: none
 pr: none
 
 variables:
-  nodeVer: '18.10.0'
+  nodeVer: "22.12.0"
   dist: angular-devops
+  appRoot: src/angular/angular-devops
 
 stages:
-- stage: build
+  - stage: build
 
-  jobs:
-    - job: Job
-      pool:
-        name: win-selfhosted
+    jobs:
+      - job: Job
+        pool:
+          name: win-selfhosted
 
-      steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '18.10.0'
-        displayName: 'Install Node.js'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: "Install Node.js"
 
-      - script: |
-          npm install
-        displayName: 'Install packages'
+          - script: |
+              npm install
+            displayName: "Install packages"
+            workingDirectory: $(appRoot)
 
-      - script:
-          npm run build
-        displayName: 'Run build'
+          - script: npm run build
+            displayName: "Run build"
+            workingDirectory: $(appRoot)
 
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: 'dist/$(dist)'
-          ArtifactName: 'ngapp'
-          publishLocation: 'Container'
-        displayName: 'Publish Artifacts'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/dist/$(dist)"
+              ArtifactName: "ngapp"
+              publishLocation: "Container"
+            displayName: "Publish Artifacts"

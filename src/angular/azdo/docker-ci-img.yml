@@ -1,4 +1,4 @@
-name: docker-ci-img
+name: docker-ci-img.yml
 
 # trigger:
 #   branches:
@@ -30,8 +30,8 @@ stages:
           - task: Docker@2
             displayName: Build and Push
             inputs:
-              repository: '$(imageName)'
-              command: 'buildAndPush'
+              repository: "$(imageName)"
+              command: "buildAndPush"
               Dockerfile: Dockerfile
 
           - task: Docker@2
