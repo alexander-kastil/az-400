@@ -1,0 +1,63 @@
+name: angular-unittest
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  nodeVer: '18.10.0'
+  dist: angular-devops
+
+stages:
+- stage: UnitTest
+  displayName: Jasmine UnitTest
+
+  jobs:
+    - job: Jasmin
+
+      steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(nodeVer)
+        displayName: Install Node $(nodeVer)
+
+      - task: Cache@2
+        displayName: Setup Node Cache
+        inputs:
+            key: '$(System.DefaultWorkingDirectory)/package-lock.json'
+            path: '$(System.DefaultWorkingDirectory)/node_modules'
+            cacheHitVar: 'npmCache'
+
+      - script: npm install
+        displayName: 'npm install'
+        condition: eq(variables['npmCache'],False)
+      - task: Npm@1
+        displayName: 'Test Angular'
+        inputs:
+          command: 'custom'
+          customCommand: 'run test-headless'
+
+      - task: PublishTestResults@2
+        displayName: 'Publish Angular test results'
+        condition: succeededOrFailed()
+        inputs:
+          searchFolder: $(System.DefaultWorkingDirectory)/junit
+          testRunTitle: Angular
+          testResultsFormat: JUnit
+          testResultsFiles: "**/TESTS*.xml"
+
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish code coverage Angular results'
+        condition: succeededOrFailed()
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+          reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+          failIfCoverageEmpty: false

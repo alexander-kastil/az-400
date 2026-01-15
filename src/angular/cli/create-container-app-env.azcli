@@ -1,0 +1,9 @@
+env=dev
+grp=angular-$env
+loc=westeurope
+acr=angularacr$env
+contaienrenv=angular-env
+
+az group create -n $grp -l $loc
+
+az containerapp env create -n $contaienrenv -g $grp -l $loc

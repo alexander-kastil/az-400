@@ -1,0 +1,10 @@
+env=dev
+grp=angular-$env
+loc=westeurope
+app=$grp-$env
+
+az group create -n $grp -l $loc
+az staticwebapp create -n $app -g $grp
+
+token=$(az staticwebapp secrets list --name $app --query "properties.apiKey")
+echo "Deployment Token: $token"

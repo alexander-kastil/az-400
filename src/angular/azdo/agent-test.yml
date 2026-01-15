@@ -1,0 +1,42 @@
+name: agent test
+
+# trigger:
+#   branches:
+#     include:
+#     - master
+
+trigger: none
+pr: none
+
+variables:
+  nodeVer: '18.10.0'
+  dist: angular-devops
+
+stages:
+- stage: build
+
+  jobs:
+    - job: Job
+      pool:
+        name: win-selfhosted
+
+      steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '18.10.0'
+        displayName: 'Install Node.js'
+
+      - script: |
+          npm install
+        displayName: 'Install packages'
+
+      - script:
+          npm run build
+        displayName: 'Run build'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: 'dist/$(dist)'
+          ArtifactName: 'ngapp'
+          publishLocation: 'Container'
+        displayName: 'Publish Artifacts'

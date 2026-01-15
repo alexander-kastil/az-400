@@ -1,0 +1,44 @@
+name: angular ci
+
+# trigger:
+#   branches:
+#     include:
+#     - master
+
+trigger: none
+pr: none
+
+variables:
+  nodeVer: '18.10.0'
+  dist: angular-devops
+  pkg: ngapp
+
+pool:
+  vmImage: 'ubuntu-latest'  
+
+stages:
+- stage: build
+
+  jobs:
+    - job: Build
+      displayName: Build Angular
+
+      steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(nodeVer)
+        displayName: Install Node $(nodeVer)
+
+      - script: npm install
+        displayName: 'Install Packages'
+
+      - script:
+          npm run build
+        displayName: 'Build'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: 'dist/$(dist)'
+          ArtifactName: $(pkg)
+          publishLocation: 'Container'
+        displayName: 'Publish Artifacts'
