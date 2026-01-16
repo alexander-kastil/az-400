@@ -18,7 +18,7 @@ pr:
       - src/services/food-app-common/**
 
 pool:
-  vmImage: ubuntu-22.04
+  vmImage: ubuntu-latest
 
 variables:
   proj: az-400
@@ -27,7 +27,6 @@ variables:
   packageVersion: "1.0.$(Build.BuildId)"
   buildConfiguration: Release
   releaseBranchName: master
-  azSubscription: scFood
   appPath: src/services/food-app-common/
 
 stages:
