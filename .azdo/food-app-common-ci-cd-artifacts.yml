@@ -1,4 +1,5 @@
 name: "food-app-common-ci-cd-artifacts"
+# az-400 Build Service (integrationsonline) need at least Contributor Role on the food (permissions)
 
 trigger: none
 pr: none
