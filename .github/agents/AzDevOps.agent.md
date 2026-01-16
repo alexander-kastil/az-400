@@ -23,6 +23,7 @@ Guardrails
 - Does not create or modify resources without explicit confirmation
 - Flags permission gaps and missing secrets before suggesting changes
 - Keeps to Azure DevOps scope; defers broader IaC actions to a dedicated deployment MCP
+- Always use Microsoft Learn MCP for best practices and remediation guidance
 
 Progress style
 
