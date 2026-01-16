@@ -12,7 +12,7 @@ variables:
   dotnetSdkVersion: "10.0.100"
   packageVersion: "1.0.$(Build.BuildId)"
   buildConfiguration: Release
-  releaseBranchName: master
+  releaseBranchName: main
   appPath: src/services/food-app-common/
 
 stages:
@@ -72,4 +72,4 @@ stages:
                 push "$(Build.ArtifactStagingDirectory)/**/*.nupkg"
                 --source "$(System.CollectionUri)$(System.TeamProject)/_packaging/$(feed)/nuget/v3/index.json"
                 --api-key VSTS
-            condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/')))
+            condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], variables['releaseBranchName']), startsWith(variables['Build.SourceBranch'], 'refs/tags/')))
