@@ -1,29 +1,58 @@
 {
-    "inputs": [
-        {
-            "type": "promptString",
-            "id": "github_token",
-            "description": "GitHub Personal Access Token",
-            "password": true
-        }
-    ],
-    "servers": {
-        "angular-cli": {
-            "command": "npm",
-            "args": [
-                "--prefix",
-                "src/angular/angular-devops",
-                "exec",
-                "ng",
-                "mcp"
-            ]
-        },
-        "playwright": {
-            "command": "npx",
-            "args": [
-                "@playwright/mcp@latest",
-                "--vision"
-            ]
-        }
-    }
+	"servers": {
+		"angular-cli": {
+			"command": "npm",
+			"args": [
+				"--prefix",
+				"src/angular/angular-devops",
+				"exec",
+				"ng",
+				"mcp"
+			],
+			"type": "stdio"
+		},
+		"playwright": {
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@latest",
+				"--vision"
+			],
+			"type": "stdio"
+		},
+		"azure-devops": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@azure-devops/mcp",
+				"${input:azure_devops_org}"
+			],
+			"type": "stdio"
+		},
+		"azure-deploy": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@azure/mcp@latest",
+				"server",
+				"start"
+			],
+			"type": "stdio"
+		},
+		"github": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp/"
+		},
+		"microsoft-learn": {
+			"type": "http",
+			"url": "https://learn.microsoft.com/api/mcp"
+		}
+	},
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "azure_devops_org",
+			"description": "Azure DevOps organization name (e.g., contoso)",
+			"password": false
+		}
+	]
 }
