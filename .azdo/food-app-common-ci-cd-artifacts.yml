@@ -57,12 +57,6 @@ stages:
               packagesToPack: "$(appPath)/*.csproj"
               arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:PackageVersion=$(packageVersion)"
 
-          - task: PublishPipelineArtifact@1
-            displayName: "Publish package artifact"
-            inputs:
-              targetPath: "$(Build.ArtifactStagingDirectory)"
-              artifact: "nuget-packages"
-
           - task: DotNetCoreCLI@2
             displayName: "Publish nuget package to feed (dotnet)"
             inputs:
