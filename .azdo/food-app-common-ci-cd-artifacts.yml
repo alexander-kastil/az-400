@@ -27,6 +27,9 @@ stages:
               packageType: sdk
               version: "$(dotnetSdkVersion)"
 
+          - task: NuGetAuthenticate@1
+            displayName: "Authenticate to feeds"
+
           - task: DotNetCoreCLI@2
             displayName: "Restore project dependencies"
             inputs:
@@ -60,15 +63,13 @@ stages:
               targetPath: "$(Build.ArtifactStagingDirectory)"
               artifact: "nuget-packages"
 
-          - task: NuGetAuthenticate@1
-            displayName: "Authenticate to feeds"
-
-          - task: NuGetCommand@2
-            displayName: "Publish nuget package to feed"
+          - task: DotNetCoreCLI@2
+            displayName: "Publish nuget package to feed (dotnet)"
             inputs:
-              command: "push"
-              packagesToPush: "$(Build.ArtifactStagingDirectory)/**/*.nupkg"
-              nuGetFeedType: "internal"
-              publishVstsFeed: "$(proj)/$(feed)"
-              allowPackageConflicts: false
+              command: "custom"
+              custom: "nuget"
+              arguments: >
+                push "$(Build.ArtifactStagingDirectory)/**/*.nupkg"
+                --source "$(System.CollectionUri)$(System.TeamProject)/_packaging/$(feed)/nuget/v3/index.json"
+                --api-key VSTS
             condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/')))
