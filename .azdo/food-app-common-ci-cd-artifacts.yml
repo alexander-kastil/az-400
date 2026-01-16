@@ -14,6 +14,7 @@ variables:
   buildConfiguration: Release
   releaseBranchName: main
   appPath: src/services/food-app-common/
+  system.debug: true
 
 stages:
   - stage: BuildToFeed
