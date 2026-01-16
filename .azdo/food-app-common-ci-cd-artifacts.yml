@@ -66,5 +66,4 @@ stages:
                 push "$(Build.ArtifactStagingDirectory)/**/*.nupkg"
                 --source "https://pkgs.dev.azure.com/integrationsonline/$(System.TeamProject)/_packaging/$(feed)/nuget/v3/index.json"
                 --api-key VSTS
-                --verbosity detailed
             condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], variables['releaseBranchName']), startsWith(variables['Build.SourceBranch'], 'refs/tags/')))
