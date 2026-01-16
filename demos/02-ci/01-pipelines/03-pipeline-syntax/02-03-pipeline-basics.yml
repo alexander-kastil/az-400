@@ -1,4 +1,5 @@
-name: 02-03-pipeline-basics
+name: "02-03-pipeline-basics"
+
 # trigger:
 #   branches:
 #     include:

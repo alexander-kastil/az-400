@@ -1,4 +1,4 @@
-name: 02-03-pipeline-triggers
+name: "02-03-pipeline-triggers"
 
 trigger:
   branches:
@@ -6,22 +6,20 @@ trigger:
       - master
   paths:
     include:
-    - test-folder
+      - test-folder
     exclude:
-    - deploy
+      - deploy
 
 stages:
+  - stage: CI
+    displayName: CI and Test
 
-- stage: CI
-  displayName: CI and Test
+    jobs:
+      - job: CI
+        displayName: Continuous Integration
+        dependsOn: []
 
-  jobs: 
-
-  - job: CI
-    displayName: Continuous Integration
-    dependsOn: []
-    
-    steps:
-    - bash: |
-        echo "building project ..."
-      name: mockBuild
+        steps:
+          - bash: |
+              echo "building project ..."
+            name: mockBuild
