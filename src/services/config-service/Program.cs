@@ -32,8 +32,7 @@ app.MapGet("/getConfig", ([FromServices] IConfiguration config) =>
     var cfg = config.Get<AppConfig>()!;
     return cfg;
 })
-.WithName("GetConfig")
-.WithOpenApi();
+.WithName("GetConfig");
 
 
 app.MapGet("/getSecretFromVault", async ([FromServices] IConfiguration config, [FromServices] SecretClient secretClient) =>
@@ -41,8 +40,7 @@ app.MapGet("/getSecretFromVault", async ([FromServices] IConfiguration config, [
     var response = await secretClient.GetSecretAsync("conSQLite");
     return response.Value.Value!;
 })
-.WithName("GetSecretFromVault")
-.WithOpenApi();
+.WithName("GetSecretFromVault");
 
 app.MapGet("/getFromAppConfig/{ConfigItem}", ([FromServices] IConfiguration config, string ConfigItem) =>
 {
@@ -51,9 +49,6 @@ app.MapGet("/getFromAppConfig/{ConfigItem}", ([FromServices] IConfiguration conf
     ConfigurationSetting setting = client.GetConfigurationSetting(ConfigItem);
     return setting.Value!;
 })
-.WithName("GetFromAppConfig")
-.WithOpenApi();
-
-app.UseHttpsRedirection();
+.WithName("GetFromAppConfig");
 
 app.Run();
