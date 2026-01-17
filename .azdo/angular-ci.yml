@@ -9,7 +9,7 @@ trigger: none
 pr: none
 
 variables:
-  nodeVer: "22.12.0"
+  nodeVer: "22.14.0"
   dist: angular-devops
   pkg: ngapp
   appRoot: src/angular/angular-devops
@@ -30,7 +30,7 @@ stages:
               versionSpec: $(nodeVer)
             displayName: Install Node $(nodeVer)
 
-          - script: npm install
+          - script: npm ci
             displayName: "Install Packages"
             workingDirectory: $(appRoot)
 
@@ -40,7 +40,7 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/dist/$(dist)"
+              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/dist/$(dist)/browser"
               ArtifactName: $(pkg)
               publishLocation: "Container"
             displayName: "Publish Artifacts"

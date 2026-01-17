@@ -1,10 +1,5 @@
 name: angular-unittest.yml
 
-# trigger:
-#   branches:
-#     include:
-#       - master
-
 trigger: none
 pr: none
 
@@ -12,55 +7,60 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  nodeVer: '22.12.0'
-  dist: angular-devops
+  nodeVer: "22.14.0"
   appRoot: src/angular/angular-devops
 
 stages:
-- stage: UnitTest
-  displayName: Jasmine UnitTest
+  - stage: UnitTest
+    displayName: Vitest UnitTest
 
-  jobs:
-    - job: Jasmin
+    jobs:
+      - job: Vitest
 
-      steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(nodeVer)
-        displayName: Install Node $(nodeVer)
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: Install Node $(nodeVer)
 
-      - task: Cache@2
-        displayName: Setup Node Cache
-        inputs:
-            key: '$(System.DefaultWorkingDirectory)/$(appRoot)/package-lock.json'
-            path: '$(System.DefaultWorkingDirectory)/$(appRoot)/node_modules'
-            cacheHitVar: 'npmCache'
+          - task: Cache@2
+            displayName: Setup Node Cache
+            inputs:
+              key: "$(System.DefaultWorkingDirectory)/$(appRoot)/package-lock.json"
+              path: "$(System.DefaultWorkingDirectory)/$(appRoot)/node_modules"
+              cacheHitVar: "npmCache"
 
-          - script: npm install
-            displayName: 'npm install'
-            condition: eq(variables['npmCache'],False)
+          - script: npm ci
+            displayName: npm ci
             workingDirectory: $(appRoot)
-      - task: Npm@1
-        displayName: 'Test Angular'
-        inputs:
-          command: 'custom'
-          customCommand: 'run test-headless'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/$(appRoot)'
+            condition: eq(variables['npmCache'],False)
 
-      - task: PublishTestResults@2
-        displayName: 'Publish Angular test results'
-        condition: succeededOrFailed()
-        inputs:
-          searchFolder: $(System.DefaultWorkingDirectory)/junit
-          testRunTitle: Angular
-          testResultsFormat: JUnit
-          testResultsFiles: "**/TESTS*.xml"
+          - script: |
+              mkdir -p $(System.DefaultWorkingDirectory)/test-results
+              npx vitest run \
+                --coverage \
+                --coverage.reporter=cobertura \
+                --coverage.reporter=html \
+                --coverage.reportsDirectory=$(System.DefaultWorkingDirectory)/coverage \
+                --reporter=junit \
+                --outputFile=$(System.DefaultWorkingDirectory)/test-results/vitest-junit.xml
+            displayName: Run vitest
+            workingDirectory: $(appRoot)
 
-      - task: PublishCodeCoverageResults@1
-        displayName: 'Publish code coverage Angular results'
-        condition: succeededOrFailed()
-        inputs:
-          codeCoverageTool: Cobertura
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
-          reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
-          failIfCoverageEmpty: false
+          - task: PublishTestResults@2
+            displayName: Publish Vitest results
+            condition: succeededOrFailed()
+            inputs:
+              searchFolder: $(System.DefaultWorkingDirectory)/test-results
+              testRunTitle: Angular Vitest
+              testResultsFormat: JUnit
+              testResultsFiles: "vitest-junit.xml"
+
+          - task: PublishCodeCoverageResults@1
+            displayName: Publish Vitest coverage
+            condition: succeededOrFailed()
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
+              reportDirectory: "$(System.DefaultWorkingDirectory)/coverage"
+              failIfCoverageEmpty: false

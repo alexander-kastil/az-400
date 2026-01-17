@@ -12,7 +12,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  nodeVer: "22.12.0"
+  nodeVer: "22.14.0"
   dist: angular-devops
   apiUrl: "https://mockapi.azurewebsites.net"
   appRoot: src/angular/angular-devops
@@ -52,18 +52,18 @@ stages:
               path: "$(System.DefaultWorkingDirectory)/$(appRoot)/node_modules"
               cacheHitVar: "npmCache"
 
-          - script: npm install
-            displayName: "npm i"
+          - script: npm ci
+            displayName: "npm ci"
             workingDirectory: $(appRoot)
             condition: eq(variables['npmCache'],False)
 
-          - script: npm run build-prod
+          - script: npm run build
             displayName: "Build App"
             workingDirectory: $(appRoot)
 
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/dist/$(dist)"
+              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/dist/$(dist)/browser"
               ArtifactName: "ngapp"
               publishLocation: "Container"
             displayName: "Publish Artifacts"
@@ -78,11 +78,12 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: "current"
+              artifact: "ngapp"
+              targetPath: "$(Pipeline.Workspace)/ngapp"
           - task: AzureStaticWebApp@0
             inputs:
               workingDirectory: "$(Pipeline.Workspace)"
               app_location: "ngapp"
-              config_file_location: "ngapp/assets/"
               skip_app_build: true
               skip_api_build: true
               azure_static_web_apps_api_token: "$(token)"

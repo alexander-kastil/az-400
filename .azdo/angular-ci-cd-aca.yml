@@ -1,0 +1,37 @@
+name: deploy-aca.yml
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  conAz: scRG
+  env: "angular-env"
+  app: angular-demo-app
+  rg: angular-11152
+  acr: angularacr11152
+  img: "angularacr11152.azurecr.io/angular-devops:2922"
+  # pwd: set as pipeline var
+
+stages:
+  - stage: Deploy
+    displayName: Deploy to ACA
+
+    jobs:
+      - job: Deploy
+        steps:
+          - task: AzureContainerApps@1
+            inputs:
+              azureSubscription: "scRG"
+              acrName: "$(acr)"
+              acrUsername: "$(acr)"
+              acrPassword: "$(pwd)"
+              imageToDeploy: "$(img)"
+              containerAppName: "$(app)"
+              resourceGroup: "$(rg)"
+              containerAppEnvironment: "$env"
+              targetPort: "80"
+              environmentVariables: "ENV_API_URL=http://mockapi"
+              ingress: "external"
