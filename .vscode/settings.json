@@ -10,5 +10,10 @@
     "git.ignoreLimitWarning": true,
     "cSpell.words": [
         "Agentic"
-    ]
+    ],
+    "azureFunctions.deploySubpath": "src\\az-functions\\payment-net/bin/Release/net10.0/publish",
+    "azureFunctions.projectLanguage": "C#",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.preDeployTask": "publish (functions)"
 }

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "51b189bb-f2a8-490e-9216-ab6109999bb0",
+  "alias": "FoodListWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart", "TeamsTab"],
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", 
+    "group": { "default": "Other" },
+    "title": { "default": "FoodListWP" },
+    "description": { "default": "A WebPart consuming SharePoint data" },
+    "officeFabricIconFontName": "Page",
+    "properties": {
+      "description": "FoodListWP"
+    }
+  }]
+}

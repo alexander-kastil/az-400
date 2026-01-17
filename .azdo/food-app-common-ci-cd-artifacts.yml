@@ -10,7 +10,7 @@ pool:
 variables:
   proj: az-400
   feed: food-packages
-  dotnetSdkVersion: "10.0.100"
+  dotnetSdkVersion: "10.0.x"
   packageVersion: "1.0.$(Build.BuildId)"
   buildConfiguration: Release
   releaseBranchName: main

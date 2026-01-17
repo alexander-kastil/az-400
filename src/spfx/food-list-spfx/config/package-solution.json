@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "food-list-spfx-client-side-solution",
+    "id": "7485b2ad-ae6c-4f80-85a4-efd20859e151",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.22.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "food-list-spfx description"
+      },
+      "longDescription": {
+        "default": "food-list-spfx description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "food-list-spfx Feature",
+        "description": "The feature that activates elements of the food-list-spfx solution.",
+        "id": "8129ae12-b758-4690-9e19-03048322cf06",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/food-list-spfx.sppkg"
+  }
+}

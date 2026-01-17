@@ -16,7 +16,7 @@ pool:
 
 variables:
   proj: az-400
-  dotnetSdkVersion: "9.x"
+  dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
   releaseBranchName: master
   azSubscription: scFood
