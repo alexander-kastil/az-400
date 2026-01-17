@@ -1,0 +1,46 @@
+name: react-ci.yml
+
+# trigger:
+#   branches:
+#     include:
+#     - main
+
+trigger: none
+pr: none
+
+variables:
+  nodeVer: "22.14.0"
+  dist: dist
+  pkg: reactapp
+  appRoot: src/react/react-devops
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: build
+
+    jobs:
+      - job: Build
+        displayName: Build React
+
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: Install Node $(nodeVer)
+
+          - script: npm ci
+            displayName: "Install Packages"
+            workingDirectory: $(appRoot)
+
+          - script: npm run build
+            displayName: "Build"
+            workingDirectory: $(appRoot)
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(dist)"
+              ArtifactName: $(pkg)
+              publishLocation: "Container"
+            displayName: "Publish Artifacts"

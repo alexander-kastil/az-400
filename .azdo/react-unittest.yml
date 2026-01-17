@@ -1,0 +1,67 @@
+name: react-unittest.yml
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  nodeVer: "22.14.0"
+  appRoot: src/react/react-devops
+
+stages:
+  - stage: UnitTest
+    displayName: Vitest UnitTest
+
+    jobs:
+      - job: Vitest
+
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: Install Node $(nodeVer)
+
+          - task: Cache@2
+            displayName: Setup Node Cache
+            inputs:
+              key: "$(System.DefaultWorkingDirectory)/$(appRoot)/package-lock.json"
+              path: "$(System.DefaultWorkingDirectory)/$(appRoot)/node_modules"
+              cacheHitVar: "npmCache"
+
+          - script: npm ci
+            displayName: npm ci
+            workingDirectory: $(appRoot)
+            condition: eq(variables['npmCache'],False)
+
+          - script: |
+              mkdir -p $(System.DefaultWorkingDirectory)/test-results
+              npx vitest run \
+                --environment jsdom \
+                --coverage \
+                --coverage.reporter=cobertura \
+                --coverage.reporter=html \
+                --coverage.reportsDirectory=$(System.DefaultWorkingDirectory)/coverage \
+                --reporter=junit \
+                --outputFile=$(System.DefaultWorkingDirectory)/test-results/vitest-junit.xml
+            displayName: Run vitest
+            workingDirectory: $(appRoot)
+
+          - task: PublishTestResults@2
+            displayName: Publish Vitest results
+            condition: succeededOrFailed()
+            inputs:
+              searchFolder: $(System.DefaultWorkingDirectory)/test-results
+              testRunTitle: React Vitest
+              testResultsFormat: JUnit
+              testResultsFiles: "vitest-junit.xml"
+
+          - task: PublishCodeCoverageResults@1
+            displayName: Publish Vitest coverage
+            condition: succeededOrFailed()
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
+              reportDirectory: "$(System.DefaultWorkingDirectory)/coverage"
+              failIfCoverageEmpty: false
