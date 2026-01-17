@@ -45,7 +45,10 @@ h1 {
   font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
   box-shadow: 0 12px 28px rgba(31, 116, 255, 0.24);
 }
 
