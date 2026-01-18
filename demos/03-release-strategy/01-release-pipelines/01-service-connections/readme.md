@@ -10,43 +10,53 @@
 
 ## Create a Workload Identity Service Connection
 
-- Create a Workload Identity Service Connection manually in Azure DevOps.
+Use the provided scripts to automate the creation of a managed identity and Azure DevOps service connection with workload identity federation.
 
-  ![create](_images/create.jpg)
+### PowerShell Version
 
-- Use Script `create-workload-identity.ps1` to create the Service Principal.
+```powershell
+./create-workload-identity.ps1
+```
 
-  ```bash
-  grp=az400-dev
-  subscriptionId=78033352-805c-4acd-af80-f8f95083268d
-  resourceGroupScope="/subscriptions/$subscriptionId/resourcegroups/$grp"
-  identityName=scIdentityWorkload
-  federatedCredentialName="AzureDevOps"
-  audience="api://AzureADTokenExchange"
-  issuerUrl="https://vstoken.dev.azure.com/99e5794d-47e1-4b9b-86eb-937aa20e4e11"
-  subjectIdentifier="sc://integrations-development/az-400/scIdentityWorkload"
-  contributorRoleId=b24988ac-6180-42a0-ab88-20f7382dd24c
+- Resource group: `az400-dev`
+- Managed identity: `wi-az400`
 
-  # Create a managed identity
-  principalId=$(az identity create --name $identityName --resource-group $grp --query principalId -o tsv)
+### Bash Version
 
-  # Get the client id
-  clientId=$(az identity show --name $identityName --resource-group $grp --query clientId -o tsv)
+```bash
+bash create-workload-identity.sh
+```
 
-  # Assign the managed identity the contributor role
-  az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope
+- Resource group: `az400-bash`
+- Managed identity: `wi-az400-bash`
 
-  # Create a federated credential
-  az identity federated-credential create --name $federatedCredentialName --identity-name $identityName --resource-group $grp --issuer $issuerUrl --subject $subjectIdentifier --audiences $audience
-  ```
+### What the scripts do
 
-  > Note: Copy Issuer and Subject Identifier from the Service Connection UI in Azure DevOps.
+- Create a resource group and managed identity
+- Create an Azure DevOps service connection with workload identity federation
+- Automatically sync the federated credential with Azure DevOps generated issuer/subject
+- Assign Contributor role to the resource group
+- Share the service connection with all pipelines
 
-  > Note: Service Principal Id is the client id of the Service Principal created.
+You can check the created service connection in your Azure DevOps project settings under "Service connections":
 
-  ![create](_images/create-details.jpg)
+![Service Connection](./_images/service-connection.png)
 
-- Adjust RBAC permissions on Resource Group as required. Role Ids are available [here](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles)
+## Delete a Workload Identity Service Connection
+
+Use the delete scripts to clean up resources in the correct order (federated credential → service connection → role assignments → managed identity).
+
+### PowerShell Version
+
+```powershell
+./delete-workload-identity.ps1
+```
+
+### Bash Version
+
+```bash
+bash delete-workload-identity.sh
+```
 
 ## Use Workload identity in Azure DevOps
 
