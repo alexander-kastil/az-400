@@ -1,31 +1,30 @@
 grp=az400-dev
-subscriptionId=cd091145-5ea2-4703-ba5d-41063b1d4308
 loc=westeurope
-identityName=wi-az400
-issuer=99e5794d-47e1-4b9b-86eb-937aa20e4e11
-devOpsOrga=cloud-agents
+devOpsOrg=integrationsonline
 project=az-400
+wfIdentity=wi-az400
+subscriptionId=cd091145-5ea2-4703-ba5d-41063b1d4308
+issuer=99e5794d-47e1-4b9b-86eb-937aa20e4e11
 
 resourceGroupScope="/subscriptions/$subscriptionId/resourcegroups/$grp"
 federatedCredentialName="AzureDevOps"
 audience="api://AzureADTokenExchange"
 issuerUrl="https://vstoken.dev.azure.com/$issuer"
-subjectIdentifier="sc://$devOpsOrga/$project/$identityName"
+subjectIdentifier="sc://$devOpsOrg/$project/$wfIdentity"
 contributorRoleId=b24988ac-6180-42a0-ab88-20f7382dd24c
 
 # Create resource group
 az group create -n $grp -l $loc
 
 # Create a managed identity
-principalId=$(az identity create --name $identityName --resource-group $grp --query principalId -o tsv)
+az identity create --name $wfIdentity --resource-group $grp
+principalId=$(az identity show --name $wfIdentity --resource-group $grp --query principalId -o tsv)
 
 # Get the client id
-clientId=$(az identity show --name $identityName --resource-group $grp --query clientId -o tsv)
+clientId=$(az identity show --name $wfIdentity --resource-group $grp --query clientId -o tsv)
 
 # Assign the managed identity the contributor role
 az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope
 
 # Create a federated credential
-az identity federated-credential create --name $federatedCredentialName --identity-name $identityName --resource-group $grp --issuer $issuerUrl --subject $subjectIdentifier --audiences $audience
-
-echo "Service Principal Id: $clientId"
+az identity federated-credential create --name $federatedCredentialName --identity-name $wfIdentity --resource-group $grp --issuer $issuerUrl --subject $subjectIdentifier --audiences $audience
