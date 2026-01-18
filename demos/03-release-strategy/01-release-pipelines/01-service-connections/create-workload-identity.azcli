@@ -1,19 +1,19 @@
-grp=az400-dev
-loc=westeurope
-devOpsOrg=integrationsonline
-project=az-400
-wfIdentity=wi-az400
-subscriptionId=cd091145-5ea2-4703-ba5d-41063b1d4308
-issuer=99e5794d-47e1-4b9b-86eb-937aa20e4e11
+grp="az400-bash"
+loc="westeurope"
+devOpsOrg="integrationsonline"
+project="az-400"
+wfIdentity="wi-az400-bash"
+subscriptionId="cd091145-5ea2-4703-ba5d-41063b1d4308"
+issuer="99e5794d-47e1-4b9b-86eb-937aa20e4e11"
 
 resourceGroupScope="/subscriptions/$subscriptionId/resourcegroups/$grp"
 federatedCredentialName="AzureDevOps"
 audience="api://AzureADTokenExchange"
 issuerUrl="https://vstoken.dev.azure.com/$issuer"
 subjectIdentifier="sc://$devOpsOrg/$project/$wfIdentity"
-contributorRoleId=b24988ac-6180-42a0-ab88-20f7382dd24c
+contributorRoleId="b24988ac-6180-42a0-ab88-20f7382dd24c"
 orgUrl="https://dev.azure.com/$devOpsOrg"
-serviceConnectionName=$wfIdentity
+serviceConnectionName="$wfIdentity"
 
 az devops configure --defaults organization=$orgUrl project=$project
 
@@ -27,33 +27,40 @@ principalId=$(az identity show --name $wfIdentity --resource-group $grp --query 
 # Get the client id
 clientId=$(az identity show --name $wfIdentity --resource-group $grp --query clientId -o tsv)
 
+echo "Managed Identity created: $wfIdentity"
+echo "Client ID: $clientId"
+echo "Principal ID: $principalId"
+
 # Wait for the service principal backing the managed identity to be available
 for i in {1..10}; do
-	if az ad sp show --id $clientId >/dev/null 2>&1; then
-		break
-	fi
-	echo "Waiting for service principal propagation... ($i/10)"
-	sleep 10
+    if az ad sp show --id $clientId >/dev/null 2>&1; then
+        echo "Service principal is available"
+        break
+    fi
+    echo "Waiting for service principal propagation... ($i/10)"
+    sleep 10
 done
 
 # Assign the managed identity the contributor role
 for i in {1..5}; do
-	if az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope >/dev/null 2>&1; then
-		echo "Role assignment succeeded"
-		break
-	fi
-	echo "Retrying role assignment... ($i/5)"
-	sleep 5
+    if az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope >/dev/null 2>&1; then
+        echo "Role assignment succeeded"
+        break
+    fi
+    echo "Retrying role assignment... ($i/5)"
+    sleep 5
 done
-
-# Create a federated credential
-az identity federated-credential create --name $federatedCredentialName --identity-name $wfIdentity --resource-group $grp --issuer $issuerUrl --subject $subjectIdentifier --audiences $audience
 
 # Azure DevOps service connection (Workload Identity Federation)
 subscriptionName=$(az account show --subscription $subscriptionId --query name -o tsv)
 tenantId=$(az account show --subscription $subscriptionId --query tenantId -o tsv)
+projectId=$(az devops project show --project $project --query id -o tsv)
 
-# Create service connection via REST to preserve issuer/subject/audience
+echo "Subscription: $subscriptionName"
+echo "Tenant ID: $tenantId"
+echo "Project ID: $projectId"
+
+# Create service connection via REST
 payloadFile=$(mktemp)
 
 cat <<EOF > $payloadFile
@@ -65,10 +72,7 @@ cat <<EOF > $payloadFile
     "parameters": {
       "serviceprincipalid": "$clientId",
       "tenantid": "$tenantId",
-      "scope": "$resourceGroupScope",
-      "workloadIdentityFederationSubject": "$subjectIdentifier",
-      "workloadIdentityFederationIssuer": "$issuerUrl",
-      "workloadIdentityFederationAudience": "$audience"
+      "scope": "$resourceGroupScope"
     },
     "scheme": "WorkloadIdentityFederation"
   },
@@ -78,19 +82,71 @@ cat <<EOF > $payloadFile
     "environment": "AzureCloud",
     "scopeLevel": "Subscription",
     "creationMode": "WorkloadIdentityFederation"
-  }
+  },
+  "serviceEndpointProjectReferences": [
+    {
+      "projectReference": {
+        "id": "$projectId",
+        "name": "$project"
+      },
+      "name": "$serviceConnectionName"
+    }
+  ]
 }
 EOF
 
+echo "Creating service connection..."
 endpointId=$(az devops invoke \
   --area serviceendpoint \
   --resource endpoints \
   --route-parameters project=$project \
-  --api-version 7.1-preview.4 \
+  --api-version 7.1-preview \
   --in-file $payloadFile \
   --http-method POST \
   --query id -o tsv)
+
 rm $payloadFile
 
+echo "endpointId=$endpointId"
+
+if [ -z "$endpointId" ]; then
+    echo "Failed to create service connection"
+    exit 1
+fi
+
+echo "Querying auto-generated issuer and subject..."
+
+# Get the auto-generated issuer and subject from the service connection
+scDetailsFile=$(mktemp)
+az devops invoke \
+  --area serviceendpoint \
+  --resource endpoints \
+  --route-parameters project=$project endpointId=$endpointId \
+  --api-version 7.1-preview \
+  --http-method GET > $scDetailsFile
+
+actualIssuer=$(grep -oP '"workloadIdentityFederationIssuer":\s*"\K[^"]+' $scDetailsFile)
+actualSubject=$(grep -oP '"workloadIdentityFederationSubject":\s*"\K[^"]+' $scDetailsFile)
+rm $scDetailsFile
+
+echo "Azure DevOps generated issuer: $actualIssuer"
+echo "Azure DevOps generated subject: $actualSubject"
+
+# Create the federated credential to match Azure DevOps
+echo "Creating managed identity federated credential to match..."
+az identity federated-credential create \
+  --name $federatedCredentialName \
+  --identity-name $wfIdentity \
+  --resource-group $grp \
+  --issuer $actualIssuer \
+  --subject $actualSubject \
+  --audiences $audience
+
 # Share with all pipelines
-az devops service-endpoint update --id $endpointId --enable-for-all true --query id -o tsv
+echo "Sharing service connection with all pipelines..."
+az devops service-endpoint update --id $endpointId --enable-for-all true >/dev/null
+
+echo ""
+echo "✓ Service connection '$serviceConnectionName' created and shared successfully!"
+echo "✓ Endpoint ID: $endpointId"
+echo "✓ Federated credential created to match Azure DevOps issuer/subject"
