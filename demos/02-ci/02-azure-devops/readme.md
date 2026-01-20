@@ -20,7 +20,7 @@
 
 ## Demos
 
-- .NET MVC / WebApi Continuous Integration
+- .NET CI -
 - Azure Function App Continuous Integration
 - Angular Continuous Integration
 - Teams Tab with SPFx & React Continuous Integration

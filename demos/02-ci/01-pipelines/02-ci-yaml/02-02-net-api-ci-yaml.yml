@@ -1,0 +1,46 @@
+name: "02-02-simple-api-ci-yaml"
+trigger:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  buildConfiguration: "Release"
+
+stages:
+  - stage: "Build"
+    jobs:
+      - job: "Build"
+        displayName: "Build Api"
+
+        steps:
+          - task: UseDotNet@2
+            displayName: "Install .NET 10 SDK"
+            inputs:
+              packageType: "sdk"
+              version: "10.x"
+
+          - task: DotNetCoreCLI@2
+            displayName: dotnet build (simple-api only)
+            inputs:
+              command: build
+              projects: "simple-api.csproj"
+              arguments: "--configuration $(buildConfiguration)"
+
+          - task: DotNetCoreCLI@2
+            displayName: dotnet publish (simple-api only)
+            inputs:
+              command: "publish"
+              projects: "simple-api.csproj"
+              publishWebProjects: false
+              arguments: "--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)"
+
+          - task: PublishPipelineArtifact@1
+            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+            inputs:
+              artifactName: drop
+              targetPath: "$(Build.ArtifactStagingDirectory)"
+            displayName: "Publish Artifact: drop"
