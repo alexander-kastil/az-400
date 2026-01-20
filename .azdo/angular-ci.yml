@@ -11,7 +11,7 @@ pr: none
 variables:
   nodeVer: "22.14.0"
   dist: angular-devops
-  pkg: ngapp
+  pkg: ng-app
   appRoot: src/angular/angular-devops
 
 pool:
