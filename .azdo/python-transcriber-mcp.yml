@@ -1,0 +1,63 @@
+name: "02-02-python-ci"
+
+# trigger:
+#   branches:
+#     include:
+#     - main
+#   paths:
+#     include:
+#     - src/ai/youtube-transcriber-mcp-py/**
+
+trigger: none
+pr: none
+
+variables:
+  pythonVersion: "3.11"
+  appRoot: "src/ai/youtube-transcriber-mcp-py"
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: Build
+    displayName: Build and Test Python MCP Server
+
+    jobs:
+      - job: BuildAndTest
+        displayName: Build and Test
+
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: $(pythonVersion)
+            displayName: "Use Python $(pythonVersion)"
+
+          - script: python -m pip install --upgrade pip
+            displayName: "Upgrade pip"
+
+          - script: pip install -r requirements.txt
+            displayName: "Install Dependencies"
+            workingDirectory: $(appRoot)
+
+          - script: |
+              pip install pytest pytest-cov flake8
+            displayName: "Install Testing Tools"
+
+          - script: |
+              flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+            displayName: "Lint with flake8 (Critical errors)"
+            workingDirectory: $(appRoot)
+            continueOnError: true
+
+          - script: |
+              python -m pytest --version
+            displayName: "Check pytest installation"
+            workingDirectory: $(appRoot)
+            continueOnError: true
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)"
+              ArtifactName: "python-mcp-server"
+              publishLocation: "Container"
+            displayName: "Publish Artifacts"
