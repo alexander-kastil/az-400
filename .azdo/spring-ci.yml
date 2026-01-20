@@ -26,23 +26,9 @@ stages:
               jdkSourceOption: "PreInstalled"
             displayName: "Use Java $(javaVer)"
 
-          - script: chmod +x gradlew
-            displayName: "Make gradlew executable"
-            workingDirectory: $(appRoot)
-
-          - task: Gradle@3
-            inputs:
-              gradleWrapperFile: "$(appRoot)/gradlew"
-              workingDirectory: $(appRoot)
-              tasks: "clean build"
-              publishJUnitResults: true
-              testResultsFiles: "**/TEST-*.xml"
-              javaHomeOption: "JDKVersion"
-              jdkVersionOption: "$(javaVer)"
-              jdkArchitectureOption: "x64"
-              gradleOptions: "-Xmx3072m"
-              sonarQubeRunAnalysis: false
+          - script: chmod +x gradlew && ./gradlew clean build
             displayName: "Build with Gradle"
+            workingDirectory: $(appRoot)
 
           - task: CopyFiles@2
             displayName: "Copy JAR Artifacts"
