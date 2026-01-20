@@ -1,0 +1,85 @@
+2026-01-20T17:56:45.9372433Z ##[error]#7 sha256:da1a80ccb2fc82683a7c57d0714e25a578cad5a9015d129893cc5df37a620e7c 465B / 465B 0.1s done
+2026-01-20T17:56:45.9372693Z ##[error]#7 sha256:90f913c96383b4146ce45985fd97e723fa1b1b6359441c4b683240236052eb59 2.42kB / 2.42kB done
+2026-01-20T17:56:45.9372959Z ##[error]#7 sha256:602dbb499f92ae5be0f1a53fd1bab2acc3e3b60a165161a094490d7519418793 6.02kB / 6.02kB done
+2026-01-20T17:56:45.9373220Z ##[error]#7 sha256:60fc5ac8adb0065586a67c2598bd17a6f0109b324e94b636024c875bc2921282 23.60MB / 23.60MB 0.2s
+2026-01-20T17:56:45.9373489Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 13.63MB / 189.50MB 0.2s
+2026-01-20T17:56:45.9373749Z ##[error]#7 sha256:06762f394a85eebb380d129be960b789bd3886e50a5050f938654acdc49fca8b 4.19MB / 17.60MB 0.2s
+2026-01-20T17:56:45.9374134Z ##[error]#7 sha256:60fc5ac8adb0065586a67c2598bd17a6f0109b324e94b636024c875bc2921282 23.60MB / 23.60MB 0.2s done
+2026-01-20T17:56:45.9374403Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 27.26MB / 189.50MB 0.3s
+2026-01-20T17:56:45.9374676Z ##[error]#7 extracting sha256:60fc5ac8adb0065586a67c2598bd17a6f0109b324e94b636024c875bc2921282
+2026-01-20T17:56:45.9374886Z ##[error]#7 ...
+2026-01-20T17:56:45.9375474Z ##[error]
+2026-01-20T17:56:45.9375766Z ##[error]#8 [internal] load build context
+2026-01-20T17:56:45.9376102Z ##[error]#8 transferring context: 27.62MB 0.4s done
+2026-01-20T17:56:45.9376439Z ##[error]#8 DONE 0.4s
+2026-01-20T17:56:45.9376718Z ##[error]
+2026-01-20T17:56:45.9377145Z ##[error]#7 [build 1/6] FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:25d14b400b75fa4e89d5bd4487a92a604a4e409ab65becb91821e7dc4ac7f81f
+2026-01-20T17:56:45.9377673Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 47.19MB / 189.50MB 0.4s
+2026-01-20T17:56:45.9378468Z ##[error]#7 sha256:06762f394a85eebb380d129be960b789bd3886e50a5050f938654acdc49fca8b 17.60MB / 17.60MB 0.3s done
+2026-01-20T17:56:45.9378986Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 74.45MB / 189.50MB 0.5s
+2026-01-20T17:56:45.9379484Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 100.66MB / 189.50MB 0.6s
+2026-01-20T17:56:45.9379979Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 125.83MB / 189.50MB 0.7s
+2026-01-20T17:56:45.9380440Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 150.99MB / 189.50MB 0.8s
+2026-01-20T17:56:45.9380990Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 177.21MB / 189.50MB 0.9s
+2026-01-20T17:56:45.9381546Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 189.50MB / 189.50MB 1.1s
+2026-01-20T17:56:45.9382109Z ##[error]#7 sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 189.50MB / 189.50MB 1.6s done
+2026-01-20T17:56:45.9382662Z ##[error]#7 extracting sha256:60fc5ac8adb0065586a67c2598bd17a6f0109b324e94b636024c875bc2921282 1.8s done
+2026-01-20T17:56:45.9383096Z ##[error]#7 extracting sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d
+2026-01-20T17:56:45.9383357Z ##[error]#7 extracting sha256:69c84e01b5c01378575ef094890e0918566b96793b25e89e1a2f0c5c939c0f8d 3.7s done
+2026-01-20T17:56:45.9383623Z ##[error]#7 extracting sha256:da1a80ccb2fc82683a7c57d0714e25a578cad5a9015d129893cc5df37a620e7c
+2026-01-20T17:56:45.9383878Z ##[error]#7 extracting sha256:da1a80ccb2fc82683a7c57d0714e25a578cad5a9015d129893cc5df37a620e7c done
+2026-01-20T17:56:45.9384138Z ##[error]#7 extracting sha256:06762f394a85eebb380d129be960b789bd3886e50a5050f938654acdc49fca8b 0.1s
+2026-01-20T17:56:45.9384392Z ##[error]#7 extracting sha256:06762f394a85eebb380d129be960b789bd3886e50a5050f938654acdc49fca8b 0.4s done
+2026-01-20T17:56:45.9384602Z ##[error]#7 DONE 9.0s
+2026-01-20T17:56:45.9384766Z ##[error]
+2026-01-20T17:56:45.9384927Z ##[error]#9 [build 2/6] WORKDIR /build
+2026-01-20T17:56:45.9385103Z ##[error]#9 DONE 0.0s
+2026-01-20T17:56:45.9385254Z ##[error]
+2026-01-20T17:56:45.9385411Z ##[error]#10 [build 3/6] COPY . .
+2026-01-20T17:56:45.9385583Z ##[error]#10 DONE 0.1s
+2026-01-20T17:56:45.9385738Z ##[error]
+2026-01-20T17:56:45.9385964Z ##[error]#11 [build 4/6] RUN wget -qO- https://raw.githubusercontent.com/Microsoft/artifacts-credprovider/master/helpers/installcredprovider.sh | bash
+2026-01-20T17:56:45.9386231Z ##[error]#11 0.206 INFO: Creating the nuget plugin directory (i.e. /root/.nuget/plugins). 
+2026-01-20T17:56:45.9386505Z ##[error]#11 0.208 Downloading from https://github.com/Microsoft/artifacts-credprovider/releases/latest/download/Microsoft.Net6.NuGet.CredentialProvider.tar.gz
+2026-01-20T17:56:45.9386769Z ##[error]#11 0.794 INFO: credential provider netcore plugin extracted to /root/.nuget/
+2026-01-20T17:56:45.9387097Z ##[error]#11 DONE 0.8s
+2026-01-20T17:56:45.9387249Z ##[error]
+2026-01-20T17:56:45.9387431Z ##[error]#12 [build 5/6] RUN dotnet restore -s "${FEED_URL}" "order-service.csproj"
+2026-01-20T17:56:45.9387645Z ##[error]#12 0.814   Determining projects to restore...
+2026-01-20T17:56:45.9388159Z ##[error]#12 1.236 /build/order-service.csproj : warning NU1510: PackageReference System.Linq will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+2026-01-20T17:56:45.9388578Z ##[error]e" for MSBuild or removing the -NonInteractive switch for `NuGet` [/build/order-service.csproj]
+2026-01-20T17:56:45.9388964Z ##[error]#12 2.952 /usr/share/dotnet/sdk/10.0.102/NuGet.targets(196,5): warning : The plugin credential provider could not acquire credentials. Authentication may require manual action. Consider re-running the command with --interactive for `dotnet`, /p:NuGetInteractive="true" for MSBuild or removing the -NonInteractive switch for `NuGet` [/build/order-service.csproj]
+2026-01-20T17:56:45.9389492Z ##[error]#12 4.058 /usr/share/dotnet/sdk/10.0.102/NuGet.targets(196,5): warning : The plugin credential provider could not acquire credentials. Authentication may require manual action. Consider re-running the command with --interactive for `dotnet`, /p:NuGetInteractive="true" for MSBuild or removing the -NonInteractive switch for `NuGet` [/build/order-service.csproj]
+2026-01-20T17:56:45.9390019Z ##[error]#12 5.289 /usr/share/dotnet/sdk/10.0.102/NuGet.targets(196,5): warning : The plugin credential provider could not acquire credentials. Authentication may require manual action. Consider re-running the command with --interactive for `dotnet`, /p:NuGetInteractive="true" for MSBuild or removing the -NonInteractive switch for `NuGet` [/build/order-service.csproj]
+2026-01-20T17:56:45.9390447Z ##[error]#12 7.620 /build/order-service.csproj : error NU1301: Unable to load the service index for source https://pkgs.dev.azure.com/integrationsonline/az-400/_packaging/food-packages/nuget/v3/index.json.
+2026-01-20T17:56:45.9390769Z ##[error]#12 7.620 /build/order-service.csproj : error NU1301:   Response status code does not indicate success: 401 (Unauthorized).
+2026-01-20T17:56:45.9391014Z ##[error]#12 7.674   Failed to restore /build/order-service.csproj (in 6.5 sec).
+2026-01-20T17:56:45.9391266Z ##[error]#12 ERROR: process "/bin/sh -c dotnet restore -s \"${FEED_URL}\" \"order-service.csproj\"" did not complete successfully: exit code: 1
+2026-01-20T17:56:45.9391484Z ##[error]------
+2026-01-20T17:56:45.9391680Z ##[error] > [build 5/6] RUN dotnet restore -s "${FEED_URL}" "order-service.csproj":
+2026-01-20T17:56:45.9391884Z ##[error]0.814   Determining projects to restore...
+2026-01-20T17:56:45.9392158Z ##[error]1.236 /build/order-service.csproj : warning NU1510: PackageReference System.Linq will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+2026-01-20T17:56:45.9392447Z ##[error]e" for MSBuild or removing the -NonInteractive switch for `NuGet` [/build/order-service.csproj]
+2026-01-20T17:56:45.9392834Z ##[error]2.952 /usr/share/dotnet/sdk/10.0.102/NuGet.targets(196,5): warning : The plugin credential provider could not acquire credentials. Authentication may require manual action. Consider re-running the command with --interactive for `dotnet`, /p:NuGetInteractive="true" for MSBuild or removing the -NonInteractive switch for `NuGet` [/build/order-service.csproj]
+2026-01-20T17:56:45.9393342Z ##[error]4.058 /usr/share/dotnet/sdk/10.0.102/NuGet.targets(196,5): warning : The plugin credential provider could not acquire credentials. Authentication may require manual action. Consider re-running the command with --interactive for `dotnet`, /p:NuGetInteractive="true" for MSBuild or removing the -NonInteractive switch for `NuGet` [/build/order-service.csproj]
+2026-01-20T17:56:45.9393860Z ##[error]5.289 /usr/share/dotnet/sdk/10.0.102/NuGet.targets(196,5): warning : The plugin credential provider could not acquire credentials. Authentication may require manual action. Consider re-running the command with --interactive for `dotnet`, /p:NuGetInteractive="true" for MSBuild or removing the -NonInteractive switch for `NuGet` [/build/order-service.csproj]
+2026-01-20T17:56:45.9394362Z ##[error]7.620 /build/order-service.csproj : error NU1301: Unable to load the service index for source https://pkgs.dev.azure.com/integrationsonline/az-400/_packaging/food-packages/nuget/v3/index.json.
+2026-01-20T17:56:45.9394671Z ##[error]7.620 /build/order-service.csproj : error NU1301:   Response status code does not indicate success: 401 (Unauthorized).
+2026-01-20T17:56:45.9394957Z ##[error]7.674   Failed to restore /build/order-service.csproj (in 6.5 sec).
+2026-01-20T17:56:45.9395140Z ##[error]------
+2026-01-20T17:56:45.9395295Z ##[error]
+2026-01-20T17:56:45.9395582Z ##[error] [33m3 warnings found (use docker --debug to expand):
+2026-01-20T17:56:45.9395901Z ##[error][0m - LegacyKeyValueFormat: "ENV key=value" should be used instead of legacy "ENV key value" format (line 11)
+2026-01-20T17:56:45.9396163Z ##[error] - LegacyKeyValueFormat: "ENV key=value" should be used instead of legacy "ENV key value" format (line 12)
+2026-01-20T17:56:45.9396429Z ##[error] - LegacyKeyValueFormat: "ENV key=value" should be used instead of legacy "ENV key value" format (line 10)
+2026-01-20T17:56:45.9396638Z ##[error]dockerfile:14
+2026-01-20T17:56:45.9396808Z ##[error]--------------------
+2026-01-20T17:56:45.9397006Z ##[error]  12 |     ENV DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER 0
+2026-01-20T17:56:45.9397186Z ##[error]  13 |     
+2026-01-20T17:56:45.9397373Z ##[error]  14 | >>> RUN dotnet restore -s "${FEED_URL}" "order-service.csproj"
+2026-01-20T17:56:45.9397577Z ##[error]  15 |     RUN dotnet publish -c Release -o /app
+2026-01-20T17:56:45.9397756Z ##[error]  16 |     
+2026-01-20T17:56:45.9398036Z ##[error]--------------------
+2026-01-20T17:56:45.9398277Z ##[error]ERROR: failed to build: failed to solve: process "/bin/sh -c dotnet restore -s \"${FEED_URL}\" \"order-service.csproj\"" did not complete successfully: exit code: 1
+2026-01-20T17:56:45.9401552Z ##[error]The process '/usr/bin/docker' failed with exit code 1
+2026-01-20T17:56:45.9407485Z ##[section]Finishing: Build and Push

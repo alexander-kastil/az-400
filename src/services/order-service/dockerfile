@@ -6,9 +6,10 @@ COPY . .
 # Install Credential Provider and set env variables to enable Nuget restore with auth
 ARG PAT
 ARG FEED_URL
+ARG NUGET_ENDPOINTS
 RUN wget -qO- https://raw.githubusercontent.com/Microsoft/artifacts-credprovider/master/helpers/installcredprovider.sh | bash
 ENV NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED true
-ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS "{\"endpointCredentials\": [{\"endpoint\":\"${FEED_URL}\", \"username\":\"optional\", \"password\":\"${PAT}\"}]}"
+ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS=${NUGET_ENDPOINTS}
 ENV DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER 0
 
 RUN dotnet restore -s "${FEED_URL}" "order-service.csproj"

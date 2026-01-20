@@ -18,13 +18,16 @@ variables:
   acr: scACR
   appPath: src/services/order-service/
   imageName: "order-service"
-   feedUrl: https://pkgs.dev.azure.com/integrationsonline/az-400/_packaging/food-packages/nuget/v3/index.json
+  feedUrl: https://pkgs.dev.azure.com/integrationsonline/az-400/_packaging/food-packages/nuget/v3/index.json
 
 stages:
   - stage: "Build"
     jobs:
       - job: "Build"
         steps:
+          - task: NuGetAuthenticate@1
+            displayName: "Authenticate to Azure Artifacts"
+
           - task: PowerShell@2
             displayName: "Create and Set PAT Token Variable"
             inputs:
@@ -53,7 +56,7 @@ stages:
               command: "buildAndPush"
               Dockerfile: "$(appPath)dockerfile"
               tags: "latest"
-               arguments: "--build-arg PAT=$(PATToken) --build-arg FEED_URL=$(feedUrl)"
+              arguments: "--build-arg PAT=$(PATToken) --build-arg FEED_URL=$(feedUrl) --build-arg NUGET_ENDPOINTS='$(VSS_NUGET_EXTERNAL_FEED_ENDPOINTS)'"
 
           - task: Docker@2
             displayName: Logout of ACR
