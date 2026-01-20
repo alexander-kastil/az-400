@@ -18,13 +18,6 @@
 
 [Using resources in pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/about-resources?view=azure-devops&tabs=yaml#use-resources-to-enhance-security)
 
-## Demos
-
-- .NET CI -
-- Azure Function App Continuous Integration
-- Angular Continuous Integration
-- Teams Tab with SPFx & React Continuous Integration
-
 ## Additional Labs & Walkthroughs
 
 [Create a build pipeline with Azure Pipelines](https://learn.microsoft.com/en-us/training/modules/create-a-build-pipeline/?ns-enrollment-type=learningpath&ns-enrollment-id=learn.az-400-define-implement-continuous-integration)
