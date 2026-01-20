@@ -26,16 +26,9 @@ stages:
               jdkSourceOption: "PreInstalled"
             displayName: "Use Java $(javaVer)"
 
-          - script: chmod +x gradlew && ./gradlew clean build -i
+          - script: chmod +x gradlew && ./gradlew clean build
             displayName: "Build with Gradle"
             workingDirectory: $(appRoot)
-            continueOnError: false
-
-          - script: ls -la $(System.DefaultWorkingDirectory)/$(appRoot)/$(buildDir) || echo "No build dir found"
-            displayName: "Check build output directory"
-
-          - script: find $(System.DefaultWorkingDirectory)/$(appRoot) -name "*.jar" -type f
-            displayName: "Find all JAR files"
 
           - task: CopyFiles@2
             displayName: "Copy JAR Artifacts"
