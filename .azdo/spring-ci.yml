@@ -38,7 +38,8 @@ stages:
               publishJUnitResults: true
               testResultsFiles: "**/TEST-*.xml"
               javaHomeOption: "JDKVersion"
-              jdkVersionOption: "1.$(javaVer)"
+              jdkVersionOption: "$(javaVer)"
+              jdkArchitectureOption: "x64"
               gradleOptions: "-Xmx3072m"
               sonarQubeRunAnalysis: false
             displayName: "Build with Gradle"
