@@ -1,0 +1,55 @@
+name: "02-02-spring-ci"
+
+trigger: none
+pr: none
+
+variables:
+  javaVer: "17"
+  appRoot: src/jobs/blob-spring
+  buildDir: build/libs
+  artifactName: spring-app
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: Build
+    displayName: "Build and Test Spring Application"
+    jobs:
+      - job: BuildJob
+        displayName: "Build Spring Boot App"
+        steps:
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: $(javaVer)
+              jdkArchitectureOption: "x64"
+              jdkSourceOption: "PreInstalled"
+            displayName: "Use Java $(javaVer)"
+
+          - task: Gradle@3
+            inputs:
+              gradleWrapperFile: "$(appRoot)/gradlew"
+              workingDirectory: $(appRoot)
+              tasks: "clean build"
+              publishJUnitResults: true
+              testResultsFiles: "**/TEST-*.xml"
+              javaHomeOption: "JDKVersion"
+              jdkVersionOption: "1.$(javaVer)"
+              gradleOptions: "-Xmx3072m"
+              sonarQubeRunAnalysis: false
+            displayName: "Build with Gradle"
+
+          - task: CopyFiles@2
+            displayName: "Copy JAR Artifacts"
+            inputs:
+              SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(buildDir)"
+              Contents: "*.jar"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+              CleanTargetFolder: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish Pipeline Artifact"
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+              artifact: $(artifactName)
+              publishLocation: "pipeline"
