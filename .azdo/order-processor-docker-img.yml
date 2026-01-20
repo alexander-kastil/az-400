@@ -1,4 +1,4 @@
-name: catalog-build-docker-img
+name: order-processor-docker-img
 
 # trigger:
 #   branches:
@@ -6,14 +6,14 @@ name: catalog-build-docker-img
 #       - master
 #   paths:
 #     include:
-#       - src/functions/order-processor/*
+#       - src/jobs/blob-java/*
 
 trigger: none      
 pr: none
 
 variables:
-  appPath: src/functions/order-processor/
-  imageName: 'order-processor'
+  appPath: src/jobs/blob-java/
+  imageName: 'blob-java'
   acr: scACR
 
 pool:

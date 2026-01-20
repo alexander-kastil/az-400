@@ -6,6 +6,7 @@ pr: none
 variables:
   imageName: angular-devops
   acr: scACR
+  appPath: src/angular/angular-devops/
 
 pool:
   vmImage: "ubuntu-latest"
@@ -27,7 +28,8 @@ stages:
             inputs:
               repository: "$(imageName)"
               command: "buildAndPush"
-              Dockerfile: Dockerfile
+              Dockerfile: "$(appPath)Dockerfile"
+              buildContext: "$(appPath)"
 
           - task: Docker@2
             displayName: Logout of ACR
