@@ -9,7 +9,7 @@ trigger: none
 pr: none
 
 variables:
-  appPath: src/web/food-shop/
+  appPath: src/angular/food-shop/
   imageName: food-shop
   acr: scACR
 
