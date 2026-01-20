@@ -8,7 +8,7 @@ name: catalog-build-docker-img
 #     include:
 #       - src/services/catalog-service/api/*
 
-trigger: none      
+trigger: none
 pr: none
 
 variables:
@@ -35,11 +35,11 @@ stages:
             displayName: Build and Push
             inputs:
               containerRegistry: $(acr)
-              repository: '$(imageName)'
-              command: 'buildAndPush'
-              Dockerfile: '$(appPath)dockerfile'
-              tags: 'latest'
-              
+              repository: "$(imageName)"
+              command: "buildAndPush"
+              Dockerfile: "$(appPath)dockerfile"
+              tags: "latest"
+
           - task: Docker@2
             displayName: Logout of ACR
             inputs:
