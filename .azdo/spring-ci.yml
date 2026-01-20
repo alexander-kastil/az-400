@@ -26,7 +26,7 @@ stages:
           - task: Cache@2
             inputs:
               key: 'maven | "$(Agent.OS)" | $(appRoot)/pom.xml'
-              path: $(Pipeline.Workspace)/.m2/repository
+              path: $(HOME)/.m2
 
           - bash: |
               cd $(appRoot)
@@ -39,6 +39,8 @@ stages:
               testResultsFormat: "JUnit"
               testResultsFiles: "$(appRoot)/**/surefire-reports/TEST-*.xml"
               publishRunAttachments: true
+
+          - task: CopyFiles@2
             inputs:
               SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(buildDir)"
               Contents: "*.jar"
