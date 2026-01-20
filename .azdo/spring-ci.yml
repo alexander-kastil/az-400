@@ -28,13 +28,18 @@ stages:
         key: 'gradle | "$(Agent.OS)" | **/*.gradle* | **/gradle-wrapper.properties'
         path: ~/.gradle/caches
 
-    - task: Gradle@2
+    - bash: |
+        cd $(appRoot)
+        chmod +x gradlew
+        ./gradlew clean build
+      displayName: "Build with Gradle"
+
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
       inputs:
-        gradleWrapperFile: "gradlew"
-        options: "-p $(appRoot)"
-        tasks: "clean build"
-        publishJUnitResults: true
-        testResultsFiles: "$(appRoot)/**/TEST-*.xml"
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '$(appRoot)/**/TEST-*.xml'
+        publishRunAttachments: true
 
     - task: CopyFiles@2
       inputs:
