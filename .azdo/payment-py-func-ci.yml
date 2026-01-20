@@ -1,4 +1,4 @@
-name: "02-02-payment-py-ci"
+name: "02-02-payment-py-func-ci"
 
 # trigger:
 #   branches:
