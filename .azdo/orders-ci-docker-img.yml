@@ -18,6 +18,7 @@ variables:
   acr: scACR
   appPath: src/services/order-service/
   imageName: "order-service"
+   feedUrl: https://pkgs.dev.azure.com/integrationsonline/az-400/_packaging/food-packages/nuget/v3/index.json
 
 stages:
   - stage: "Build"
@@ -52,7 +53,7 @@ stages:
               command: "buildAndPush"
               Dockerfile: "$(appPath)dockerfile"
               tags: "latest"
-              arguments: "--build-arg PAT=$(PATToken)"
+               arguments: "--build-arg PAT=$(PATToken) --build-arg FEED_URL=$(feedUrl)"
 
           - task: Docker@2
             displayName: Logout of ACR
