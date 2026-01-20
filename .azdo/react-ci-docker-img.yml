@@ -28,7 +28,7 @@ stages:
             inputs:
               repository: "$(imageName)"
               command: "buildAndPush"
-              Dockerfile: $(appRoot)/Dockerfile
+              Dockerfile: $(appRoot)/dockerfile
               buildContext: $(appRoot)
 
           - task: Docker@2

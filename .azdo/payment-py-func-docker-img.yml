@@ -36,7 +36,7 @@ stages:
             inputs:
               repository: '$(imageName)'
               command: 'buildAndPush'
-              Dockerfile: '$(appPath)Dockerfile'
+              Dockerfile: '$(appPath)dockerfile'
               tags: 'latest'
 
           - task: Docker@2
