@@ -1,4 +1,4 @@
-name: docker-ci-img.yml
+name: "02-04-docker-ci-img"
 
 trigger: none
 pr: none

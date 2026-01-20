@@ -1,16 +1,5 @@
 {
 	"servers": {
-		"angular-cli": {
-			"command": "npm",
-			"args": [
-				"--prefix",
-				"src/angular/angular-devops",
-				"exec",
-				"ng",
-				"mcp"
-			],
-			"type": "stdio"
-		},
 		"playwright": {
 			"command": "npx",
 			"args": [
