@@ -24,6 +24,20 @@ stages:
     jobs:
       - job: "Build"
         steps:
+          - task: PowerShell@2
+            displayName: "Create and Set PAT Token Variable"
+            inputs:
+              targetType: "inline"
+              script: |
+                # Use the System.AccessToken which is available in the pipeline
+                $patToken = "$(System.AccessToken)"
+
+                # Set it as a pipeline variable for use in subsequent tasks
+                Write-Host "##vso[task.setvariable variable=PATToken;issecret=true]$patToken"
+                Write-Host "PAT Token variable has been set"
+            env:
+              SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
           - task: Docker@2
             displayName: Login to ACR
             inputs:
