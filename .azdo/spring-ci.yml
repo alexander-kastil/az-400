@@ -5,42 +5,44 @@ pr: none
 
 variables:
   javaVer: "17"
-  appRoot: src/jobs/blob-spring
-  buildDir: build/libs
-  artifactName: spring-app
+  appRoot: "src/jobs/blob-spring"
+  buildDir: "build/libs"
+  artifactName: "spring-app"
 
 pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: Build
-    displayName: "Build and Test Spring Application"
-    jobs:
-      - job: BuildJob
-        displayName: "Build Spring Boot App"
-        steps:
-          - task: JavaToolInstaller@0
-            inputs:
-              versionSpec: $(javaVer)
-              jdkArchitectureOption: "x64"
-              jdkSourceOption: "PreInstalled"
-            displayName: "Use Java $(javaVer)"
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - task: UseJava@1
+      inputs:
+        versionSpec: "$(javaVer)"
+        jdkArchitectureOption: "x64"
+        jdkSourceOption: "PreInstalled"
 
-          - script: chmod +x gradlew && ./gradlew clean build
-            displayName: "Build with Gradle"
-            workingDirectory: $(appRoot)
+    - task: Cache@2
+      inputs:
+        key: 'gradle | "$(Agent.OS)" | **/*.gradle* | **/gradle-wrapper.properties'
+        path: ~/.gradle/caches
 
-          - task: CopyFiles@2
-            displayName: "Copy JAR Artifacts"
-            inputs:
-              SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(buildDir)"
-              Contents: "*.jar"
-              TargetFolder: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
-              CleanTargetFolder: true
+    - task: Gradle@2
+      inputs:
+        gradleWrapperFile: "gradlew"
+        options: "-p $(appRoot)"
+        tasks: "clean build"
+        publishJUnitResults: true
+        testResultsFiles: "$(appRoot)/**/TEST-*.xml"
 
-          - task: PublishPipelineArtifact@1
-            displayName: "Publish Pipeline Artifact"
-            inputs:
-              targetPath: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
-              artifact: $(artifactName)
-              publishLocation: "pipeline"
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(buildDir)"
+        Contents: "*.jar"
+        TargetFolder: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+        artifact: "$(artifactName)"
