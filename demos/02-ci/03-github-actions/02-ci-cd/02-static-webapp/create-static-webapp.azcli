@@ -2,8 +2,24 @@ env=dev
 grp=az400-$env
 loc=westeurope
 app=foodui-$env
-repo="https://github.com/alexander-kastil/az-400"
+repo="alexander-kastil/az-400"
 
 az group create -n $grp -l $loc
 
-az staticwebapp create -n $app -g $grp -s $repo -l $loc -b master --app-location "src/web/food-shop/" --output-location "dist/food-shop-ui" --login-with-github
+az staticwebapp create -n $app -g $grp -l $loc
+
+deployment_token=$(az staticwebapp secrets list -n $app -g $grp --query "properties.apiKey" -o tsv)
+
+if [ -z "$deployment_token" ]; then
+	echo "Failed to retrieve deployment token" >&2
+	exit 1
+fi
+
+if ! command -v gh >/dev/null 2>&1; then
+	echo "GitHub CLI (gh) is required to set repository secrets" >&2
+	exit 2
+fi
+
+gh secret set AZURE_STATIC_WEB_APPS_API_TOKEN --body "$deployment_token" --repo "$repo"
+
+echo "Stored static web app deployment token in GitHub secret AZURE_STATIC_WEB_APPS_API_TOKEN"
