@@ -6,14 +6,14 @@ name: sk-build-docker-img
 #       - master
 #   paths:
 #     include:
-#       - src/ai/sk-students-ai/*
+#       - src/ai/af-students-ai/*
 
-trigger: none      
+trigger: none
 pr: none
 
 variables:
-  appPath: src/ai/sk-students-ai/
-  imageName: students-ai
+  appPath: src/ai/af-students-ai/
+  imageName: af-students-ai
   acr: scACR
 
 pool:
@@ -35,11 +35,11 @@ stages:
             displayName: Build and Push
             inputs:
               containerRegistry: $(acr)
-              repository: '$(imageName)'
-              command: 'buildAndPush'
-              Dockerfile: '$(appPath)dockerfile'
-              tags: 'latest'
-          
+              repository: "$(imageName)"
+              command: "buildAndPush"
+              Dockerfile: "$(appPath)dockerfile"
+              tags: "latest"
+
           - task: Docker@2
             displayName: Logout of ACR
             inputs:
