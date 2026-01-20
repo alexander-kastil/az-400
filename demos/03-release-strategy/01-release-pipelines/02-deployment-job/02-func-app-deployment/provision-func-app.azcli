@@ -1,8 +1,8 @@
 env=dev
 grp=az400-$env
 loc=westeurope
-app=utils-func-$env
-storage=utilsfunc$env
+app=utils-ts-func-$env
+storage=utilstsfunc$env
 
 az group create -n $grp -l $loc
 

@@ -10,7 +10,7 @@ pr: none
 
 variables:
   azSubscription: wi-az400
-  functionAppName: utils-func-dev
+  functionAppName: utils-ts-func-dev
   appPath: src/az-functions/utils-ts/
 
 pool:
