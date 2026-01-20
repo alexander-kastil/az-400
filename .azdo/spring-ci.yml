@@ -28,18 +28,17 @@ stages:
               key: 'maven | "$(Agent.OS)" | $(appRoot)/pom.xml'
               path: $(Pipeline.Workspace)/.m2/repository
 
-          - task: Maven@3
-            inputs:
-              mavenPomFile: "$(appRoot)/pom.xml"
-              mavenOptions: "-Xmx3072m"
-              javaHomeOption: "JDKVersion"
-              jdkVersionOption: "$(javaVer)"
-              jdkArchitectureOption: "x64"
-              publishJUnitResults: true
-              testResultsFiles: "**/surefire-reports/TEST-*.xml"
-              goals: "clean package"
+          - bash: |
+              cd $(appRoot)
+              mvn clean package -DskipTests=false
+            displayName: "Build with Maven"
 
-          - task: CopyFiles@2
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: "JUnit"
+              testResultsFiles: "$(appRoot)/**/surefire-reports/TEST-*.xml"
+              publishRunAttachments: true
             inputs:
               SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(buildDir)"
               Contents: "*.jar"
