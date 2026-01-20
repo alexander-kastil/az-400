@@ -1,4 +1,4 @@
-name: angular-ci.yml
+name: "02-02-angular-ci"
 
 # trigger:
 #   branches:
