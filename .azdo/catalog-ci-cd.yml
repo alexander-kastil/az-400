@@ -1,4 +1,4 @@
-name: catalog-api-ci-cd
+name: "03-02-catalog-api-ci-cd"
 
 # trigger:
 #   branches:
