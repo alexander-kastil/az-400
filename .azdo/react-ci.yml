@@ -1,4 +1,4 @@
-name: react-devops-ci
+name: react-ci.yml
 
 trigger:
   branches:
