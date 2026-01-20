@@ -26,9 +26,10 @@ stages:
               jdkSourceOption: "PreInstalled"
             displayName: "Use Java $(javaVer)"
 
-          - script: chmod +x gradlew && ./gradlew clean build
+          - script: chmod +x gradlew && ./gradlew clean build -i
             displayName: "Build with Gradle"
             workingDirectory: $(appRoot)
+            continueOnError: false
 
           - task: CopyFiles@2
             displayName: "Copy JAR Artifacts"
