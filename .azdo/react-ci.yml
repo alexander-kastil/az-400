@@ -1,21 +1,7 @@
-name: react-ci.yml
+name: "02-02-react-ci"
 
-trigger:
-  branches:
-    include:
-    - main
-  paths:
-    include:
-    - src/react/react-devops/**
-    - .azdo/react-ci.yml
-
-pr:
-  branches:
-    include:
-    - main
-  paths:
-    include:
-    - src/react/react-devops/**
+trigger: none
+pr: none
 
 variables:
   nodeVer: "22.x"
