@@ -11,7 +11,7 @@ az acr login -n $acr
 pwd=$(az acr credential show -n $acr -g $grp  --query passwords[0].value -o tsv) #for demos purposes only
 loginSrv=$(az acr list -g $grp --query "[].loginServer" -o tsv) #for demos purposes only
 
-cd src/web/food-shop
+cd src/angular/food-shop
 az acr build --image food-shop --registry $acr --file dockerfile .
 cd ../../..
 
