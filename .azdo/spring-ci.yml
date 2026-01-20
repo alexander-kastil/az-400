@@ -17,7 +17,7 @@ stages:
   jobs:
   - job: BuildJob
     steps:
-    - task: UseJava@1
+    - task: JavaToolInstaller@0
       inputs:
         versionSpec: "$(javaVer)"
         jdkArchitectureOption: "x64"
