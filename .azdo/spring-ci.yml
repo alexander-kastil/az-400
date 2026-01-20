@@ -26,6 +26,10 @@ stages:
               jdkSourceOption: "PreInstalled"
             displayName: "Use Java $(javaVer)"
 
+          - script: chmod +x gradlew
+            displayName: "Make gradlew executable"
+            workingDirectory: $(appRoot)
+
           - task: Gradle@3
             inputs:
               gradleWrapperFile: "$(appRoot)/gradlew"
