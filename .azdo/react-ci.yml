@@ -1,15 +1,24 @@
-name: react-ci.yml
+name: react-devops-ci
 
-# trigger:
-#   branches:
-#     include:
-#     - main
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - src/react/react-devops/**
+    - .azdo/react-ci.yml
 
-trigger: none
-pr: none
+pr:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - src/react/react-devops/**
 
 variables:
-  nodeVer: "22.14.0"
+  nodeVer: "22.x"
   dist: dist
   pkg: reactapp
   appRoot: src/react/react-devops
@@ -18,29 +27,41 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: build
-
+  - stage: Build
+    displayName: "Build and Test"
     jobs:
-      - job: Build
-        displayName: Build React
-
+      - job: BuildJob
+        displayName: "Build React App"
         steps:
           - task: NodeTool@0
             inputs:
               versionSpec: $(nodeVer)
-            displayName: Install Node $(nodeVer)
+            displayName: "Install Node.js $(nodeVer)"
 
           - script: npm ci
-            displayName: "Install Packages"
+            displayName: "Install Dependencies"
             workingDirectory: $(appRoot)
+
+          - script: npm run lint
+            displayName: "Run Linter"
+            workingDirectory: $(appRoot)
+            continueOnError: true
 
           - script: npm run build
-            displayName: "Build"
+            displayName: "Build Application"
             workingDirectory: $(appRoot)
 
-          - task: PublishBuildArtifacts@1
+          - task: CopyFiles@2
+            displayName: "Copy Build Artifacts"
             inputs:
-              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(dist)"
-              ArtifactName: $(pkg)
-              publishLocation: "Container"
-            displayName: "Publish Artifacts"
+              SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(dist)"
+              Contents: "**"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/$(pkg)"
+              CleanTargetFolder: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish Pipeline Artifact"
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/$(pkg)"
+              artifact: $(pkg)
+              publishLocation: "pipeline"
