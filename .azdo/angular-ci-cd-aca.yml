@@ -23,34 +23,12 @@ variables:
   acaenv: "az400acaenv"
 
 stages:
-  - stage: Deploy
-    jobs:
-      - job: Deploy
-        displayName: Deploy to ACA
-        steps:
-          - checkout: none
-          - task: AzureCLI@2
-            displayName: Fetch ACR credentials
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                # Fetch ACR admin credentials and surface password as pipeline variable
-                ACR_PASSWORD=$(az acr credential show --name $(acrName) --query "passwords[0].value" -o tsv)
-                echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
-
-          - task: AzureCLI@2
-            displayName: Deploy to Azure Container Apps
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                az containerapp create -n $(app) -g $(grp) --image $(image) \
-                    --environment $(acaenv) \
-                    --target-port 80 \
-                    --ingress external \
-                    --registry-server $(acrName).azurecr.io \
-                    --registry-username $(acrName) \
-                    --registry-password $(acrPassword)
+  - template: templates/t-deploy-aca.yaml
+    parameters:
+      acrName: $(acrName)
+      image: $(image)
+      app: $(app)
+      grp: $(grp)
+      serviceConnection: $(serviceConnection)
+      acaenv: $(acaenv)
+      targetPort: 80
