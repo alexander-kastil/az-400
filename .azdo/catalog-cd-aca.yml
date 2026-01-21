@@ -41,6 +41,7 @@ stages:
                 echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
 
           - task: AzureCLI@2
+            displayName: Deploy to Azure Container Apps
             inputs:
               azureSubscription: "$(serviceConnection)"
               scriptType: "bash"
