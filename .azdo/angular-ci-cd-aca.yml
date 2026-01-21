@@ -1,37 +1,56 @@
-name: deploy-aca.yml
+name: 03-02-angular-cd-aca
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/angular/angular-devops/*
 
 trigger: none
 pr: none
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: "ubuntu-latest"
 
 variables:
-  conAz: scRG
-  env: "angular-env"
-  app: angular-demo-app
-  rg: angular-11152
-  acr: angularacr11152
-  img: "angularacr11152.azurecr.io/angular-devops:2922"
-  # pwd: set as pipeline var
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/angular-devops"
+  app: "angular-devops-app"
+  grp: "az400-dev"
+  serviceConnection: wi-az400-dev
+  acaenv: "az400acaenv"
 
 stages:
   - stage: Deploy
-    displayName: Deploy to ACA
-
     jobs:
       - job: Deploy
+        displayName: Deploy to ACA
         steps:
-          - task: AzureContainerApps@1
+          - checkout: none
+          - task: AzureCLI@2
+            displayName: Fetch ACR credentials
             inputs:
-              azureSubscription: "scRG"
-              acrName: "$(acr)"
-              acrUsername: "$(acr)"
-              acrPassword: "$(pwd)"
-              imageToDeploy: "$(img)"
-              containerAppName: "$(app)"
-              resourceGroup: "$(rg)"
-              containerAppEnvironment: "$env"
-              targetPort: "80"
-              environmentVariables: "ENV_API_URL=http://mockapi"
-              ingress: "external"
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                # Fetch ACR admin credentials and surface password as pipeline variable
+                ACR_PASSWORD=$(az acr credential show --name $(acrName) --query "passwords[0].value" -o tsv)
+                echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
+
+          - task: AzureCLI@2
+            displayName: Deploy to Azure Container Apps
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az containerapp create -n $(app) -g $(grp) --image $(image) \
+                    --environment $(acaenv) \
+                    --target-port 80 \
+                    --ingress external \
+                    --registry-server $(acrName).azurecr.io \
+                    --registry-username $(acrName) \
+                    --registry-password $(acrPassword)
