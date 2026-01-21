@@ -20,6 +20,7 @@ variables:
   app: "catalog-service-v1"
   grp: "az400-dev"
   acaenv: "az400acaenv"
+  serviceConnection: wi-az400-dev
 
 stages:
   - stage: Deploy
