@@ -1,4 +1,4 @@
-name: spfx-ci-cd
+name: "03-02-spfx-ci-cd"
 
 # trigger:
 #   branches:
@@ -13,8 +13,10 @@ pr: none
 
 variables:
   package: foodlist-wp.sppkg
-  appPath: src/teams/food-list/ 
-  environment: m365-integrationsonline-dev
+  appPath: src/spfx/food-list/
+  environment: m365-dev
+  node: "14.21.3"
+  tenant: "d92b247e-90e0-4469-a129-6a32866c0d0a"
   # set pipeline vars: username, password
 
 pool:
@@ -28,22 +30,22 @@ stages:
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: 14.x
+              versionSpec: $(node)
             displayName: Install Node.js
-          
+
           - task: Cache@2
             displayName: Cache node_modules
             inputs:
-              key: '$(System.DefaultWorkingDirectory)/$(appPath)/package-lock.json'
-              path: '$(System.DefaultWorkingDirectory)/$(appPath)/node_modules'
-              cacheHitVar: 'CacheRestored'
+              key: "$(System.DefaultWorkingDirectory)/$(appPath)/package-lock.json"
+              path: "$(System.DefaultWorkingDirectory)/$(appPath)/node_modules"
+              cacheHitVar: "CacheRestored"
 
           - task: CmdLine@2
             displayName: npm install
             condition: eq(variables['CacheRestored'],False)
             inputs:
               script: "npm install"
-              workingDirectory: "$(appPath)/"              
+              workingDirectory: "$(appPath)/"
 
           - task: gulp@1
             displayName: "gulp bundel"
@@ -75,39 +77,37 @@ stages:
     displayName: Deploy to M365
     dependsOn: Build
     variables:
-      tenant: d92b247e-90e0-4469-a129-6a32866c0d0a
+      tenant: $(tenant)
 
     jobs:
       - deployment: DeployM365Dev
         displayName: Deploy to M365
-        environment: m365-integrationsonline-dev
+        environment: $(environment)
         strategy:
           runOnce:
             deploy:
               steps:
-            
-              - task: NodeTool@0
-                displayName: 'Use Node 14.x'
-                inputs:
-                  versionSpec: 14.x
-                  
-              - task: Npm@1
-                displayName: 'npm i -g @pnp/cli-microsoft365'
-                inputs:
-                  command: custom
-                  verbose: false
-                  customCommand: 'install -g @pnp/cli-microsoft365@6.0.0'
-              
-              - script: m365 login --authType password -u $(username) -p $(password) --tenant $(tenant)                 
-                displayName: 'Connect to M365'              
+                - task: NodeTool@0
+                  displayName: "Use Node"
+                  inputs:
+                    versionSpec: $(node)
 
-              - script: 'm365 spo app add -p $(Agent.BuildDirectory)/drop/spfx/src/teams/food-list/sharepoint/solution/$(package) --overwrite'
-                displayName: 'Upload to App Catalog'
+                - task: Npm@1
+                  displayName: "npm i -g @pnp/cli-microsoft365"
+                  inputs:
+                    command: custom
+                    verbose: false
+                    customCommand: "install -g @pnp/cli-microsoft365@6.0.0"
 
-              - script: 'm365 spo app deploy --name $(package)'
-                displayName: 'Deploy App'
+                - script: m365 login --authType password -u $(username) -p $(password) --tenant $(tenant)
+                  displayName: "Connect to M365"
 
-    
+                - script: "m365 spo app add -p $(Agent.BuildDirectory)/drop/spfx/src/teams/food-list/sharepoint/solution/$(package) --overwrite"
+                  displayName: "Upload to App Catalog"
+
+                - script: "m365 spo app deploy --name $(package)"
+                  displayName: "Deploy App"
+
       - deployment: DeployM365Staging
         displayName: Deploy to M365
         environment: m365-integrationsonline-staging
@@ -115,24 +115,23 @@ stages:
           runOnce:
             deploy:
               steps:
-            
-              - task: NodeTool@0
-                displayName: 'Use Node 14.x'
-                inputs:
-                  versionSpec: 14.x
-                  
-              - task: Npm@1
-                displayName: 'npm i -g @pnp/cli-microsoft365'
-                inputs:
-                  command: custom
-                  verbose: false
-                  customCommand: 'install -g @pnp/cli-microsoft365@6.0.0'
-              
-              - script: m365 login --authType password -u $(username) -p $(password) --tenant $(tenant)                 
-                displayName: 'Connect to M365'              
+                - task: NodeTool@0
+                  displayName: "Use Node 14.x"
+                  inputs:
+                    versionSpec: 14.x
 
-              - script: 'm365 spo app add -p $(Agent.BuildDirectory)/drop/spfx/src/teams/food-list/sharepoint/solution/$(package) --overwrite'
-                displayName: 'Upload to App Catalog'
+                - task: Npm@1
+                  displayName: "npm i -g @pnp/cli-microsoft365"
+                  inputs:
+                    command: custom
+                    verbose: false
+                    customCommand: "install -g @pnp/cli-microsoft365@6.0.0"
 
-              - script: 'm365 spo app deploy --name $(package)'
-                displayName: 'Deploy App'                               
+                - script: m365 login --authType password -u $(username) -p $(password) --tenant $(tenant)
+                  displayName: "Connect to M365"
+
+                - script: "m365 spo app add -p $(Agent.BuildDirectory)/drop/spfx/src/teams/food-list/sharepoint/solution/$(package) --overwrite"
+                  displayName: "Upload to App Catalog"
+
+                - script: "m365 spo app deploy --name $(package)"
+                  displayName: "Deploy App"
