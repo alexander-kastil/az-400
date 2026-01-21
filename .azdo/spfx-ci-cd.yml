@@ -99,8 +99,8 @@ stages:
                     verbose: false
                     customCommand: "install -g @pnp/cli-microsoft365@6.0.0"
 
-                - script: m365 login --authType password --userName $(username) --password $(password) --appId 31359c7f-bd7e-475c-86db-fdb8c937548e --tenant $(tenant)
-                  displayName: "Connect to M365"
+                - script: m365 login --authType secret --appId $(m365AppId) --tenant $(tenant) --secret $(m365ClientSecret)
+                  displayName: "Connect to M365 (Client Secret)"
 
                 - script: "m365 spo app add -p $(Agent.BuildDirectory)/drop/spfx/src/teams/food-list/sharepoint/solution/$(package) --overwrite"
                   displayName: "Upload to App Catalog"

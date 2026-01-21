@@ -1,0 +1,31 @@
+appName="m365-spfx-cicd"
+tenantId=$(az account show --query tenantId -o tsv)
+sharePointAppId="00000003-0000-0ff1-ce00-000000000000"  # SharePoint Online resource ID
+
+appId=$(az ad app create \
+  --display-name "$appName" \
+  --sign-in-audience AzureADMyOrg \
+  --query appId -o tsv)
+
+az ad app permission add \
+  --id $appId \
+  --api $sharePointAppId \
+  --api-permissions a82116e5-55eb-4c41-a434-62fe8a61c773=Role  # Sites.FullControl.All
+
+az ad sp create --id $appId
+az ad app permission admin-consent --id $appId
+
+sleep 10
+
+secretJson=$(az ad app credential reset \
+  --id $appId \
+  --append \
+  --display-name "CI/CD Secret" \
+  --years 2 \
+  --query '{appId:appId, password:password, tenant:tenant}')
+
+clientSecret=$(echo $secretJson | jq -r '.password')
+
+echo "m365AppId: $appId"
+echo "tenant: $tenantId"
+echo "m365ClientSecret: $clientSecret"
