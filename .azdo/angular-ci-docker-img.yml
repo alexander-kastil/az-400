@@ -30,6 +30,9 @@ stages:
               command: "buildAndPush"
               Dockerfile: "$(appPath)dockerfile"
               buildContext: "$(appPath)"
+              tags: |
+                $(Build.BuildId)
+                latest
 
           - task: Docker@2
             displayName: Logout of ACR
