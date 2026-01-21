@@ -67,7 +67,7 @@ variables:
   dotnetSdkVersion: "9.x"
   buildConfiguration: Release
   releaseBranchName: master
-  azSubscription: scWorkload
+  serviceConnection: scWorkload
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
 ```

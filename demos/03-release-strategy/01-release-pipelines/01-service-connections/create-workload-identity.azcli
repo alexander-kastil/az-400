@@ -1,8 +1,8 @@
-grp="az400-bash"
+grp="az-400"
 loc="westeurope"
 devOpsOrg="integrationsonline"
 project="az-400"
-wfIdentity="wi-az400-bash"
+wfIdentity="wi-"$grp
 subscriptionId="cd091145-5ea2-4703-ba5d-41063b1d4308"
 issuer="99e5794d-47e1-4b9b-86eb-937aa20e4e11"
 
@@ -23,8 +23,6 @@ az group create -n $grp -l $loc
 # Create a managed identity
 az identity create --name $wfIdentity --resource-group $grp
 principalId=$(az identity show --name $wfIdentity --resource-group $grp --query principalId -o tsv)
-
-# Get the client id
 clientId=$(az identity show --name $wfIdentity --resource-group $grp --query clientId -o tsv)
 
 echo "Managed Identity created: $wfIdentity"
@@ -41,24 +39,12 @@ for i in {1..10}; do
     sleep 10
 done
 
-# Assign the managed identity the contributor role
-for i in {1..5}; do
-    if az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope >/dev/null 2>&1; then
-        echo "Role assignment succeeded"
-        break
-    fi
-    echo "Retrying role assignment... ($i/5)"
-    sleep 5
-done
+az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope
 
 # Azure DevOps service connection (Workload Identity Federation)
 subscriptionName=$(az account show --subscription $subscriptionId --query name -o tsv)
 tenantId=$(az account show --subscription $subscriptionId --query tenantId -o tsv)
 projectId=$(az devops project show --project $project --query id -o tsv)
-
-echo "Subscription: $subscriptionName"
-echo "Tenant ID: $tenantId"
-echo "Project ID: $projectId"
 
 # Create service connection via REST
 payloadFile=$(mktemp)
@@ -107,15 +93,6 @@ endpointId=$(az devops invoke \
 
 rm $payloadFile
 
-echo "endpointId=$endpointId"
-
-if [ -z "$endpointId" ]; then
-    echo "Failed to create service connection"
-    exit 1
-fi
-
-echo "Querying auto-generated issuer and subject..."
-
 # Get the auto-generated issuer and subject from the service connection
 scDetailsFile=$(mktemp)
 az devops invoke \
@@ -128,9 +105,6 @@ az devops invoke \
 actualIssuer=$(grep -oP '"workloadIdentityFederationIssuer":\s*"\K[^"]+' $scDetailsFile)
 actualSubject=$(grep -oP '"workloadIdentityFederationSubject":\s*"\K[^"]+' $scDetailsFile)
 rm $scDetailsFile
-
-echo "Azure DevOps generated issuer: $actualIssuer"
-echo "Azure DevOps generated subject: $actualSubject"
 
 # Create the federated credential to match Azure DevOps
 echo "Creating managed identity federated credential to match..."
@@ -145,8 +119,3 @@ az identity federated-credential create \
 # Share with all pipelines
 echo "Sharing service connection with all pipelines..."
 az devops service-endpoint update --id $endpointId --enable-for-all true >/dev/null
-
-echo ""
-echo "✓ Service connection '$serviceConnectionName' created and shared successfully!"
-echo "✓ Endpoint ID: $endpointId"
-echo "✓ Federated credential created to match Azure DevOps issuer/subject"

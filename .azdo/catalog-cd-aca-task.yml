@@ -15,11 +15,11 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  acrName: 'az400acrdev'
-  image: 'az400acrdev.azurecr.io/catalog-service'
-  app: 'catalog-service-v1'
-  grp: 'az400-dev'
-  acaenv: 'az400acaenv'
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/catalog-service"
+  app: "catalog-service-v1"
+  grp: "az400-dev"
+  acaenv: "az400acaenv"
 
 stages:
   - stage: Deploy
@@ -27,12 +27,12 @@ stages:
       - job: Deploy
         displayName: Deploy to ACA
         steps:
-        - checkout: none
-        - task: AzureContainerApps@1
-          inputs:
-            azureSubscription: 'scFood'
-            acrName: $(acrName)
-            imageToDeploy: '$(image)'
-            containerAppName: '$(app)'
-            resourceGroup: '$(grp)'
-            containerAppEnvironment: '$(acaenv)'
+          - checkout: none
+          - task: AzureContainerApps@1
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              acrName: $(acrName)
+              imageToDeploy: "$(image)"
+              containerAppName: "$(app)"
+              resourceGroup: "$(grp)"
+              containerAppEnvironment: "$(acaenv)"

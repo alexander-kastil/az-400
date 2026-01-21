@@ -17,10 +17,10 @@ pr: none
 variables:
   package: foodlist-wp.sppkg
   packageLocation: /drop/src/teams/food-list/sharepoint/solution
-  appPath: src/teams/food-list/ 
+  appPath: src/teams/food-list/
   environment: m365-integrationsonline
   nodeVersion: "14.x"
-  azSubscription: "wi-az400"
+  serviceConnection: "wi-az400"
   vault: az400-vault-dev
   # Do NOT set pipeline vars: username, password
 
@@ -51,9 +51,9 @@ stages:
             deploy:
               steps:
                 - task: AzureKeyVault@1
-                  displayName: 'Azure Key Vault: $(vault)'
+                  displayName: "Azure Key Vault: $(vault)"
                   inputs:
-                    azureSubscription: $(azSubscription)
+                    azureSubscription: $(serviceConnection)
                     KeyVaultName: $(vault)
 
                 - template: templates/t-spfx-deploy-cli.yaml

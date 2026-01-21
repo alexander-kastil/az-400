@@ -9,7 +9,7 @@ trigger: none
 pr: none
 
 variables:
-  azSubscription: wi-az400
+  serviceConnection: wi-az400
   functionAppName: utils-ts-func-dev
   appPath: src/az-functions/utils-ts/
 
@@ -62,7 +62,7 @@ stages:
                 - task: AzureFunctionApp@2
                   displayName: "Azure Functions App Deploy"
                   inputs:
-                    connectedServiceNameARM: $(azSubscription)
+                    connectedServiceNameARM: $(serviceConnection)
                     appType: functionAppLinux
                     appName: $(functionAppName)
                     package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"

@@ -15,7 +15,7 @@ variables:
   dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
   releaseBranchName: master
-  azSubscription: scFood
+  serviceConnection: wi-az-400
   appPath: src/services/catalog-service/api/
   appTests: src/services/catalog-service/tests/
   appService: food-catalog-api-yaml
@@ -99,7 +99,7 @@ stages:
                   displayName: "Azure App Service Deploy: $(appservice)"
                   inputs:
                     ConnectionType: "AzureRM"
-                    azureSubscription: $(azSubscription)
+                    azureSubscription: $(serviceConnection)
                     appType: "webApp"
                     WebAppName: $(appservice)
                     packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"

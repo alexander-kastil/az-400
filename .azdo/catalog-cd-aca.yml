@@ -15,11 +15,11 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  acrName: 'az400acrdev'
-  image: 'az400acrdev.azurecr.io/catalog-service'
-  app: 'catalog-service-v1'
-  grp: 'az400-dev'
-  acaenv: 'az400acaenv'
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/catalog-service"
+  app: "catalog-service-v1"
+  grp: "az400-dev"
+  acaenv: "az400acaenv"
 
 stages:
   - stage: Deploy
@@ -30,9 +30,9 @@ stages:
           - checkout: none
           - task: AzureCLI@2
             inputs:
-              azureSubscription: 'scFood'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
               inlineScript: |
                 az containerapp create -n $(app) -g $(grp) --image $(image) \
                     --environment $(acaenv) \

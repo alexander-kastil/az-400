@@ -15,8 +15,8 @@ variables:
   dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
   releaseBranchName: master
-  azSubscription: scFood
-  rg: az400-dev
+  serviceConnection: wi-az-400
+  grp: az400-dev
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-gate
   templateFile: infra/bicep/webapp-windows.bicep
@@ -41,12 +41,12 @@ stages:
           - task: AzureCLI@2
             displayName: "Provision AppService"
             inputs:
-              azureSubscription: "$(azSubscription)"
+              azureSubscription: "$(serviceConnection)"
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
                 az deployment group create \
-                  --resource-group $(rg) \
+                  --resource-group $(grp) \
                   --template-file $(templateFile) \
                   --parameters webAppName=$(appService)
 
@@ -85,7 +85,7 @@ stages:
                   displayName: "Deploy: $(appService)"
                   inputs:
                     ConnectionType: "AzureRM"
-                    azureSubscription: $(azSubscription)
+                    azureSubscription: $(serviceConnection)
                     appType: "webApp"
                     WebAppName: $(appService)
                     packageForLinux: "$(System.ArtifactsDirectory)/**/*.zip"

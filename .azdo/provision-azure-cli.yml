@@ -5,7 +5,7 @@ pr: none
 
 variables:
   script: "infra/cli/create-orders-topic-func.sh"
-  azSubscription: scFood
+  serviceConnection: wi-az-400
   environment: dev
 
 pool:
@@ -19,7 +19,7 @@ stages:
         steps:
           - task: AzureCLI@2
             inputs:
-              azureSubscription: $(azSubscription)
+              azureSubscription: $(serviceConnection)
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "$(System.DefaultWorkingDirectory)/$(script)"

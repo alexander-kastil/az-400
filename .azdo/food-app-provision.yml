@@ -7,8 +7,8 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  azSubscription: scFood
-  rg: az400-dev
+  serviceConnection: wi-az-400
+  grp: az400-dev
   vault: az400-vault-dev
   templateFile: infra/bicep/food-app.bicep
 
@@ -20,20 +20,20 @@ stages:
           - task: AzureKeyVault@1
             displayName: "Azure Key Vault: $(vault)"
             inputs:
-              azureSubscription: $(azSubscription)
+              azureSubscription: $(serviceConnection)
               KeyVaultName: $(vault)
           - task: AzureCLI@2
             displayName: "Provision AppService"
             inputs:
-              azureSubscription: "$(azSubscription)"
+              azureSubscription: "$(serviceConnection)"
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                az deployment group create --resource-group $(rg) \
+                az deployment group create --resource-group $(grp) \
                   --template-file $(templateFile) \
                   --parameters \
                     appName=food-app-dev \
-                    rgLocation=westeurope \
+                    grpLocation=westeurope \
                     acaEnvName= az400acrdev \
                     acrName=$(acrName) \
                     acrPwd=$(acrPassword) \

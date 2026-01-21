@@ -15,7 +15,7 @@ variables:
   dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
   releaseBranchName: master
-  azSubscription: scFood
+  serviceConnection: wi-az-400
   appPath: src/services/catalog-service/api/
 
 pool:
