@@ -15,7 +15,7 @@ variables:
   dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
   releaseBranchName: master
-  serviceConnection: wi-az-400
+  serviceConnection: wi-az400-dev
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
   appConfigEP: "https://az400-config-dev.azconfig.io"

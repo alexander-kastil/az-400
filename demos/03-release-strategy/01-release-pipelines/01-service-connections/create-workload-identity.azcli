@@ -1,4 +1,4 @@
-grp="az-400"
+grp="az400-dev"
 loc="westeurope"
 devOpsOrg="integrationsonline"
 project="az-400"
@@ -25,20 +25,9 @@ az identity create --name $wfIdentity --resource-group $grp
 principalId=$(az identity show --name $wfIdentity --resource-group $grp --query principalId -o tsv)
 clientId=$(az identity show --name $wfIdentity --resource-group $grp --query clientId -o tsv)
 
-echo "Managed Identity created: $wfIdentity"
-echo "Client ID: $clientId"
-echo "Principal ID: $principalId"
+sleep 15
 
-# Wait for the service principal backing the managed identity to be available
-for i in {1..10}; do
-    if az ad sp show --id $clientId >/dev/null 2>&1; then
-        echo "Service principal is available"
-        break
-    fi
-    echo "Waiting for service principal propagation... ($i/10)"
-    sleep 10
-done
-
+# Assign Contributor role to the managed identity on the resource group
 az role assignment create --assignee $principalId --role $contributorRoleId --scope $resourceGroupScope
 
 # Azure DevOps service connection (Workload Identity Federation)

@@ -1,0 +1,7 @@
+{
+    "serviceConnection": "wi-az400-dev",
+    "GitRepo": "https://github.com/alexander-kastil/az-400",
+    "GitHub ServiceConnection Name": "az-400",
+    "ADOOrg": "https://dev.azure.com/integrationsonline",
+    "ADOProject": "az-400"
+}

@@ -7,7 +7,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  serviceConnection: wi-az-400
+  serviceConnection: wi-az400-dev
   grp: az400-dev
   vault: az400-vault-dev
   templateFile: infra/bicep/food-app.bicep
