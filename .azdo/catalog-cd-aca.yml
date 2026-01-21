@@ -1,4 +1,4 @@
-name: 03-01-catalog-cd-aca
+name: 03-02-catalog-cd-aca
 
 # trigger:
 #   branches:
@@ -19,6 +19,7 @@ variables:
   image: "az400acrdev.azurecr.io/catalog-service"
   app: "catalog-service-v1"
   grp: "az400-dev"
+  serviceConnection: wi-az400-dev
   acaenv: "az400acaenv"
 
 stages:
@@ -28,6 +29,17 @@ stages:
         displayName: Deploy to ACA
         steps:
           - checkout: none
+          - task: AzureCLI@2
+            displayName: Fetch ACR credentials
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                # Fetch ACR admin credentials and surface password as pipeline variable
+                ACR_PASSWORD=$(az acr credential show --name $(acrName) --query "passwords[0].value" -o tsv)
+                echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
+
           - task: AzureCLI@2
             inputs:
               azureSubscription: "$(serviceConnection)"
