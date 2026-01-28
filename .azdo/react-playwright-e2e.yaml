@@ -1,4 +1,4 @@
-name: react-playwright-e2e
+name: 03-03-react-playwright-e2e
 
 trigger: none
 pr: none
@@ -34,7 +34,7 @@ stages:
   - stage: BuildImage
     displayName: "Build Container Image"
     dependsOn: Check
-    condition: eq(stageDependencies.Check.CheckResources.outputs['checkStep.skipBuild'], 'false')
+    condition: succeeded('Check')
     jobs:
       - job: BuildAndPush
         displayName: "Build and Push to ACR"
@@ -51,7 +51,7 @@ stages:
     dependsOn:
       - Check
       - BuildImage
-    condition: eq(stageDependencies.Check.CheckResources.outputs['checkStep.skipDeploy'], 'false')
+    condition: succeeded('Check', 'BuildImage')
     jobs:
       - job: DeployToACA
         displayName: Deploy to ACA
