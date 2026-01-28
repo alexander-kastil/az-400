@@ -1,2 +1,11 @@
-// No setup needed for Angular 21 zoneless testing
-// Configure providers per test using provideZonelessChangeDetection()
+import { getTestBed } from '@angular/core/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+
+// Initialize TestBed for Angular testing
+getTestBed().initTestEnvironment(
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting(),
+);
