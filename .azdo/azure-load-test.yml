@@ -1,4 +1,4 @@
-name: azure-load-test
+name: 03-03-azure-load-test
 
 trigger: none
 pr: none
@@ -137,11 +137,11 @@ stages:
               inlineScript: |
                 echo "App URL: $(appUrl)"
                 echo "Test file: $(testFile)"
-                
+
                 # Create a modified version of the JMX file with the actual URL
                 # This is a simple approach; for production, consider using JMeter variables
                 cp $(testFile) $(testFile).temp
-                
+
                 # Note: This assumes the JMX file will be used with proper parameters
                 # The actual URL will be passed during test execution
                 echo "JMeter test file prepared"
@@ -206,7 +206,7 @@ stages:
   - stage: Cleanup
     displayName: "Optional Cleanup"
     dependsOn: LoadTest
-    condition: false  # Set to true to enable cleanup
+    condition: false # Set to true to enable cleanup
     jobs:
       - job: CleanupResources
         displayName: "Cleanup Container App"
