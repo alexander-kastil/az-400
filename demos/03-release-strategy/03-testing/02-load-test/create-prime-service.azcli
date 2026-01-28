@@ -5,8 +5,13 @@ acr=az400acr$env
 acaenv=az400acaenv
 app=prime-service-$env
 img=$acr.azurecr.io/prime-service
+loadTest=az400-load-test
 
 az group create -n $grp --l $loc
+
+# Create Azure Load Testing resource
+az extension add -n load --upgrade
+az load create -g $grp -n $loadTest -l $loc
 
 pwd=$(az acr credential show -n $acr -g $grp --query passwords[0].value -o tsv)
 loginSrv=$(az acr list -g $grp --query "[?name=='$acr'].loginServer" -o tsv) 
