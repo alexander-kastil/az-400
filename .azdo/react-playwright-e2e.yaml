@@ -78,7 +78,7 @@ stages:
     dependsOn:
       - Check
       - Deploy
-    condition: succeeded('Check')
+    condition: succeeded('Deploy')
     jobs:
       - job: PlaywrightTests
         displayName: Execute E2E Tests
