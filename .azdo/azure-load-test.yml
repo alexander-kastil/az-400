@@ -1,0 +1,225 @@
+name: azure-load-test
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/prime-service"
+  app: "prime-service-dev"
+  grp: "az400-dev"
+  serviceConnection: "wi-az400-dev"
+  acaenv: "az400acaenv"
+  targetPort: 8080
+  loadTestResource: "az400-load-test"
+  testFile: "demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx"
+
+stages:
+  - stage: Build
+    displayName: "Build Container Image"
+    jobs:
+      - job: BuildImage
+        displayName: "Build Image in ACR"
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: "Build container image in ACR"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Building image in Azure Container Registry..."
+                cd src/services/prime-service
+                az acr build \
+                  --image prime-service:$(Build.BuildId) \
+                  --image prime-service:latest \
+                  --registry $(acrName) \
+                  --file dockerfile \
+                  .
+
+  - stage: Deploy
+    displayName: "Deploy to Container Apps"
+    dependsOn: Build
+    jobs:
+      - job: DeployApp
+        displayName: "Deploy Container App"
+        steps:
+          - checkout: none
+
+          - task: AzureCLI@2
+            displayName: "Fetch ACR credentials"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                ACR_PASSWORD=$(az acr credential show --name $(acrName) --query "passwords[0].value" -o tsv)
+                echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
+
+          - task: AzureCLI@2
+            displayName: "Deploy to Azure Container Apps"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                if az containerapp show -n $(app) -g $(grp) &>/dev/null; then
+                  echo "Updating existing container app..."
+                  az containerapp update \
+                    -n $(app) \
+                    -g $(grp) \
+                    --image $(image):$(Build.BuildId)
+                else
+                  echo "Creating new container app..."
+                  az containerapp create \
+                    -n $(app) \
+                    -g $(grp) \
+                    --image $(image):$(Build.BuildId) \
+                    --environment $(acaenv) \
+                    --target-port $(targetPort) \
+                    --ingress external \
+                    --registry-server $(acrName).azurecr.io \
+                    --registry-username $(acrName) \
+                    --registry-password $(acrPassword)
+                fi
+
+          - task: AzureCLI@2
+            displayName: "Get Container App URL"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
+                echo "Container App URL: https://${APP_URL}"
+                echo "##vso[task.setvariable variable=appUrl;isOutput=true]${APP_URL}"
+            name: getUrl
+
+          - task: AzureCLI@2
+            displayName: "Test Container App Endpoint"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
+                echo "Testing endpoint: https://${APP_URL}/api/primes/100"
+                RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "https://${APP_URL}/api/primes/100")
+                if [ "$RESPONSE" == "200" ]; then
+                  echo "✓ Endpoint is responding correctly"
+                else
+                  echo "✗ Endpoint returned HTTP $RESPONSE"
+                  exit 1
+                fi
+
+  - stage: LoadTest
+    displayName: "Execute Load Test"
+    dependsOn: Deploy
+    variables:
+      appUrl: $[ stageDependencies.Deploy.DeployApp.outputs['getUrl.appUrl'] ]
+    jobs:
+      - job: RunLoadTest
+        displayName: "Run Azure Load Test"
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: "Update JMeter test with app URL"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "App URL: $(appUrl)"
+                echo "Test file: $(testFile)"
+                
+                # Create a modified version of the JMX file with the actual URL
+                # This is a simple approach; for production, consider using JMeter variables
+                cp $(testFile) $(testFile).temp
+                
+                # Note: This assumes the JMX file will be used with proper parameters
+                # The actual URL will be passed during test execution
+                echo "JMeter test file prepared"
+
+          - task: AzureCLI@2
+            displayName: "Execute Load Test"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "=== Azure Load Testing ==="
+                echo "Note: This step demonstrates the load testing process."
+                echo "For full Azure Load Testing integration, use the AzureLoadTest task"
+                echo ""
+                echo "Test Configuration:"
+                echo "  - Target URL: https://$(appUrl)/api/primes/10000"
+                echo "  - Test Plan: $(testFile)"
+                echo "  - Load Test Resource: $(loadTestResource)"
+                echo ""
+                echo "To execute the load test:"
+                echo "1. Ensure Azure Load Testing resource exists"
+                echo "2. Upload JMeter test plan"
+                echo "3. Configure test parameters"
+                echo "4. Run test and monitor results"
+                echo ""
+                echo "Alternative: Use Azure Load Testing Portal"
+                echo "  https://portal.azure.com -> Azure Load Testing -> $(loadTestResource)"
+
+          # Uncomment and configure when Azure Load Testing resource is ready
+          # - task: AzureLoadTest@1
+          #   displayName: "Execute Azure Load Test"
+          #   inputs:
+          #     azureSubscription: "$(serviceConnection)"
+          #     loadTestConfigFile: "$(testFile)"
+          #     resourceGroup: "$(grp)"
+          #     loadTestResource: "$(loadTestResource)"
+          #     env: |
+          #       [
+          #         {
+          #           "name": "webapp",
+          #           "value": "$(appUrl)"
+          #         }
+          #       ]
+
+          - task: AzureCLI@2
+            displayName: "Smoke Test with curl"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Running smoke test..."
+                for i in {1..5}; do
+                  echo "Request $i:"
+                  curl -s "https://$(appUrl)/api/primes/10000"
+                  echo ""
+                  sleep 1
+                done
+                echo "Smoke test completed"
+
+  - stage: Cleanup
+    displayName: "Optional Cleanup"
+    dependsOn: LoadTest
+    condition: false  # Set to true to enable cleanup
+    jobs:
+      - job: CleanupResources
+        displayName: "Cleanup Container App"
+        steps:
+          - checkout: none
+
+          - task: AzureCLI@2
+            displayName: "Delete Container App"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Deleting container app $(app)..."
+                az containerapp delete -n $(app) -g $(grp) --yes
+                echo "Cleanup completed"
