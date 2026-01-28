@@ -71,7 +71,7 @@ stages:
               grp: $(grp)
               serviceConnection: $(serviceConnection)
               acaenv: $(acaenv)
-              targetPort: $(targetPort)
+              targetPort: 80
 
   - stage: Test
     displayName: "Run Playwright E2E Tests"
