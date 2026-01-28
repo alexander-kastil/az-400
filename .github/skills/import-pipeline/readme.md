@@ -12,7 +12,7 @@ Ask GitHub Copilot:
 
 ## What This Skill Does
 
-1. **Imports pipelines** from YAML files to Azure DevOps
+1. **Imports pipelines** from YAML files to Azure DevOps. if the name attribute in the pipeline is present, use it as display name for the pipeline. Get the deployment metadata from `deploy.json`.
 2. **Executes pipelines** and monitors their status
 3. **Diagnoses errors** by analyzing logs and documentation
 4. **Fixes issues** by updating YAML files with correct syntax

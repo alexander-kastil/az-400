@@ -17,7 +17,7 @@ variables:
   releaseBranchName: master
   serviceConnection: wi-az400-dev
   appPath: src/services/catalog-service/api/
-  appTests: src/services/catalog-service/api-tests/
+  appTests: src/services/catalog-service/tests/
 
 pool:
   vmImage: "ubuntu-latest"
