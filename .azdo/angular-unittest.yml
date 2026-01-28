@@ -36,23 +36,20 @@ stages:
             condition: eq(variables['npmCache'],False)
 
           - script: |
-              mkdir -p $(System.DefaultWorkingDirectory)/test-results
               npx vitest run \
                 --coverage \
-                --coverage.reporter=cobertura \
-                --coverage.reporter=html \
-                --coverage.reportsDirectory=$(System.DefaultWorkingDirectory)/coverage \
                 --reporter=junit \
-                --outputFile=$(System.DefaultWorkingDirectory)/test-results/vitest-junit.xml
-            displayName: Run vitest
+                --reporter=default \
+                --outputFile.junit=./test-results/vitest-junit.xml
+            displayName: Run vitest tests
             workingDirectory: $(appRoot)
 
           - task: PublishTestResults@2
-            displayName: Publish Vitest results
+            displayName: Publish Vitest test results
             condition: succeededOrFailed()
             inputs:
-              searchFolder: $(System.DefaultWorkingDirectory)/test-results
-              testRunTitle: Angular Vitest
+              searchFolder: $(appRoot)/test-results
+              testRunTitle: Angular Vitest Tests
               testResultsFormat: JUnit
               testResultsFiles: "vitest-junit.xml"
 
@@ -61,6 +58,6 @@ stages:
             condition: succeededOrFailed()
             inputs:
               codeCoverageTool: Cobertura
-              summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
-              reportDirectory: "$(System.DefaultWorkingDirectory)/coverage"
+              summaryFileLocation: "$(appRoot)/coverage/cobertura-coverage.xml"
+              reportDirectory: "$(appRoot)/coverage"
               failIfCoverageEmpty: false
