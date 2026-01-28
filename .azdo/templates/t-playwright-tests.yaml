@@ -23,6 +23,10 @@ steps:
     displayName: "Install Dependencies"
     workingDirectory: ${{ parameters.appRoot }}
 
+  - script: npx playwright install
+    displayName: "Install Playwright Browsers"
+    workingDirectory: ${{ parameters.appRoot }}
+
   - task: AzureCLI@2
     displayName: Get Container App URL
     inputs:
