@@ -34,7 +34,7 @@ stages:
   - stage: BuildImage
     displayName: "Build Container Image"
     dependsOn: Check
-    condition: succeeded('Check')
+    condition: and(succeeded('Check'), eq(dependencies.Check.outputs['CheckResources.checkStep.skipBuild'], 'false'))
     jobs:
       - job: BuildAndPush
         displayName: "Build and Push to ACR"
@@ -51,7 +51,7 @@ stages:
     dependsOn:
       - Check
       - BuildImage
-    condition: succeeded('Check', 'BuildImage')
+    condition: and(succeeded('Check'), or(succeeded('BuildImage'), eq(dependencies.Check.outputs['CheckResources.checkStep.skipBuild'], 'true')))
     jobs:
       - job: DeployToACA
         displayName: Deploy to ACA
