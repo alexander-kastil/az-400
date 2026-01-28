@@ -13,4 +13,8 @@ loginSrv=$(az acr list -g $grp --query "[?name=='$acr'].loginServer" -o tsv)
 
 az containerapp env create -n $containerEnv -g $grp -l $loc
 
+cd src/services/prime-service
+az acr build --image prime-service --registry $acr --file dockerfile .
+cd ../../..
+
 az containerapp create -n $app -g $grp --image $img --environment $acaenv --image $img --target-port 8080 --ingress external --registry-username $acr --registry-password $pwd --registry-server $loginSrv 

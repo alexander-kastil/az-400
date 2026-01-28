@@ -1,0 +1,22 @@
+env=dev
+grp=az400-$env
+loc=westeurope
+acr=az400acr$env
+
+az group create -n $grp -l westeurope
+
+az acr create -g $grp -n $acr --sku Basic --admin-enabled true
+az acr login -n $acr
+
+pwd=$(az acr credential show -n $acr -g $grp  --query passwords[0].value -o tsv) #for demos purposes only
+loginSrv=$(az acr list -g $grp --query "[].loginServer" -o tsv) #for demos purposes only
+
+az containerapp env create -n $containerEnv -g $grp -l $loc
+
+cd src/angular/food-shop
+az acr build --image food-shop --registry $acr --file dockerfile .
+cd ../../..
+
+cd src/services/catalog-service/api
+az acr build --image catalog-service --registry $acr --file dockerfile .
+cd ../../..
