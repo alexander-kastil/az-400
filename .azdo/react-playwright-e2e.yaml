@@ -1,0 +1,92 @@
+name: react-playwright-e2e
+
+trigger: none
+pr: none
+
+variables:
+  imageName: react-devops
+  acr: scACR
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/react-devops"
+  app: "react-devops-e2e-app"
+  grp: "az400-dev"
+  serviceConnection: wi-az400-dev
+  acaenv: "az400acaenv"
+  appRoot: src/react/react-devops
+  nodeVer: "22.x"
+  targetPort: 80
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: Check
+    displayName: "Check Resources"
+    jobs:
+      - template: templates/t-check-containers.yaml
+        parameters:
+          acrName: $(acrName)
+          repository: $(imageName)
+          app: $(app)
+          grp: $(grp)
+          serviceConnection: $(serviceConnection)
+
+  - stage: BuildImage
+    displayName: "Build Container Image"
+    dependsOn: Check
+    condition: eq(stageDependencies.Check.CheckResources.outputs['checkStep.skipBuild'], 'false')
+    jobs:
+      - job: BuildAndPush
+        displayName: "Build and Push to ACR"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acr: $(acr)
+              imageName: $(imageName)
+              dockerfile: $(appRoot)/dockerfile
+              buildContext: $(appRoot)
+
+  - stage: Deploy
+    displayName: "Deploy to Azure Container Apps"
+    dependsOn:
+      - Check
+      - BuildImage
+    condition: eq(stageDependencies.Check.CheckResources.outputs['checkStep.skipDeploy'], 'false')
+    jobs:
+      - job: DeployToACA
+        displayName: Deploy to ACA
+        steps:
+          - checkout: none
+
+          - template: templates/t-fetch-acr-credentials.yaml
+            parameters:
+              acrName: $(acrName)
+              serviceConnection: $(serviceConnection)
+
+          - template: templates/t-deploy-container-app.yaml
+            parameters:
+              acrName: $(acrName)
+              image: $(image)
+              app: $(app)
+              grp: $(grp)
+              serviceConnection: $(serviceConnection)
+              acaenv: $(acaenv)
+              targetPort: $(targetPort)
+
+  - stage: Test
+    displayName: "Run Playwright E2E Tests"
+    dependsOn:
+      - Check
+      - Deploy
+    condition: succeeded('Check')
+    jobs:
+      - job: PlaywrightTests
+        displayName: Execute E2E Tests
+        steps:
+          - template: templates/t-playwright-tests.yaml
+            parameters:
+              appRoot: $(appRoot)
+              nodeVer: $(nodeVer)
+              app: $(app)
+              grp: $(grp)
+              serviceConnection: $(serviceConnection)

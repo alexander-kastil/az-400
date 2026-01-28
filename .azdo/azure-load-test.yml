@@ -21,34 +21,13 @@ stages:
   - stage: Check
     displayName: "Check Resources"
     jobs:
-      - job: CheckResources
-        displayName: "Check if resources exist"
-        steps:
-          - checkout: none
-
-          - task: AzureCLI@2
-            displayName: "Check image and container app"
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                # Check if image exists
-                IMAGE_EXISTS=$(az acr repository show-tags \
-                  --name $(acrName) \
-                  --repository prime-service \
-                  --query "contains(@, 'latest')" \
-                  -o tsv 2>/dev/null || echo false)
-
-                # Check if container app exists
-                APP_EXISTS=$(az containerapp show -n $(app) -g $(grp) &>/dev/null && echo true || echo false)
-
-                echo "##vso[task.setvariable variable=skipBuild;isOutput=true]$([ "$IMAGE_EXISTS" = "true" ] && echo true || echo false)"
-                echo "##vso[task.setvariable variable=skipDeploy;isOutput=true]$([ "$APP_EXISTS" = "true" ] && echo true || echo false)"
-
-                echo "Image exists: $IMAGE_EXISTS"
-                echo "Container app exists: $APP_EXISTS"
-            name: checkStep
+      - template: templates/t-check-containers.yaml
+        parameters:
+          acrName: $(acrName)
+          repository: prime-service
+          app: $(app)
+          grp: $(grp)
+          serviceConnection: $(serviceConnection)
 
   - stage: Build
     displayName: "Build Container Image"
@@ -58,35 +37,13 @@ stages:
       - job: BuildImage
         displayName: "Build Image in ACR"
         steps:
-          - checkout: self
-
-          - task: AzureCLI@2
-            displayName: "Build container image in ACR"
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                echo "Checking if image already exists in ACR..."
-                TAG_EXISTS=$(az acr repository show-tags \
-                  --name $(acrName) \
-                  --repository prime-service \
-                  --query "contains(@, 'latest')" \
-                  -o tsv 2>/dev/null || echo false)
-
-                if [ "${TAG_EXISTS}" = "true" ]; then
-                  echo "Image prime-service:latest already exists. Skipping build."
-                  exit 0
-                fi
-
-                echo "Building image in Azure Container Registry..."
-                cd src/services/prime-service
-                az acr build \
-                  --image prime-service:$(Build.BuildId) \
-                  --image prime-service:latest \
-                  --registry $(acrName) \
-                  --file dockerfile \
-                  .
+          - template: templates/t-build-acr-image.yaml
+            parameters:
+              acrName: $(acrName)
+              repository: prime-service
+              dockerfile: dockerfile
+              buildContext: src/services/prime-service
+              serviceConnection: $(serviceConnection)
 
   - stage: Deploy
     displayName: "Deploy to Container Apps"
@@ -100,15 +57,10 @@ stages:
         steps:
           - checkout: none
 
-          - task: AzureCLI@2
-            displayName: "Fetch ACR credentials"
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                ACR_PASSWORD=$(az acr credential show --name $(acrName) --query "passwords[0].value" -o tsv)
-                echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
+          - template: templates/t-fetch-acr-credentials.yaml
+            parameters:
+              acrName: $(acrName)
+              serviceConnection: $(serviceConnection)
 
           - task: AzureCLI@2
             displayName: "Deploy to Azure Container Apps"

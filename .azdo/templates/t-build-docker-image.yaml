@@ -1,0 +1,30 @@
+parameters:
+  - name: acr
+    type: string
+  - name: imageName
+    type: string
+  - name: dockerfile
+    type: string
+  - name: buildContext
+    type: string
+
+steps:
+  - task: Docker@2
+    displayName: Login to ACR
+    inputs:
+      command: login
+      containerRegistry: ${{ parameters.acr }}
+
+  - task: Docker@2
+    displayName: Build and Push Image
+    inputs:
+      repository: "${{ parameters.imageName }}"
+      command: "buildAndPush"
+      Dockerfile: ${{ parameters.dockerfile }}
+      buildContext: ${{ parameters.buildContext }}
+
+  - task: Docker@2
+    displayName: Logout of ACR
+    inputs:
+      command: logout
+      containerRegistry: ${{ parameters.acr }}
