@@ -18,8 +18,42 @@ variables:
   testFile: "demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx"
 
 stages:
+  - stage: Check
+    displayName: "Check Resources"
+    jobs:
+      - job: CheckResources
+        displayName: "Check if resources exist"
+        steps:
+          - checkout: none
+
+          - task: AzureCLI@2
+            displayName: "Check image and container app"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                # Check if image exists
+                IMAGE_EXISTS=$(az acr repository show-tags \
+                  --name $(acrName) \
+                  --repository prime-service \
+                  --query "contains(@, 'latest')" \
+                  -o tsv 2>/dev/null || echo false)
+
+                # Check if container app exists
+                APP_EXISTS=$(az containerapp show -n $(app) -g $(grp) &>/dev/null && echo true || echo false)
+
+                echo "##vso[task.setvariable variable=skipBuild;isOutput=true]$([ "$IMAGE_EXISTS" = "true" ] && echo true || echo false)"
+                echo "##vso[task.setvariable variable=skipDeploy;isOutput=true]$([ "$APP_EXISTS" = "true" ] && echo true || echo false)"
+
+                echo "Image exists: $IMAGE_EXISTS"
+                echo "Container app exists: $APP_EXISTS"
+            name: checkStep
+
   - stage: Build
     displayName: "Build Container Image"
+    dependsOn: Check
+    condition: eq(stageDependencies.Check.CheckResources.outputs['checkStep.skipBuild'], 'false')
     jobs:
       - job: BuildImage
         displayName: "Build Image in ACR"
@@ -56,7 +90,10 @@ stages:
 
   - stage: Deploy
     displayName: "Deploy to Container Apps"
-    dependsOn: Build
+    dependsOn:
+      - Check
+      - Build
+    condition: eq(stageDependencies.Check.CheckResources.outputs['checkStep.skipDeploy'], 'false')
     jobs:
       - job: DeployApp
         displayName: "Deploy Container App"
