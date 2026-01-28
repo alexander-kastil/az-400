@@ -12,10 +12,10 @@ variables:
 
 stages:
   - stage: UnitTest
-    displayName: Vitest UnitTest
+    displayName: Angular UnitTest
 
     jobs:
-      - job: Vitest
+      - job: AngularTest
 
         steps:
           - task: NodeTool@0
@@ -35,26 +35,21 @@ stages:
             workingDirectory: $(appRoot)
             condition: eq(variables['npmCache'],False)
 
-          - script: |
-              npx vitest run \
-                --coverage \
-                --reporter=junit \
-                --reporter=default \
-                --outputFile.junit=./test-results/vitest-junit.xml
-            displayName: Run vitest tests
+          - script: npm test
+            displayName: Run Angular tests
             workingDirectory: $(appRoot)
 
           - task: PublishTestResults@2
-            displayName: Publish Vitest test results
+            displayName: Publish test results
             condition: succeededOrFailed()
             inputs:
-              searchFolder: $(appRoot)/test-results
-              testRunTitle: Angular Vitest Tests
+              searchFolder: $(appRoot)
+              testRunTitle: Angular Tests
               testResultsFormat: JUnit
-              testResultsFiles: "vitest-junit.xml"
+              testResultsFiles: "**/test-results.xml"
 
           - task: PublishCodeCoverageResults@1
-            displayName: Publish Vitest coverage
+            displayName: Publish coverage
             condition: succeededOrFailed()
             inputs:
               codeCoverageTool: Cobertura
