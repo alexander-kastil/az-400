@@ -24,9 +24,9 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request">
-          <stringProp name="HTTPSampler.domain">https://prime-service-dev.thankfulflower-04aab301.westeurope.azurecontainerapps.io</stringProp>
+          <stringProp name="HTTPSampler.domain">${__env(webapp)}</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.path">api/primes/20000</stringProp>
+          <stringProp name="HTTPSampler.path">/api/primes/20000</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
