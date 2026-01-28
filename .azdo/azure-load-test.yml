@@ -155,46 +155,23 @@ stages:
                 # The actual URL will be passed during test execution
                 echo "JMeter test file prepared"
 
-          - task: AzureCLI@2
-            displayName: "Execute Load Test"
+          - task: AzureLoadTest@1
+            displayName: "Execute Azure Load Test"
             inputs:
               azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                echo "=== Azure Load Testing ==="
-                echo "Note: This step demonstrates the load testing process."
-                echo "For full Azure Load Testing integration, use the AzureLoadTest task"
-                echo ""
-                echo "Test Configuration:"
-                echo "  - Target URL: https://$(appUrl)/api/primes/10000"
-                echo "  - Test Plan: $(testFile)"
-                echo "  - Load Test Resource: $(loadTestResource)"
-                echo ""
-                echo "To execute the load test:"
-                echo "1. Ensure Azure Load Testing resource exists"
-                echo "2. Upload JMeter test plan"
-                echo "3. Configure test parameters"
-                echo "4. Run test and monitor results"
-                echo ""
-                echo "Alternative: Use Azure Load Testing Portal"
-                echo "  https://portal.azure.com -> Azure Load Testing -> $(loadTestResource)"
+              loadTestConfigFile: "demos/03-release-strategy/03-testing/02-load-test/prime-service-loadtest.yaml"
+              resourceGroup: "$(grp)"
+              loadTestResource: "$(loadTestResource)"
+              env: |
+                [
+                  {
+                    "name": "webapp",
+                    "value": "https://$(appUrl)"
+                  }
+                ]
 
-          # Uncomment and configure when Azure Load Testing resource is ready
-          # - task: AzureLoadTest@1
-          #   displayName: "Execute Azure Load Test"
-          #   inputs:
-          #     azureSubscription: "$(serviceConnection)"
-          #     loadTestConfigFile: "$(testFile)"
-          #     resourceGroup: "$(grp)"
-          #     loadTestResource: "$(loadTestResource)"
-          #     env: |
-          #       [
-          #         {
-          #           "name": "webapp",
-          #           "value": "$(appUrl)"
-          #         }
-          #       ]
+          - publish: $(System.DefaultWorkingDirectory)/loadTest
+            artifact: loadTestResults
 
           - task: AzureCLI@2
             displayName: "Smoke Test with curl"
