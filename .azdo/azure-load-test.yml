@@ -99,7 +99,7 @@ stages:
               scriptLocation: "inlineScript"
               inlineScript: |
                 echo "Checking for existing test: prime-service-loadtest"
-                
+
                 # Check if test exists
                 if az load test show --test-id prime-service-loadtest --resource-group $(grp) --load-test-resource $(loadTestResource) >/dev/null 2>&1; then
                   echo "Test exists. Deleting..."
