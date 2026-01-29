@@ -13,8 +13,12 @@ This repository contains training materials, demos, and infrastructure for Micro
 - **`demos/`** - Module-organized demonstrations (8 modules covering entire AZ-400 curriculum)
 - **`src/`** - Sample applications (Angular, React, .NET, Python, Java, SPFx)
 - **`infra/`** - Infrastructure as Code (Bicep, Terraform, Azure CLI)
-- **`setup/`** - Environment setup scripts for students
-- **`tooling/`** - Getting started guides and tool tutorials
+
+### Agents & Skills
+
+#### Skills
+
+- Skills: `.github/skills/import-pipeline/`, `.github/skills/wi-creation/`
 
 ## Critical Configuration Files
 
@@ -258,8 +262,6 @@ condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main
 
 1. **New Pipeline**: Use templates from `.azdo/templates/`, set `trigger: none`, add to `.azdo/`
 2. **New App**: Place in `src/<category>/`, create Dockerfile, add to `create-images.azcli`
-3. **New Demo**: Add to `demos/<module>/<topic>/`, include `readme.md` with learning objectives
-4. **New IaC**: Prefer Bicep in `infra/bicep/modules/`, use consistent parameter naming
 
 ## Common Issues & Solutions
 
@@ -278,17 +280,3 @@ condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main
 **Problem**: Federated credential mismatch
 
 - **Solution**: Re-run workload identity script - it queries actual issuer/subject from ADO and syncs
-
-## External Dependencies
-
-- **Azure DevOps Organization**: integrationsonline (`.azdo/deploy.json`)
-- **GitHub Repository**: alexander-kastil/az-400
-- **Azure Subscription**: Required for resource provisioning
-- **Container Registry**: az400acrdev.azurecr.io
-- **M365 Tenant**: Optional for SPFx demos
-
-## References
-
-- [AZ-400 Exam Page](https://docs.microsoft.com/en-us/learn/certifications/exams/az-400)
-- [Official Labs](https://github.com/MicrosoftLearning/AZ400-DesigningandImplementingMicrosoftDevOpsSolutions)
-- Skills: `.github/skills/import-pipeline/`, `.github/skills/wi-creation/`
