@@ -18,7 +18,7 @@ This repository contains training materials, demos, and infrastructure for Micro
 
 ## Critical Configuration Files
 
-### Deployment Metadata (`.azdo/deploy.json`)
+### Deployment Metadata (`.github/skills/deploy.json`)
 
 **All pipeline imports require this metadata file:**
 

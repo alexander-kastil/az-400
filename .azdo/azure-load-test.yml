@@ -92,8 +92,18 @@ stages:
           - checkout: self
 
           - task: AzureCLI@2
-            displayName: "Execute Azure Load Test"
-            name: loadTest
+            displayName: "Delete Existing Test (if exists)"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Attempting to delete existing test: prime-service-loadtest"
+                az load test delete --test-id prime-service-loadtest --resource-group $(grp) --load-test-resource $(loadTestResource) --yes --no-wait 2>/dev/null || echo "Test does not exist or deletion initiated."
+
+          - task: AzureCLI@2
+            displayName: "Get Container App URL"
+            name: getAppUrl
             inputs:
               azureSubscription: "$(serviceConnection)"
               scriptType: "bash"
@@ -102,7 +112,7 @@ stages:
                 # Retrieve the container app URL
                 APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
                 echo "Container app URL: ${APP_URL}"
-                echo "##vso[task.setvariable variable=appUrl]${APP_URL}"
+                echo "##vso[task.setvariable variable=appUrl;isOutput=true]${APP_URL}"
 
           - task: AzureLoadTest@1
             displayName: "Run JMeter Load Test"
@@ -115,7 +125,7 @@ stages:
                 [
                   {
                     "name": "webapp",
-                    "value": "$(loadTest.appUrl)"
+                    "value": "$(getAppUrl.appUrl)"
                   }
                 ]
 
