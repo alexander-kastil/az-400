@@ -83,10 +83,8 @@ stages:
 
   - stage: LoadTest
     displayName: "Execute Load Test"
-    dependsOn:
-      - Check
-      - Deploy
-    condition: succeeded('Check')
+    dependsOn: Deploy
+    condition: succeeded('Deploy')
     jobs:
       - job: RunLoadTest
         displayName: "Run Azure Load Test"
