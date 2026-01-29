@@ -1,0 +1,157 @@
+name: 03-03-azure-load-test
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/prime-service"
+  app: "prime-service-dev"
+  grp: "az400-dev"
+  serviceConnection: "wi-az400-dev"
+  acaenv: "az400acaenv"
+  targetPort: 8080
+  loadTestResource: "az400-load-test"
+  testFile: "demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx"
+
+stages:
+  - stage: Build
+    displayName: "Build Container Image"
+    jobs:
+      - job: BuildImage
+        displayName: "Build Image in ACR"
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: "Build container image in ACR"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Checking if image already exists in ACR..."
+                TAG_EXISTS=$(az acr repository show-tags \
+                  --name $(acrName) \
+                  --repository prime-service \
+                  --query "contains(@, 'latest')" \
+                  -o tsv 2>/dev/null || echo false)
+
+                if [ "${TAG_EXISTS}" = "true" ]; then
+                  echo "Image prime-service:latest already exists. Skipping build."
+                  exit 0
+                fi
+
+                echo "Building image in Azure Container Registry..."
+                cd src/services/prime-service
+                az acr build \
+                  --image prime-service:$(Build.BuildId) \
+                  --image prime-service:latest \
+                  --registry $(acrName) \
+                  --file dockerfile \
+                  .
+
+  - stage: Deploy
+    displayName: "Deploy to Container Apps"
+    dependsOn: Build
+    jobs:
+      - job: DeployApp
+        displayName: "Deploy Container App"
+        steps:
+          - checkout: none
+
+          - task: AzureCLI@2
+            displayName: "Fetch ACR credentials"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                ACR_PASSWORD=$(az acr credential show --name $(acrName) --query "passwords[0].value" -o tsv)
+                echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
+
+          - task: AzureCLI@2
+            displayName: "Deploy to Azure Container Apps"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                if az containerapp show -n $(app) -g $(grp) &>/dev/null; then
+                  echo "Container app $(app) already exists. Skipping deploy."
+                  exit 0
+                fi
+
+                echo "Creating new container app..."
+                az containerapp create \
+                  -n $(app) \
+                  -g $(grp) \
+                  --image $(image):$(Build.BuildId) \
+                  --environment $(acaenv) \
+                  --target-port $(targetPort) \
+                  --ingress external \
+                  --registry-server $(acrName).azurecr.io \
+                  --registry-username $(acrName) \
+                  --registry-password $(acrPassword)
+
+          - task: AzureCLI@2
+            displayName: "Get Container App URL"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
+                echo "Container App URL: https://${APP_URL}"
+                echo "##vso[task.setvariable variable=appUrl;isOutput=true]${APP_URL}"
+            name: getUrl
+
+  - stage: LoadTest
+    displayName: "Execute Load Test"
+    dependsOn: Deploy
+    variables:
+      appUrl: $[ stageDependencies.Deploy.DeployApp.outputs['getUrl.appUrl'] ]
+    jobs:
+      - job: RunLoadTest
+        displayName: "Run Azure Load Test"
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: "Update JMeter test with app URL"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "App URL: $(appUrl)"
+                echo "Test file: $(testFile)"
+
+                # Create a modified version of the JMX file with the actual URL
+                # This is a simple approach; for production, consider using JMeter variables
+                cp $(testFile) $(testFile).temp
+
+                # Note: This assumes the JMX file will be used with proper parameters
+                # The actual URL will be passed during test execution
+                echo "JMeter test file prepared"
+
+          - task: AzureLoadTest@1
+            displayName: "Execute Azure Load Test"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              loadTestConfigFile: "demos/03-release-strategy/03-testing/02-load-test/prime-service-loadtest.yaml"
+              resourceGroup: "$(grp)"
+              loadTestResource: "$(loadTestResource)"
+              env: |
+                [
+                  {
+                    "name": "webapp",
+                    "value": "https://$(appUrl)"
+                  }
+                ]
+
+          - publish: $(System.DefaultWorkingDirectory)/loadTest
+            artifact: loadTestResults
