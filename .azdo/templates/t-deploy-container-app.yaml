@@ -12,8 +12,8 @@ parameters:
   - name: acaEnvironment
     type: string
   - name: targetPort
-    type: number
-    default: 80
+    type: string
+    default: '80'
   - name: override
     type: boolean
     default: false
