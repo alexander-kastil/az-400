@@ -4,11 +4,11 @@ testName: Prime Service Load Test
 displayName: Prime Service Load Test
 description: Load test for prime-service endpoint using JMeter with 50 concurrent users
 testType: JMX
-testPlan: test-prime-service.jmx
+testPlan: demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx
 engineInstances: 1
 # Note: Total virtual users = threads in JMeter (50) × engineInstances (1) = 50 users
 env:
   - name: webapp
     value: ""  # Passed by Azure Pipelines
 configurationFiles:
-  - test-prime-service.jmx
+  - demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx
