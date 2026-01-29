@@ -45,10 +45,10 @@ stages:
               acrName: $(acrName)
               image: $(image):latest
               app: $(app)
-              grp: $(grp)
+              resourceGroup: $(grp)
               serviceConnection: $(serviceConnection)
-              acaenv: $(acaenv)
-              targetPort: 8080
+              acaEnvironment: $(acaenv)
+              targetPort: "8080"
 
           - task: AzureCLI@2
             displayName: "Test Container App Endpoint"
