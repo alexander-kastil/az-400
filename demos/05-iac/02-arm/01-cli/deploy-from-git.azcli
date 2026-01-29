@@ -1,7 +1,0 @@
-env=iac
-loc=westeurope
-grp=az400-m06-arm-$env
-
-az group create -n $grp -l $loc
-
-az deployment group create -g $grp -n fooddeployment$env --template-uri "https://raw.githubusercontent.com/alexander-kastil/az-400/main/demos/06-iac/02-arm/01-cli/api-azuredeploy.json" --parameters webapp='foodapi-'$env serviceplan='foodplan-'$env

@@ -1,8 +1,0 @@
-env=iac
-loc=westeurope
-grp=az400-m06-arm-$env
-acctname=armstorage$rnd
-
-az group create -n $grp -l $loc
-
-az deployment group create -g $grp -n rollout-$acctname  --template-file api-azuredeploy.json --parameters @api-parameters.json

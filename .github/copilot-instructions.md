@@ -16,9 +16,14 @@ This repository contains training materials, demos, and infrastructure for Micro
 
 ### Agents & Skills
 
+#### Agents
+
+- AzDevOps.agent - Specialized AI coding agent for Azure DevOps pipelines and related code.
+
 #### Skills
 
-- Skills: `.github/skills/import-pipeline/`, `.github/skills/wi-creation/`
+- .github/skills/import-pipeline/,
+- .github/skills/wi-creation
 
 ## Critical Configuration Files
 
