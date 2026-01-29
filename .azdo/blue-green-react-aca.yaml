@@ -59,15 +59,11 @@ stages:
               steps:
                 - checkout: self
 
-                - task: PowerShell@2
+                - bash: |
+                    file="$(appRoot)/src/App.css"
+                    sed -i 's/lightgreen/lightblue/g' "$file"
+                    echo "✓ CSS Updated: lightgreen → lightblue"
                   displayName: "Update CSS: lightgreen → lightblue"
-                  inputs:
-                    targetType: inline
-                    script: |
-                      $file = "$(appRoot)/src/App.css"
-                      $content = (Get-Content $file -Raw) -replace "lightgreen", "lightblue"
-                      Set-Content $file $content
-                      Write-Host "✓ CSS Updated: lightgreen → lightblue"
 
                 - template: .azdo/templates/t-build-docker-image.yaml
                   parameters:
