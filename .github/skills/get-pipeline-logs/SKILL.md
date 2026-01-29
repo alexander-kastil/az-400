@@ -59,11 +59,4 @@ $pipelineId = 45$buildId = (az pipelines runs list --org "https://dev.azure.com/
 - **Build vs Run**: Terms are interchangeable in Azure DevOps (buildId = runId)
 - **Configuration**: Load org/project from `.github/skills/deploy.json`## Troubleshooting
 
-| Issue                          | Solution                                         |
-| ------------------------------ | ------------------------------------------------ |
-| "Build not found" error        | Build was deleted - get latest run and try again |
-| Empty log files (0 or 2 bytes) | Build deleted - logs purged                      |
-| HTML instead of logs           | Wrong URL format - use pattern above exactly     |
-| Logs truncated                 | Download ZIP bundle or increase context lines    |
-
 ## References- Review logs to diagnose pipeline issues: https://learn.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/review-logs- Builds API: https://learn.microsoft.com/en-us/rest/api/azure/devops/build/builds## LicenseMIT
