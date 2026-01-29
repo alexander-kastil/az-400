@@ -37,45 +37,15 @@ stages:
       - job: Plan
         displayName: Run Terraform Plan
         steps:
-          - task: AzureCLI@2
-            displayName: Terraform Init and Plan
-            inputs:
-              azureSubscription: $(serviceConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
+          - template: templates/t-terraform-plan.yaml
+            parameters:
+              serviceConnection: $(serviceConnection)
               workingDirectory: $(terraformPath)
-              addSpnToEnvironment: true
-              inlineScript: |
-                set -e
-
-                # Install Terraform
-                wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-                echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-                sudo apt update && sudo apt install terraform -y
-
-                terraform version
-
-                # Set Azure authentication environment variables for Terraform
-                export ARM_CLIENT_ID=$servicePrincipalId
-                export ARM_TENANT_ID=$tenantId
-                export ARM_SUBSCRIPTION_ID=$(subscriptionId)
-                export ARM_USE_OIDC=true
-                export ARM_OIDC_TOKEN=$idToken
-
-                # Initialize Terraform
-                terraform init
-
-                # Validate configuration
-                terraform validate
-
-                # Format check
-                terraform fmt -check
-
-                # Create plan
-                terraform plan -out=tfplan \
-                  -var="app_service_name=$(appService)" \
-                  -var="resource_group_name=$(rg)" \
-                  -var="location=$(loc)"
+              subscriptionId: $(subscriptionId)
+              appService: $(appService)
+              rg: $(rg)
+              loc: $(loc)
+              planFile: tfplan
 
           - task: PublishPipelineArtifact@1
             displayName: Publish Terraform Plan
@@ -101,38 +71,13 @@ stages:
                   inputs:
                     artifactName: terraform-plan
                     downloadPath: $(Pipeline.Workspace)/terraform
-
-                - task: AzureCLI@2
-                  displayName: Terraform Apply
-                  inputs:
-                    azureSubscription: $(serviceConnection)
-                    scriptType: bash
-                    scriptLocation: inlineScript
+                - template: templates/t-terraform-apply.yaml
+                  parameters:
+                    serviceConnection: $(serviceConnection)
                     workingDirectory: $(Pipeline.Workspace)/terraform
-                    addSpnToEnvironment: true
-                    inlineScript: |
-                      set -e
-
-                      # Install Terraform
-                      wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-                      echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-                      sudo apt update && sudo apt install terraform -y
-
-                      # Set Azure authentication environment variables for Terraform
-                      export ARM_CLIENT_ID=$servicePrincipalId
-                      export ARM_TENANT_ID=$tenantId
-                      export ARM_SUBSCRIPTION_ID=$(subscriptionId)
-                      export ARM_USE_OIDC=true
-                      export ARM_OIDC_TOKEN=$idToken
-
-                      # Initialize Terraform
-                      terraform init
-
-                      # Apply the plan
-                      terraform apply -auto-approve tfplan
-
-                      # Output the web app name for next stage
-                      terraform output -raw webapp_name
+                    subscriptionId: $(subscriptionId)
+                    planFile: tfplan
+                    outputName: webapp_name
 
   - stage: Deploy
     displayName: Deploy Application
