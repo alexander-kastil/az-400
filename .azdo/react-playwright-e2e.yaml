@@ -34,7 +34,7 @@ stages:
               buildContext: $(appRoot)
               repository: $(imageName)
               serviceConnection: $(serviceConnection)
-              override: false
+              override: true
 
   - stage: Deploy
     displayName: "Deploy to Azure Container Apps"
@@ -56,9 +56,7 @@ stages:
 
   - stage: Test
     displayName: "Run Playwright E2E Tests"
-    dependsOn:
-      - Check
-      - Deploy
+    dependsOn: Deploy
     condition: succeeded('Deploy')
     jobs:
       - job: PlaywrightTests
