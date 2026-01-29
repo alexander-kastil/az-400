@@ -19,8 +19,6 @@ parameters:
     default: false
 
 steps:
-  - checkout: none
-
   - task: AzureCLI@2
     displayName: "Check if container app already exists"
     inputs:
