@@ -51,6 +51,18 @@ stages:
               targetPort: "8080"
 
           - task: AzureCLI@2
+            displayName: "Get Container App URL"
+            name: getUrl
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
+                echo "Container App URL: https://${APP_URL}"
+                echo "##vso[task.setvariable variable=appUrl;isOutput=true]${APP_URL}"
+
+          - task: AzureCLI@2
             displayName: "Test Container App Endpoint"
             inputs:
               azureSubscription: "$(serviceConnection)"
@@ -70,6 +82,8 @@ stages:
   - stage: LoadTest
     displayName: "Execute Load Test"
     dependsOn: Deploy
+    variables:
+      appUrl: $[ stageDependencies.Deploy.DeployApp.outputs['getUrl.appUrl'] ]
     condition: succeeded('Deploy')
     jobs:
       - job: RunLoadTest
@@ -78,41 +92,50 @@ stages:
           - checkout: self
 
           - task: AzureCLI@2
-            displayName: "Retrieve Container App URL"
-            name: loadTest
+            displayName: "Prepare JMeter Test Configuration"
             inputs:
               azureSubscription: "$(serviceConnection)"
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
-                echo "Container app URL: ${APP_URL}"
-                echo "##vso[task.setvariable variable=appUrl]${APP_URL}"
-
-          - bash: |
-              # Create unique config file with build ID appended to test name
-              cp demos/03-release-strategy/03-testing/02-load-test/prime-service-loadtest.yaml prime-service-loadtest-$(Build.BuildId).yaml
-              sed -i "s/testName: prime-service-loadtest/testName: prime-service-loadtest-$(Build.BuildId)/" prime-service-loadtest-$(Build.BuildId).yaml
-              cat prime-service-loadtest-$(Build.BuildId).yaml
-            displayName: "Create Unique Load Test Config"
+                echo "App URL: $(appUrl)"
+                echo "Test file: $(testFile)"
+                cp $(testFile) $(testFile).temp
+                echo "JMeter test file prepared"
 
           - task: AzureLoadTest@1
-            displayName: "Run JMeter Load Test"
+            displayName: "Execute Azure Load Test"
             inputs:
               azureSubscription: "$(serviceConnection)"
-              loadTestConfigFile: "prime-service-loadtest-$(Build.BuildId).yaml"
+              loadTestConfigFile: "demos/03-release-strategy/03-testing/02-load-test/prime-service-loadtest.yaml"
               resourceGroup: "$(grp)"
               loadTestResource: "$(loadTestResource)"
               env: |
                 [
                   {
                     "name": "webapp",
-                    "value": "$(loadTest.appUrl)"
+                    "value": "https://$(appUrl)"
                   }
                 ]
 
           - publish: $(System.DefaultWorkingDirectory)/loadTest
             artifact: loadTestResults
+
+          - task: AzureCLI@2
+            displayName: "Smoke Test with curl"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Running smoke test..."
+                for i in {1..5}; do
+                  echo "Request $i:"
+                  curl -s "https://$(appUrl)/api/primes/10000"
+                  echo ""
+                  sleep 1
+                done
+                echo "Smoke test completed"
 
   - stage: Cleanup
     displayName: "Optional Cleanup"
