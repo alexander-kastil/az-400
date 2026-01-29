@@ -23,6 +23,16 @@ stages:
       - job: BuildAndDeployGreen
         displayName: "Build & Deploy GREEN"
         steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrName: $(acrName)
+              imageName: "$(appName):green-$(Build.BuildId)"
+              dockerfile: "$(appRoot)/Dockerfile"
+              buildContext: $(appRoot)
+              repository: $(appName)
+              serviceConnection: $(serviceConnection)
+              override: true
+
           - template: templates/t-deploy-container-app.yaml
             parameters:
               acrName: $(acrName)
@@ -67,6 +77,16 @@ stages:
                 $content = (Get-Content $file -Raw) -replace "lightgreen", "lightblue"
                 Set-Content $file $content
                 Write-Host "✓ CSS Updated: lightgreen → lightblue"
+
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrName: $(acrName)
+              imageName: "$(appName):blue-$(Build.BuildId)"
+              dockerfile: "$(appRoot)/Dockerfile"
+              buildContext: $(appRoot)
+              repository: $(appName)
+              serviceConnection: $(serviceConnection)
+              override: true
 
           - template: templates/t-deploy-container-app.yaml
             parameters:
