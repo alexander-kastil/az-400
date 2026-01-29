@@ -1,12 +1,4 @@
-name: catalog-cd-cd-work-item-gate
-
-# trigger:
-#   branches:
-#     include:
-#       - master
-#   paths:
-#     include:
-#       - src/services/catalog-service/api/*
+name: catalog-cd-cd-environment-gate
 
 trigger: none
 pr: none
@@ -20,6 +12,7 @@ variables:
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-gate
   templateFile: infra/bicep/webapp-windows.bicep
+  adoEnvironment: catalog-appservice-gate
 
 pool:
   vmImage: "ubuntu-latest"
@@ -69,11 +62,13 @@ stages:
     jobs:
       - deployment: DeployAppService
         displayName: Deploy to AppService
-        environment: catalog-service-gate
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:
               steps:
+                - checkout: none
+
                 - task: DownloadBuildArtifacts@0
                   inputs:
                     buildType: "current"

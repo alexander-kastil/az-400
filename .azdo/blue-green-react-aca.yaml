@@ -11,6 +11,7 @@ variables:
   acaEnvironment: "az400acaenv"
   resourceGroup: "az400-dev"
   serviceConnection: "wi-az400-dev"
+  adoEnvironment: "react-blue-green-aca"
   appName: "react-blue-green"
   appRoot: "src/react/react-devops"
   targetPort: "3000"
@@ -51,7 +52,7 @@ stages:
     jobs:
       - deployment: ApprovalGate
         displayName: "Approve BLUE Deployment"
-        environment: BlueGreenApproval
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:
