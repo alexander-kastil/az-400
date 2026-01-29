@@ -43,6 +43,10 @@ steps:
         export ARM_OIDC_TOKEN=$idToken
 
         terraform init -input=false
+        
+        # Fix execute permissions on provider binaries after artifact download
+        find .terraform/providers -type f -name 'terraform-provider-*' -exec chmod +x {} \; 2>/dev/null || true
+        
         terraform apply -auto-approve ${{ parameters.planFile }}
 
         if [ -n "${{ parameters.outputName }}" ]; then
