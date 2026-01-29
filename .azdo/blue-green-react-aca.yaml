@@ -28,7 +28,7 @@ stages:
             parameters:
               acrServiceConnection: scACR
               repository: $(appName)
-              dockerfile: "$(appRoot)/Dockerfile"
+              dockerfile: "$(appRoot)/dockerfile"
               buildContext: $(appRoot)
               tags: |
                 green-$(Build.BuildId)
@@ -71,7 +71,7 @@ stages:
                   parameters:
                     acrServiceConnection: scACR
                     repository: $(appName)
-                    dockerfile: "$(appRoot)/Dockerfile"
+                    dockerfile: "$(appRoot)/dockerfile"
                     buildContext: $(appRoot)
                     tags: |
                       blue-$(Build.BuildId)
