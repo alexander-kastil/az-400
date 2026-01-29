@@ -30,9 +30,7 @@ stages:
               imageName: prime-service
               dockerfile: dockerfile
               buildContext: src/services/prime-service
-              repository: prime-service
               serviceConnection: $(serviceConnection)
-              override: false
 
   - stage: Deploy
     displayName: "Deploy to Container Apps"
@@ -44,25 +42,12 @@ stages:
           - template: templates/t-deploy-container-app.yaml
             parameters:
               acrName: $(acrName)
-              image: $(image):$(Build.BuildId)
+              image: $(image):latest
               app: $(app)
-              resourceGroup: $(grp)
+              grp: $(grp)
               serviceConnection: $(serviceConnection)
-              acaEnvironment: $(acaenv)
-              targetPort: "8080"
-              override: false
-
-          - task: AzureCLI@2
-            displayName: "Get Container App URL"
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
-                echo "Container App URL: https://${APP_URL}"
-                echo "##vso[task.setvariable variable=appUrl;isOutput=true]${APP_URL}"
-            name: getUrl
+              acaenv: $(acaenv)
+              targetPort: 8080
 
           - task: AzureCLI@2
             displayName: "Test Container App Endpoint"
@@ -92,37 +77,16 @@ stages:
           - checkout: self
 
           - task: AzureCLI@2
-            displayName: "Delete Existing Test (if exists)"
+            displayName: "Retrieve Container App URL"
+            name: loadTest
             inputs:
               azureSubscription: "$(serviceConnection)"
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                echo "Checking for existing test: prime-service-loadtest"
-
-                # Check if test exists
-                if az load test show --test-id prime-service-loadtest --resource-group $(grp) --load-test-resource $(loadTestResource) >/dev/null 2>&1; then
-                  echo "Test exists. Deleting..."
-                  az load test delete --test-id prime-service-loadtest --resource-group $(grp) --load-test-resource $(loadTestResource) --yes
-                  echo "Test deleted. Waiting for Azure to process deletion..."
-                  sleep 10
-                  echo "Ready to create new test."
-                else
-                  echo "Test does not exist. No deletion needed."
-                fi
-
-          - task: AzureCLI@2
-            displayName: "Get Container App URL"
-            name: getAppUrl
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                # Retrieve the container app URL
                 APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
                 echo "Container app URL: ${APP_URL}"
-                echo "##vso[task.setvariable variable=appUrl;isOutput=true]${APP_URL}"
+                echo "##vso[task.setvariable variable=appUrl]${APP_URL}"
 
           - task: AzureLoadTest@1
             displayName: "Run JMeter Load Test"
@@ -135,7 +99,7 @@ stages:
                 [
                   {
                     "name": "webapp",
-                    "value": "$(getAppUrl.appUrl)"
+                    "value": "$(loadTest.appUrl)"
                   }
                 ]
 
