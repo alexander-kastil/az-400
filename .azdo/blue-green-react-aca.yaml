@@ -45,68 +45,60 @@ stages:
               targetPort: $(targetPort)
               override: true
 
-  - stage: Approval
-    displayName: "Approval: Review GREEN"
+  - stage: DeployBlue
+    displayName: "Deploy BLUE (lightblue)"
     dependsOn: DeployGreen
     condition: succeeded()
     jobs:
-      - deployment: ApprovalGate
-        displayName: "Approve BLUE Deployment"
+      - deployment: DeployBlue
+        displayName: "Deploy BLUE"
         environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:
               steps:
-                - script: echo "GREEN deployment reviewed and approved"
+                - checkout: self
 
-  - stage: DeployBlue
-    displayName: "Deploy BLUE (lightblue)"
-    dependsOn: Approval
-    condition: succeeded()
-    jobs:
-      - job: BuildAndDeployBlue
-        displayName: "Build & Deploy BLUE"
-        steps:
-          - task: PowerShell@2
-            displayName: "Update CSS: lightgreen → lightblue"
-            inputs:
-              targetType: inline
-              script: |
-                $file = "$(appRoot)/src/App.css"
-                $content = (Get-Content $file -Raw) -replace "lightgreen", "lightblue"
-                Set-Content $file $content
-                Write-Host "✓ CSS Updated: lightgreen → lightblue"
+                - task: PowerShell@2
+                  displayName: "Update CSS: lightgreen → lightblue"
+                  inputs:
+                    targetType: inline
+                    script: |
+                      $file = "$(appRoot)/src/App.css"
+                      $content = (Get-Content $file -Raw) -replace "lightgreen", "lightblue"
+                      Set-Content $file $content
+                      Write-Host "✓ CSS Updated: lightgreen → lightblue"
 
-          - template: templates/t-build-docker-image.yaml
-            parameters:
-              acrServiceConnection: scACR
-              repository: $(appName)
-              dockerfile: "$(appRoot)/Dockerfile"
-              buildContext: $(appRoot)
-              tags: |
-                blue-$(Build.BuildId)
-                latest
+                - template: templates/t-build-docker-image.yaml
+                  parameters:
+                    acrServiceConnection: scACR
+                    repository: $(appName)
+                    dockerfile: "$(appRoot)/Dockerfile"
+                    buildContext: $(appRoot)
+                    tags: |
+                      blue-$(Build.BuildId)
+                      latest
 
-          - template: templates/t-deploy-container-app.yaml
-            parameters:
-              acrName: $(acrName)
-              image: "$(acrName).azurecr.io/$(appName):blue-$(Build.BuildId)"
-              app: $(appName)
-              resourceGroup: $(resourceGroup)
-              serviceConnection: $(serviceConnection)
-              acaEnvironment: $(acaEnvironment)
-              targetPort: $(targetPort)
-              override: true
+                - template: templates/t-deploy-container-app.yaml
+                  parameters:
+                    acrName: $(acrName)
+                    image: "$(acrName).azurecr.io/$(appName):blue-$(Build.BuildId)"
+                    app: $(appName)
+                    resourceGroup: $(resourceGroup)
+                    serviceConnection: $(serviceConnection)
+                    acaEnvironment: $(acaEnvironment)
+                    targetPort: $(targetPort)
+                    override: true
 
-          - task: AzureCLI@2
-            displayName: "Switch Traffic to BLUE"
-            inputs:
-              azureSubscription: $(serviceConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-                BLUE=$(az containerapp revision list -n $(appName) -g $(resourceGroup) \
-                  --query "[?contains(name, 'blue')].name" -o tsv | head -1)
-                az containerapp ingress traffic set -n $(appName) -g $(resourceGroup) \
-                  --revision-weights "$BLUE=100"
-                echo "✓ Traffic switched to BLUE (lightblue)"
+                - task: AzureCLI@2
+                  displayName: "Switch Traffic to BLUE"
+                  inputs:
+                    azureSubscription: $(serviceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      BLUE=$(az containerapp revision list -n $(appName) -g $(resourceGroup) \
+                        --query "[?contains(name, 'blue')].name" -o tsv | head -1)
+                      az containerapp ingress traffic set -n $(appName) -g $(resourceGroup) \
+                        --revision-weights "$BLUE=100"
+                      echo "✓ Traffic switched to BLUE (lightblue)"

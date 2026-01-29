@@ -15,8 +15,6 @@ parameters:
       latest
 
 steps:
-  - checkout: self
-
   - task: Docker@2
     displayName: "Login to ACR"
     inputs:
