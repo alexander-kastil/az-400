@@ -24,7 +24,7 @@ stages:
       - job: BuildAndDeployGreen
         displayName: "Build & Deploy GREEN"
         steps:
-          - template: .azdo/templates/t-build-docker-image.yaml
+          - template: templates/t-build-docker-image.yaml
             parameters:
               acrServiceConnection: scACR
               repository: $(appName)
@@ -34,7 +34,7 @@ stages:
                 green-$(Build.BuildId)
                 latest
 
-          - template: .azdo/templates/t-deploy-container-app.yaml
+          - template: templates/t-deploy-container-app.yaml
             parameters:
               acrName: $(acrName)
               image: "$(acrName).azurecr.io/$(appName):green-$(Build.BuildId)"
@@ -50,22 +50,24 @@ stages:
     dependsOn: DeployGreen
     condition: succeeded()
     jobs:
-      - deployment: DeployBlueJob
+      - deployment: DeployBlue
         displayName: "Deploy BLUE"
         environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:
               steps:
-                - checkout: self
-
-                - bash: |
-                    file="$(appRoot)/src/App.css"
-                    sed -i 's/lightgreen/lightblue/g' "$file"
-                    echo "✓ CSS Updated: lightgreen → lightblue"
+                - task: PowerShell@2
                   displayName: "Update CSS: lightgreen → lightblue"
+                  inputs:
+                    targetType: inline
+                    script: |
+                      $file = "$(appRoot)/src/App.css"
+                      $content = (Get-Content $file -Raw) -replace "lightgreen", "lightblue"
+                      Set-Content $file $content
+                      Write-Host "✓ CSS Updated: lightgreen → lightblue"
 
-                - template: .azdo/templates/t-build-docker-image.yaml
+                - template: templates/t-build-docker-image.yaml
                   parameters:
                     acrServiceConnection: scACR
                     repository: $(appName)
@@ -75,7 +77,7 @@ stages:
                       blue-$(Build.BuildId)
                       latest
 
-                - template: .azdo/templates/t-deploy-container-app.yaml
+                - template: templates/t-deploy-container-app.yaml
                   parameters:
                     acrName: $(acrName)
                     image: "$(acrName).azurecr.io/$(appName):blue-$(Build.BuildId)"
