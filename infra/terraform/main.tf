@@ -16,6 +16,7 @@ provider "azurerm" {
   features {}
   subscription_id = var.subscription_id
   use_oidc        = true # Enable OIDC for Workload Identity Federation
+  resource_provider_registrations = "none"
 }
 
 # Variables for parameterization
