@@ -38,15 +38,15 @@ stages:
     jobs:
       - job: DeployApp
         steps:
-      - template: templates/t-deploy-container-app.yaml
-        parameters:
-          acrName: $(acrName)
-          image: $(image):latest
-          app: $(app)
-          resourceGroup: $(grp)
-          serviceConnection: $(serviceConnection)
-          acaEnvironment: $(acaenv)
-          targetPort: "8080"
+          - template: templates/t-deploy-container-app.yaml
+            parameters:
+              acrName: $(acrName)
+              image: $(image):latest
+              app: $(app)
+              resourceGroup: $(grp)
+              serviceConnection: $(serviceConnection)
+              acaEnvironment: $(acaenv)
+              targetPort: "8080"
 
   - stage: LoadTest
     displayName: "Execute Load Test"
