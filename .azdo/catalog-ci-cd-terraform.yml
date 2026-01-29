@@ -66,31 +66,6 @@ stages:
           runOnce:
             deploy:
               steps:
-                - task: DownloadPipelineArtifact@2
-                  displayName: Download Terraform Plan
-                  inputs:
-                    artifactName: terraform-plan
-                    downloadPath: $(Pipeline.Workspace)/terraform
-                - template: templates/t-terraform-apply.yaml
-                  parameters:
-                    serviceConnection: $(serviceConnection)
-                    workingDirectory: $(Pipeline.Workspace)/terraform
-                    subscriptionId: $(subscriptionId)
-                    planFile: tfplan
-                    outputName: webapp_name
-
-  - stage: Deploy
-    displayName: Deploy Application
-    dependsOn: TerraformApply
-    condition: succeeded()
-    jobs:
-      - deployment: DeployAppService
-        displayName: Deploy to App Service
-        environment: prod
-        strategy:
-          runOnce:
-            deploy:
-              steps:
                 - task: DownloadBuildArtifacts@1
                   displayName: Download Build Artifacts
                   inputs:
