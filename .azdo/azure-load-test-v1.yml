@@ -16,6 +16,7 @@ variables:
   targetPort: 8080
   loadTestResource: "az400-load-test"
   testFile: "demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx"
+  loadTestConfigFile: "demos/03-release-strategy/03-testing/02-load-test/prime-service-loadtest.yaml"
 
 stages:
   - stage: Build
@@ -70,20 +71,11 @@ stages:
                 echo "Container App URL: https://${APP_URL}"
                 echo "##vso[task.setvariable variable=appUrl]${APP_URL}"
 
-          - task: Bash@3
-            displayName: "Debug load test file path"
-            inputs:
-              targetType: "inline"
-              script: |
-                echo "Expected path: $(System.DefaultWorkingDirectory)/$(testFile)"
-                echo "Searching for test-prime-service.jmx under $(System.DefaultWorkingDirectory)"
-                find "$(System.DefaultWorkingDirectory)" -type f -name "test-prime-service.jmx" -print
-
           - task: AzureLoadTest@1
             displayName: "Run JMeter Load Test"
             inputs:
               azureSubscription: "$(serviceConnection)"
-              loadTestConfigFile: "$(System.DefaultWorkingDirectory)/$(testFile)"
+              loadTestConfigFile: "$(System.DefaultWorkingDirectory)/$(loadTestConfigFile)"
               resourceGroup: "$(grp)"
               loadTestResource: "$(loadTestResource)"
               env: |
