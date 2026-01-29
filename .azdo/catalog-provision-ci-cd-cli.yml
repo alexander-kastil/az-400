@@ -12,15 +12,15 @@ trigger: none
 pr: none
 
 variables:
-  dotnetSdkVersion: "6.x"
+  dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
-  releaseBranchName: master
-  azSubscription: scIaC
-  folder: apps/catalog-api/api/
-  appservice: foodcatalog-cli
+  serviceConnection: wi-az400-dev
+  folder: src/services/catalog-service/api
+  appService: foodcatalog-cli
+  environment: dev
 
 pool:
-  vmImage: "ubuntu-20.04"
+  vmImage: "ubuntu-latest"
 
 stages:
   - stage: BuildProvision
@@ -32,17 +32,18 @@ stages:
             parameters:
               cfg: $(buildConfiguration)
               folder: $(folder)
+              project: catalog-service
 
       - job: Provision
         steps:
           - task: AzureCLI@2
             displayName: "Provision AppService"
             inputs:
-              azureSubscription: "$(azSubscription)"
+              azureSubscription: "$(serviceConnection)"
               scriptType: "bash"
               scriptLocation: "scriptPath"
-              scriptPath: "$(System.DefaultWorkingDirectory)/deploy/az-cli/create-api.sh"
-              arguments: $(appservice)
+              scriptPath: "$(System.DefaultWorkingDirectory)/infra/cli/create-api.sh"
+              arguments: "$(environment) $(appService)"
 
   - stage: Deploy
     displayName: Deploy
@@ -64,10 +65,10 @@ stages:
                     downloadPath: "$(System.ArtifactsDirectory)"
 
                 - task: AzureRmWebAppDeployment@4
-                  displayName: "Azure App Service Deploy: $(appservice)"
+                  displayName: "Azure App Service Deploy: $(appService)"
                   inputs:
                     ConnectionType: "AzureRM"
-                    azureSubscription: $(azSubscription)
+                    azureSubscription: $(serviceConnection)
                     appType: "webApp"
-                    WebAppName: $(appservice)
+                    WebAppName: $(appService)
                     packageForLinux: "$(System.ArtifactsDirectory)/**/*.zip"
