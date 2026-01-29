@@ -5,6 +5,7 @@ This directory contains Terraform configuration for deploying Azure resources as
 ## Overview
 
 The Terraform configuration creates:
+
 - Azure App Service Plan (Linux, S1 SKU)
 - Azure Linux Web App for .NET 10.0 applications
 - Uses existing `az400-dev` resource group
@@ -15,16 +16,17 @@ The Terraform configuration creates:
 
 ## Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `subscription_id` | Azure subscription ID | `cd091145-5ea2-4703-ba5d-41063b1d4308` |
-| `resource_group_name` | Resource group name | `az400-dev` |
-| `location` | Azure region | `westeurope` |
-| `app_service_name` | App Service name | `catalog-service-terraform` |
+| Variable              | Description           | Default                                |
+| --------------------- | --------------------- | -------------------------------------- |
+| `subscription_id`     | Azure subscription ID | `cd091145-5ea2-4703-ba5d-41063b1d4308` |
+| `resource_group_name` | Resource group name   | `az400-dev`                            |
+| `location`            | Azure region          | `westeurope`                           |
+| `app_service_name`    | App Service name      | `catalog-service-terraform`            |
 
 ## Authentication
 
 The configuration uses **Workload Identity Federation (OIDC)** for secure authentication:
+
 - Set `use_oidc = true` in the AzureRM provider
 - Pipeline sets required environment variables:
   - `ARM_CLIENT_ID` - Service principal/managed identity client ID
@@ -40,6 +42,7 @@ The configuration uses **Workload Identity Federation (OIDC)** for secure authen
 The pipeline uses Terraform commands directly (not tasks):
 
 **Plan Stage:**
+
 ```bash
 terraform init
 terraform validate
@@ -51,6 +54,7 @@ terraform plan -out=tfplan \
 ```
 
 **Apply Stage:**
+
 ```bash
 terraform init
 terraform apply -auto-approve tfplan
@@ -60,17 +64,20 @@ terraform output -raw webapp_name
 ### Local Development
 
 1. Ensure Azure CLI is authenticated:
+
    ```bash
    az login
    az account set --subscription cd091145-5ea2-4703-ba5d-41063b1d4308
    ```
 
 2. Initialize Terraform:
+
    ```bash
    terraform init
    ```
 
 3. Plan changes:
+
    ```bash
    terraform plan
    ```
@@ -89,7 +96,7 @@ terraform output -raw webapp_name
 ✅ **Outputs** - Exports webapp name and URL for downstream use  
 ✅ **Tagging** - Consistent tags for resource management  
 ✅ **Linux Containers** - Modern Linux-based App Service  
-✅ **Version Constraints** - Terraform >= 1.9 requirement  
+✅ **Version Constraints** - Terraform >= 1.9 requirement
 
 ## Pipeline Structure
 
