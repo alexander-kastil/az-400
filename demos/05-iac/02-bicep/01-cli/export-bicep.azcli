@@ -1,0 +1,5 @@
+grp=az400-m06-bicep
+file=ressource.json
+
+az group export -n $grp > $file
+az bicep decompile --file ./$file

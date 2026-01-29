@@ -2,7 +2,7 @@
 
 - Using Azure CLI Task in pipeline
 
-- Show `catalog-api-build-provision-deploy-cli` from [Food App](https://github.com/alexander-kastil/food-app/)
+- Show [catalog-provision-ci-cd-cli](/.azdo/catalog-provision-ci-cd-cli.yml)
 
 ## Links & Resources
 
