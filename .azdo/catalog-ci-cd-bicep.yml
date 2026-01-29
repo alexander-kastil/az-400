@@ -14,6 +14,7 @@ variables:
   rg: az400-dev
   loc: "westeurope"
   subscriptionId: cd091145-5ea2-4703-ba5d-41063b1d4308
+  adoEnvironment: "05-02-catalog-ci-cd-bicep-env"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -57,7 +58,7 @@ stages:
     jobs:
       - deployment: DeployAppService
         displayName: Deploy to App Service
-        environment: prod
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:

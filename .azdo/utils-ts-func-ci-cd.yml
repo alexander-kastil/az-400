@@ -12,6 +12,7 @@ variables:
   serviceConnection: wi-az400-dev
   functionAppName: utils-ts-func-dev
   appPath: src/az-functions/utils-ts/
+  adoEnvironment: "03-02-utils-ts-func-ci-cd-env"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -32,7 +33,7 @@ stages:
     condition: succeeded()
     jobs:
       - deployment: Deploy
-        environment: $(functionAppName)-dev
+        environment: $(adoEnvironment)
         displayName: Deploy Function to AppService
         strategy:
           runOnce:

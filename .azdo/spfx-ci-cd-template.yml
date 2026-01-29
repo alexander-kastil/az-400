@@ -1,4 +1,4 @@
-name: spfx-ci-cd-template
+name: 03-02-spfx-ci-cd-template
 
 # trigger:
 #   branches:
@@ -17,9 +17,10 @@ pr: none
 variables:
   package: foodlist-wp.sppkg
   packageLocation: /drop/src/teams/food-list/sharepoint/solution
-  appPath: src/teams/food-list/ 
+  appPath: src/teams/food-list/
   environment: m365-integrationsonline
   nodeVersion: "14.x"
+  adoEnvironment: "03-02-spfx-ci-cd-template-env"
   # set pipeline vars: username, password
 
 pool:
@@ -43,11 +44,11 @@ stages:
     jobs:
       - deployment: DeployM365
         displayName: Deploy to M365
-        environment: $(environment)
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:
-              steps:            
+              steps:
                 - template: templates/t-spfx-deploy-cli.yaml
                   parameters:
                     nodeVersion: $(nodeVersion)

@@ -1,4 +1,4 @@
-name: catalog-api-cicd-appcfg
+name: 04-03-catalog-api-cicd-appcfg
 
 # trigger:
 #   branches:
@@ -20,6 +20,7 @@ variables:
   appService: food-catalog-api-yaml
   appConfigEP: "https://az400-config-dev.azconfig.io"
   deploy: false
+  adoEnvironment: "04-03-catalog-api-cicd-appcfg-env"
 
 # assign permissions to service connection pricipal on app config service
 
@@ -75,7 +76,7 @@ stages:
     jobs:
       - deployment: DeployAppService
         displayName: Deploy to Appservice
-        environment: SecureProd
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:

@@ -18,6 +18,7 @@ variables:
   folder: src/services/catalog-service/api
   appService: foodcatalog-cli
   environment: dev
+  adoEnvironment: "05-01-catalog-provision-ci-cd-cli-env"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -52,7 +53,7 @@ stages:
     jobs:
       - deployment: DeployAppService
         displayName: Deploy to Appservice
-        environment: catalog-api-prod
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:

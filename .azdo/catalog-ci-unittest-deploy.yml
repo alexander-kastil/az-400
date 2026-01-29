@@ -19,6 +19,7 @@ variables:
   appPath: src/services/catalog-service/api/
   appTests: src/services/catalog-service/tests/
   appService: food-catalog-api-yaml
+  adoEnvironment: "catalog-ci-unittest-deploy-env"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -90,7 +91,7 @@ stages:
     jobs:
       - deployment: DeployAppService
         displayName: Deploy to prod AppService
-        environment: catalog-api-production
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:

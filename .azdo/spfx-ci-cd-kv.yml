@@ -1,4 +1,4 @@
-name: spfx-ci-cd-kv
+name: 04-02-spfx-ci-cd-kv
 
 # trigger:
 #   branches:
@@ -22,6 +22,7 @@ variables:
   nodeVersion: "14.x"
   serviceConnection: "wi-az400"
   vault: az400-vault-dev
+  adoEnvironment: "04-02-spfx-ci-cd-kv-env"
   # Do NOT set pipeline vars: username, password
 
 pool:
@@ -45,7 +46,7 @@ stages:
     jobs:
       - deployment: DeployM365
         displayName: Deploy to M365
-        environment: $(environment)
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:

@@ -15,6 +15,7 @@ variables:
   azureSubscription:
   functionAppName: "payment-func-py-app"
   pythonVersion: "3.11"
+  adoEnvironment: "payment-py-ci-cd-env"
 
 stages:
   - stage: Build
@@ -32,7 +33,7 @@ stages:
     dependsOn: Build
     jobs:
       - deployment: Deploy
-        environment: "dev"
+        environment: $(adoEnvironment)
         pool:
           vmImage: "ubuntu-latest"
         strategy:

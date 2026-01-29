@@ -18,6 +18,7 @@ variables:
   serviceConnection: wi-az400-dev
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
+  adoEnvironment: "03-02-catalog-api-ci-cd-env"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -70,7 +71,7 @@ stages:
     jobs:
       - deployment: DeployAppService
         displayName: Deploy to App Service YAML
-        environment: $(appService)
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:

@@ -11,7 +11,7 @@ variables:
   acaEnvironment: "az400acaenv"
   resourceGroup: "az400-dev"
   serviceConnection: "wi-az400-dev"
-  adoEnvironment: "react-blue-green-aca"
+  adoEnvironment: "04-01-blue-green-react-aca-env"
   appName: "react-blue-green"
   appRoot: "src/react/react-devops"
   targetPort: "3000"

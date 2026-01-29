@@ -17,6 +17,7 @@ variables:
   environment: m365-dev
   node: "14.21.3"
   tenant: "d92b247e-90e0-4469-a129-6a32866c0d0a"
+  adoEnvironment: "03-02-spfx-ci-cd-env"
   # set pipeline vars: username, password
 
 pool:
@@ -82,7 +83,7 @@ stages:
     jobs:
       - deployment: DeployM365Dev
         displayName: Deploy to M365
-        environment: $(environment)
+        environment: $(adoEnvironment)
         strategy:
           runOnce:
             deploy:
