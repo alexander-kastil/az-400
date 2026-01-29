@@ -33,3 +33,7 @@ Now you can deploy your application to Azure using the following command:
 ```
 azd up
 ```
+
+Select your Azure subscription and the region to deploy to when prompted:
+
+![azd-up](images/azd-up.png)
