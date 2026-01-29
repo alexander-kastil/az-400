@@ -78,6 +78,20 @@ stages:
           - checkout: self
 
           - task: AzureCLI@2
+            displayName: "Delete Existing Load Test"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Attempting to delete existing test 'prime-service-loadtest'..."
+                az load test delete \
+                  --name prime-service-loadtest \
+                  --load-test-resource $(loadTestResource) \
+                  --resource-group $(grp) \
+                  --yes || echo "Test doesn't exist or already deleted"
+
+          - task: AzureCLI@2
             displayName: "Retrieve Container App URL"
             name: loadTest
             inputs:
