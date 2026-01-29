@@ -24,7 +24,7 @@ stages:
       - job: BuildAndDeployGreen
         displayName: "Build & Deploy GREEN"
         steps:
-          - template: templates/t-build-docker-image.yaml
+          - template: .azdo/templates/t-build-docker-image.yaml
             parameters:
               acrServiceConnection: scACR
               repository: $(appName)
@@ -34,7 +34,7 @@ stages:
                 green-$(Build.BuildId)
                 latest
 
-          - template: templates/t-deploy-container-app.yaml
+          - template: .azdo/templates/t-deploy-container-app.yaml
             parameters:
               acrName: $(acrName)
               image: "$(acrName).azurecr.io/$(appName):green-$(Build.BuildId)"
@@ -69,7 +69,7 @@ stages:
                       Set-Content $file $content
                       Write-Host "✓ CSS Updated: lightgreen → lightblue"
 
-                - template: templates/t-build-docker-image.yaml
+                - template: .azdo/templates/t-build-docker-image.yaml
                   parameters:
                     acrServiceConnection: scACR
                     repository: $(appName)
@@ -79,7 +79,7 @@ stages:
                       blue-$(Build.BuildId)
                       latest
 
-                - template: templates/t-deploy-container-app.yaml
+                - template: .azdo/templates/t-deploy-container-app.yaml
                   parameters:
                     acrName: $(acrName)
                     image: "$(acrName).azurecr.io/$(appName):blue-$(Build.BuildId)"
