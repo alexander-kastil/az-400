@@ -69,8 +69,6 @@ stages:
       - job: BuildAndDeployBlue
         displayName: "Build & Deploy BLUE"
         steps:
-          - checkout: self
-
           - task: PowerShell@2
             displayName: "Update CSS: lightgreen → lightblue"
             inputs:
