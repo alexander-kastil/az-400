@@ -100,8 +100,10 @@ stages:
               inlineScript: |
                 echo "App URL: $(appUrl)"
                 echo "Test file: $(testFile)"
-                cp $(testFile) $(testFile).temp
-                echo "JMeter test file prepared"
+                # Copy JMX file to workspace root so Azure Load Test can find it
+                cp $(testFile) test-prime-service.jmx
+                ls -la test-prime-service.jmx
+                echo "JMeter test file prepared in workspace root"
 
           - task: AzureLoadTest@1
             displayName: "Execute Azure Load Test"

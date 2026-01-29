@@ -5,5 +5,3 @@ description: Load test for prime-service endpoint
 testType: JMX
 testPlan: test-prime-service.jmx
 engineInstances: 1
-configurationFiles:
-  - demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx
