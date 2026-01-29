@@ -76,5 +76,5 @@ stages:
                     azureSubscription: $(serviceConnection)
                     appType: "webApp"
                     appName: "$(appService)"
-                    package: "$(System.ArtifactsDirectory)/drop/*.zip"
+                    package: "$(System.ArtifactsDirectory)/drop/$(buildConfiguration)/*.zip"
                     deploymentMethod: "auto"

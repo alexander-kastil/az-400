@@ -6,52 +6,159 @@ pr: none
 variables:
   dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
-  releaseBranchName: master
-  serviceConnection: wi-az400-dev
-  appPath: infra/terraform
+  serviceConnection: wi-az400-dev # Workload Identity Federation connection
+  appPath: src/services/catalog-service/api/
+  appService: catalog-service-terraform
+  terraformPath: infra/terraform
+  rg: az400-dev
+  loc: westeurope
+  subscriptionId: cd091145-5ea2-4703-ba5d-41063b1d4308
 
 pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: Plan
-    displayName: "Terraform Plan"
+  - stage: Build
+    displayName: Build Application
     jobs:
-      - job: TerraformPlan
-        displayName: "Terraform Plan"
+      - job: Build
+        displayName: Build .NET Application
         steps:
-          - task: TerraformInstaller@1
-            inputs:
-              terraformVersion: "latest"
+          - template: templates/t-net-build.yaml
+            parameters:
+              cfg: $(buildConfiguration)
+              folder: $(appPath)
+              project: catalog-service
 
-          - bash: |
-              terraform --version
-              terraform init
-              terraform plan -out=tfplan
-            env:
-              ARM_CLIENT_ID: $(client_id)
-              ARM_CLIENT_SECRET: $(client_secret)
-              ARM_SUBSCRIPTION_ID: $(subscription_id)
-              ARM_TENANT_ID: $(tenant_id)
-            workingDirectory: $(appPath)
-            displayName: "Terraform Init and Plan"
-
-  - stage: Apply
-    displayName: "Terraform Apply"
+  - stage: TerraformPlan
+    displayName: Terraform Plan
+    dependsOn: Build
     jobs:
-      - job: TerraformApply
-        displayName: "Terraform Apply"
+      - job: Plan
+        displayName: Run Terraform Plan
         steps:
-          - task: TerraformInstaller@1
+          - task: AzureCLI@2
+            displayName: Terraform Init and Plan
             inputs:
-              terraformVersion: "latest"
-          - bash: |
-              terraform init    
-              terraform apply -auto-approve
-            env:
-              ARM_CLIENT_ID: $(client_id)
-              ARM_CLIENT_SECRET: $(client_secret)
-              ARM_SUBSCRIPTION_ID: $(subscription_id)
-              ARM_TENANT_ID: $(tenant_id)
-            workingDirectory: $(appPath)
-            displayName: "Terraform Apply"
+              azureSubscription: $(serviceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              workingDirectory: $(terraformPath)
+              addSpnToEnvironment: true
+              inlineScript: |
+                set -e
+                
+                # Install Terraform
+                wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+                echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+                sudo apt update && sudo apt install terraform -y
+                
+                terraform version
+                
+                # Set Azure authentication environment variables for Terraform
+                export ARM_CLIENT_ID=$servicePrincipalId
+                export ARM_TENANT_ID=$tenantId
+                export ARM_SUBSCRIPTION_ID=$(subscriptionId)
+                export ARM_USE_OIDC=true
+                export ARM_OIDC_TOKEN=$idToken
+                
+                # Initialize Terraform
+                terraform init
+                
+                # Validate configuration
+                terraform validate
+                
+                # Format check
+                terraform fmt -check
+                
+                # Create plan
+                terraform plan -out=tfplan \
+                  -var="app_service_name=$(appService)" \
+                  -var="resource_group_name=$(rg)" \
+                  -var="location=$(loc)"
+
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Terraform Plan
+            inputs:
+              targetPath: $(terraformPath)
+              artifactName: terraform-plan
+              publishLocation: pipeline
+
+  - stage: TerraformApply
+    displayName: Terraform Apply
+    dependsOn: TerraformPlan
+    condition: succeeded()
+    jobs:
+      - deployment: ApplyInfrastructure
+        displayName: Apply Terraform Configuration
+        environment: prod
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadPipelineArtifact@2
+                  displayName: Download Terraform Plan
+                  inputs:
+                    artifactName: terraform-plan
+                    downloadPath: $(Pipeline.Workspace)/terraform
+
+                - task: AzureCLI@2
+                  displayName: Terraform Apply
+                  inputs:
+                    azureSubscription: $(serviceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    workingDirectory: $(Pipeline.Workspace)/terraform
+                    addSpnToEnvironment: true
+                    inlineScript: |
+                      set -e
+                      
+                      # Install Terraform
+                      wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+                      echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+                      sudo apt update && sudo apt install terraform -y
+                      
+                      # Set Azure authentication environment variables for Terraform
+                      export ARM_CLIENT_ID=$servicePrincipalId
+                      export ARM_TENANT_ID=$tenantId
+                      export ARM_SUBSCRIPTION_ID=$(subscriptionId)
+                      export ARM_USE_OIDC=true
+                      export ARM_OIDC_TOKEN=$idToken
+                      
+                      # Initialize Terraform
+                      terraform init
+                      
+                      # Apply the plan
+                      terraform apply -auto-approve tfplan
+                      
+                      # Output the web app name for next stage
+                      terraform output -raw webapp_name
+
+  - stage: Deploy
+    displayName: Deploy Application
+    dependsOn: TerraformApply
+    condition: succeeded()
+    jobs:
+      - deployment: DeployAppService
+        displayName: Deploy to App Service
+        environment: prod
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@1
+                  displayName: Download Build Artifacts
+                  inputs:
+                    buildType: "current"
+                    downloadType: "single"
+                    artifactName: "drop"
+                    downloadPath: "$(System.ArtifactsDirectory)"
+
+                - task: AzureWebApp@1
+                  displayName: Deploy to Azure Web App
+                  inputs:
+                    azureSubscription: $(serviceConnection)
+                    appType: "webApp"
+                    appName: "$(appService)"
+                    package: "$(System.ArtifactsDirectory)/drop/$(buildConfiguration)/*.zip"
+                    deploymentMethod: "auto"
