@@ -15,7 +15,7 @@ variables:
   acaenv: "az400acaenv"
   targetPort: 8080
   loadTestResource: "az400-load-test"
-  testFile: "demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx"
+  testFile: "$(Build.SourcesDirectory)/demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx"
 
 stages:
   - stage: Build
