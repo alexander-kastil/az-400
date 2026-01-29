@@ -14,7 +14,7 @@ This skill demonstrates a complete DevOps workflow for importing and running pip
 
 ### Key Benefits
 
-- **Metadata-driven**: Uses deployment metadata (.github/skills/deploy.json) for configuration
+- **Metadata-driven**: Uses deployment metadata (.github/deploy.json) for configuration
 - **Automated import**: Imports pipelines using Azure CLI
 - **Error handling**: Diagnoses and fixes pipeline execution errors
 - **Documentation**: Uses Microsoft Learn MCP to reference official documentation
@@ -48,7 +48,7 @@ The skill expects a `deploy.json` file in the skills root with the following str
 First, locate and read the deployment metadata file:
 
 ```bash
-# File location: .github/skills/deploy.json
+# File location: .github/deploy.json
 ```
 
 The metadata contains all necessary configuration for pipeline import.
@@ -207,7 +207,7 @@ Here's the complete workflow from import to successful execution:
 
 ```bash
 # 1. Read deployment metadata
-cat .github/skills/deploy.json
+cat .github/deploy.json
 
 # 2. Import pipeline
 az pipelines create \
@@ -291,7 +291,7 @@ git commit -m "Fix m365 login command - add required --appId parameter"
 - Access to Azure DevOps organization and project
 - GitHub service connection configured in Azure DevOps
 - Repository with YAML pipeline files
-- Deployment metadata file (.github/skills/deploy.json)
+- Deployment metadata file (.github/deploy.json)
 
 ## Required Permissions
 

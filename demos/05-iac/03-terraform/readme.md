@@ -4,7 +4,7 @@
 
 - Show [catalog-ci-cd-terraform.yml](/.azdo/catalog-ci-cd-terraform.yml) - Modern pipeline with Workload Identity Federation
 - Show [main.tf](/infra/terraform/main.tf) - Infrastructure configuration with OIDC authentication
-- Import pipeline using deployment metadata from [deploy.json](/.github/skills/import-pipeline/deploy.json)
+- Import pipeline using deployment metadata from [deploy.json](/.github/deploy.json)
 
 ## Pipeline Structure
 

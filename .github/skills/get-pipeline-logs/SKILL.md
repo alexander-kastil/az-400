@@ -46,7 +46,7 @@ $pipelineId = 45  # Replace with your pipeline ID# Get latest run (top 1, newest
 ## One-Liner: Get Latest Run Logs
 
 ```powershell
-$config = Get-Content .github/skills/deploy.json | ConvertFrom-Json
+$config = Get-Content .github/deploy.json | ConvertFrom-Json
 $org = ($config.ADOOrg -replace 'https://dev.azure.com/', '')
 $project = $config.ADOProject
 $pipelineId = 45$buildId = (az pipelines runs list --org "https://dev.azure.com/$org" --project $project --pipeline-ids $pipelineId --top 1 --query-order QueueTimeDesc --query "[0].id" -o tsv)$token = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken -o tsv$logs = Invoke-RestMethod -Uri "https://dev.azure.com/$org/$project/_apis/build/builds/$buildId/logs?api-version=7.1-preview.2" -Headers @{Authorization="Bearer $token"}$largestLog = $logs.value | Sort-Object lineCount -Descending | Select-Object -First 1Invoke-RestMethod -Uri "https://dev.azure.com/$org/$project/_apis/build/builds/$buildId/logs/$($largestLog.id)?api-version=7.1-preview.2" -Headers @{Authorization="Bearer $token"} | Out-File "$env:TEMP\latest-error.txt"Get-Content "$env:TEMP\latest-error.txt" | Select-String "error|Error|##\[error\]" -Context 3
@@ -57,6 +57,8 @@ $pipelineId = 45$buildId = (az pipelines runs list --org "https://dev.azure.com/
 - **Always use latest run**:
 - **Token resource ID**: `499b84ac-1321-427f-aa17-267ca6975798` is Azure DevOps Entra ID resource
 - **Build vs Run**: Terms are interchangeable in Azure DevOps (buildId = runId)
-- **Configuration**: Load org/project from `.github/skills/deploy.json`## Troubleshooting
+- **Configuration**: Load org/project from `.github/deploy.json`
+
+## Troubleshooting
 
 ## References- Review logs to diagnose pipeline issues: https://learn.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/review-logs- Builds API: https://learn.microsoft.com/en-us/rest/api/azure/devops/build/builds## LicenseMIT
