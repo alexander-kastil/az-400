@@ -20,32 +20,11 @@ stages:
   - stage: Build
     displayName: Build
     jobs:
-      - job: Build
-        displayName: Build Function
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: "22.x"
-            displayName: "Install Node.js"
-
-          - script: |
-              npm install
-              npm run build --if-present
-              npm run test --if-present
-            displayName: "Prepare binaries"
-            workingDirectory: $(appPath)
-
-          - task: ArchiveFiles@2
-            displayName: "Archive files"
-            inputs:
-              rootFolderOrFile: "$(System.DefaultWorkingDirectory)"
-              includeRootFolder: false
-              archiveType: zip
-              archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-              replaceExistingArchive: true
-
-          - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-            artifact: drop
+      - template: templates/t-build-func-node.yaml
+        parameters:
+          nodeVersion: "22.x"
+          appPath: $(appPath)
+          artifactName: $(Build.BuildId)
 
   - stage: Deploy
     displayName: Deploy stage

@@ -20,31 +20,12 @@ stages:
   - stage: Build
     displayName: "Build Python Function"
     jobs:
-      - job: Build
-        pool:
-          vmImage: "ubuntu-latest"
-        steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: "$(pythonVersion)"
-          - script: |
-              python -m pip install --upgrade pip
-              pip install -r src/functions/payment-py/requirements.txt
-            displayName: "Install dependencies"
-          - script: |
-              cd src/functions/payment-py
-              if [ -f "test" ] || [ -d "tests" ]; then
-                pytest
-              else
-                echo "No tests found. Skipping."
-              fi
-            displayName: "Run tests"
-          - script: |
-              cd src/functions/payment-py
-              zip -r ../../payment-func-py.zip .
-            displayName: "Archive function app"
-          - publish: src/payment-func-py.zip
-            artifact: functionapp
+      - template: templates/t-build-func-py.yaml
+        parameters:
+          pythonVersion: $(pythonVersion)
+          appPath: src/functions/payment-py
+          requirementsPath: src/functions/payment-py/requirements.txt
+          artifactName: payment-func-py
 
   - stage: Deploy
     displayName: "Deploy to Azure Function App"

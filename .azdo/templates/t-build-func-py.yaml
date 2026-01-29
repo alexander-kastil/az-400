@@ -1,0 +1,42 @@
+parameters:
+  - name: pythonVersion
+    type: string
+    default: "3.11"
+  - name: appPath
+    type: string
+  - name: requirementsPath
+    type: string
+  - name: artifactName
+    type: string
+
+jobs:
+  - job: Build
+    displayName: "Build Python Function"
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "${{ parameters.pythonVersion }}"
+
+      - script: |
+          python -m pip install --upgrade pip
+          pip install -r ${{ parameters.requirementsPath }}
+        displayName: "Install dependencies"
+
+      - script: |
+          cd ${{ parameters.appPath }}
+          if [ -f "test" ] || [ -d "tests" ]; then
+            pytest
+          else
+            echo "No tests found. Skipping."
+          fi
+        displayName: "Run tests"
+
+      - script: |
+          cd ${{ parameters.appPath }}
+          zip -r ../../${{ parameters.artifactName }}.zip .
+        displayName: "Archive function app"
+
+      - publish: ${{ parameters.artifactName }}.zip
+        artifact: functionapp

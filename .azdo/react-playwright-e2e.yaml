@@ -30,7 +30,7 @@ stages:
             parameters:
               acrName: $(acrName)
               imageName: $(imageName)
-              dockerfile: $(appRoot)/dockerfile
+              dockerfile: dockerfile
               buildContext: $(appRoot)
               repository: $(imageName)
               serviceConnection: $(serviceConnection)
