@@ -30,6 +30,7 @@ stages:
               imageName: prime-service
               dockerfile: dockerfile
               buildContext: src/services/prime-service
+              repository: prime-service
               serviceConnection: $(serviceConnection)
 
   - stage: Deploy
