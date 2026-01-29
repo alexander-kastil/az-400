@@ -78,20 +78,6 @@ stages:
           - checkout: self
 
           - task: AzureCLI@2
-            displayName: "Delete Existing Load Test"
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                echo "Attempting to delete existing test 'prime-service-loadtest'..."
-                az load test delete \
-                  --name prime-service-loadtest \
-                  --load-test-resource $(loadTestResource) \
-                  --resource-group $(grp) \
-                  --yes || echo "Test doesn't exist or already deleted"
-
-          - task: AzureCLI@2
             displayName: "Retrieve Container App URL"
             name: loadTest
             inputs:
@@ -103,11 +89,18 @@ stages:
                 echo "Container app URL: ${APP_URL}"
                 echo "##vso[task.setvariable variable=appUrl]${APP_URL}"
 
+          - bash: |
+              # Create unique config file with build ID appended to test name
+              cp demos/03-release-strategy/03-testing/02-load-test/prime-service-loadtest.yaml prime-service-loadtest-$(Build.BuildId).yaml
+              sed -i "s/testName: prime-service-loadtest/testName: prime-service-loadtest-$(Build.BuildId)/" prime-service-loadtest-$(Build.BuildId).yaml
+              cat prime-service-loadtest-$(Build.BuildId).yaml
+            displayName: "Create Unique Load Test Config"
+
           - task: AzureLoadTest@1
             displayName: "Run JMeter Load Test"
             inputs:
               azureSubscription: "$(serviceConnection)"
-              loadTestConfigFile: "demos/03-release-strategy/03-testing/02-load-test/prime-service-loadtest.yaml"
+              loadTestConfigFile: "prime-service-loadtest-$(Build.BuildId).yaml"
               resourceGroup: "$(grp)"
               loadTestResource: "$(loadTestResource)"
               env: |
