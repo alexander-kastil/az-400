@@ -50,7 +50,7 @@ stages:
     dependsOn: DeployGreen
     condition: succeeded()
     jobs:
-      - deployment: DeployBlue
+      - deployment: DeployBlueJob
         displayName: "Deploy BLUE"
         environment: $(adoEnvironment)
         strategy:
