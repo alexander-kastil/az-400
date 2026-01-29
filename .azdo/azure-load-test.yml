@@ -18,73 +18,39 @@ variables:
   testFile: "demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx"
 
 stages:
-  - stage: Check
-    displayName: "Check Resources"
-    jobs:
-      - template: templates/t-check-containers.yaml
-        parameters:
-          acrName: $(acrName)
-          repository: prime-service
-          app: $(app)
-          grp: $(grp)
-          serviceConnection: $(serviceConnection)
-
   - stage: Build
     displayName: "Build Container Image"
-    dependsOn: Check
-    condition: eq(stageDependencies.Check.CheckResources.outputs['checkStep.skipBuild'], 'false')
     jobs:
       - job: BuildImage
-        displayName: "Build Image in ACR"
+        displayName: "Build Image"
         steps:
-          - template: templates/t-build-acr-image.yaml
+          - template: templates/t-build-docker-image.yaml
             parameters:
               acrName: $(acrName)
-              repository: prime-service
+              imageName: prime-service
               dockerfile: dockerfile
               buildContext: src/services/prime-service
+              repository: prime-service
               serviceConnection: $(serviceConnection)
+              override: false
 
   - stage: Deploy
     displayName: "Deploy to Container Apps"
-    dependsOn:
-      - Check
-      - Build
-    condition: eq(stageDependencies.Check.CheckResources.outputs['checkStep.skipDeploy'], 'false')
+    dependsOn: Build
     jobs:
       - job: DeployApp
         displayName: "Deploy Container App"
         steps:
-          - checkout: none
-
-          - template: templates/t-fetch-acr-credentials.yaml
+          - template: templates/t-deploy-container-app.yaml
             parameters:
               acrName: $(acrName)
+              image: $(image):$(Build.BuildId)
+              app: $(app)
+              resourceGroup: $(grp)
               serviceConnection: $(serviceConnection)
-
-          - task: AzureCLI@2
-            displayName: "Deploy to Azure Container Apps"
-            inputs:
-              azureSubscription: "$(serviceConnection)"
-              scriptType: "bash"
-              scriptLocation: "inlineScript"
-              inlineScript: |
-                if az containerapp show -n $(app) -g $(grp) &>/dev/null; then
-                  echo "Container app $(app) already exists. Skipping deploy."
-                  exit 0
-                fi
-
-                echo "Creating new container app..."
-                az containerapp create \
-                  -n $(app) \
-                  -g $(grp) \
-                  --image $(image):$(Build.BuildId) \
-                  --environment $(acaenv) \
-                  --target-port $(targetPort) \
-                  --ingress external \
-                  --registry-server $(acrName).azurecr.io \
-                  --registry-username $(acrName) \
-                  --registry-password $(acrPassword)
+              acaEnvironment: $(acaenv)
+              targetPort: $(targetPort)
+              override: false
 
           - task: AzureCLI@2
             displayName: "Get Container App URL"

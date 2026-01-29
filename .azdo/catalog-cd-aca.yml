@@ -22,13 +22,17 @@ variables:
   serviceConnection: wi-az400-dev
   acaenv: "az400acaenv"
 
-stages:
-  - template: templates/t-deploy-aca.yaml
-    parameters:
-      acrName: $(acrName)
-      image: $(image)
-      app: $(app)
-      grp: $(grp)
-      serviceConnection: $(serviceConnection)
-      acaenv: $(acaenv)
-      targetPort: 8080
+jobs:
+  - job: DeployToACA
+    displayName: Deploy to ACA
+    steps:
+      - template: templates/t-deploy-container-app.yaml
+        parameters:
+          acrName: $(acrName)
+          image: $(image)
+          app: $(app)
+          resourceGroup: $(grp)
+          serviceConnection: $(serviceConnection)
+          acaEnvironment: $(acaenv)
+          targetPort: 8080
+          override: false

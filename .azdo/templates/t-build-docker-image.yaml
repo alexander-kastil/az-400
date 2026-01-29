@@ -1,5 +1,5 @@
 parameters:
-  - name: acr
+  - name: acrName
     type: string
   - name: imageName
     type: string
@@ -7,24 +7,51 @@ parameters:
     type: string
   - name: buildContext
     type: string
+  - name: repository
+    type: string
+  - name: serviceConnection
+    type: string
+  - name: override
+    type: boolean
+    default: false
 
 steps:
-  - task: Docker@2
-    displayName: Login to ACR
-    inputs:
-      command: login
-      containerRegistry: ${{ parameters.acr }}
+  - checkout: self
 
-  - task: Docker@2
-    displayName: Build and Push Image
+  - task: AzureCLI@2
+    displayName: "Check if image already exists"
     inputs:
-      repository: "${{ parameters.imageName }}"
-      command: "buildAndPush"
-      Dockerfile: ${{ parameters.dockerfile }}
-      buildContext: ${{ parameters.buildContext }}
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        IMAGE_EXISTS=$(az acr repository show-tags \
+          --name ${{ parameters.acrName }} \
+          --repository ${{ parameters.repository }} \
+          --query "contains(@, 'latest')" \
+          -o tsv 2>/dev/null || echo false)
 
-  - task: Docker@2
-    displayName: Logout of ACR
+        if [ "${IMAGE_EXISTS}" = "true" ] && [ "${{ parameters.override }}" = "False" ]; then
+          echo "Image ${{ parameters.repository }}:latest already exists and override=false. Skipping build."
+          echo "##vso[task.setvariable variable=skipBuild;isOutput=true]true"
+        else
+          echo "Building image. (exists=$IMAGE_EXISTS, override=${{ parameters.override }})"
+          echo "##vso[task.setvariable variable=skipBuild;isOutput=true]false"
+        fi
+    name: checkImage
+
+  - task: AzureCLI@2
+    displayName: "Build and Push Image via ACR"
+    condition: eq(variables['checkImage.skipBuild'], 'false')
     inputs:
-      command: logout
-      containerRegistry: ${{ parameters.acr }}
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        cd ${{ parameters.buildContext }}
+        az acr build \
+          --image ${{ parameters.repository }}:$(Build.BuildId) \
+          --image ${{ parameters.repository }}:latest \
+          --registry ${{ parameters.acrName }} \
+          --file ${{ parameters.dockerfile }} \
+          .

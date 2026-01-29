@@ -20,58 +20,39 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: Check
-    displayName: "Check Resources"
-    jobs:
-      - template: templates/t-check-containers.yaml
-        parameters:
-          acrName: $(acrName)
-          repository: $(imageName)
-          app: $(app)
-          grp: $(grp)
-          serviceConnection: $(serviceConnection)
-
   - stage: BuildImage
     displayName: "Build Container Image"
-    dependsOn: Check
-    condition: and(succeeded('Check'), eq(dependencies.Check.outputs['CheckResources.checkStep.skipBuild'], 'false'))
     jobs:
       - job: BuildAndPush
         displayName: "Build and Push to ACR"
         steps:
           - template: templates/t-build-docker-image.yaml
             parameters:
-              acr: $(acr)
+              acrName: $(acrName)
               imageName: $(imageName)
               dockerfile: $(appRoot)/dockerfile
               buildContext: $(appRoot)
+              repository: $(imageName)
+              serviceConnection: $(serviceConnection)
+              override: false
 
   - stage: Deploy
     displayName: "Deploy to Azure Container Apps"
-    dependsOn:
-      - Check
-      - BuildImage
-    condition: and(succeeded('Check'), or(succeeded('BuildImage'), eq(dependencies.Check.outputs['CheckResources.checkStep.skipBuild'], 'true')))
+    dependsOn: BuildImage
     jobs:
       - job: DeployToACA
         displayName: Deploy to ACA
         steps:
-          - checkout: none
-
-          - template: templates/t-fetch-acr-credentials.yaml
-            parameters:
-              acrName: $(acrName)
-              serviceConnection: $(serviceConnection)
-
           - template: templates/t-deploy-container-app.yaml
             parameters:
               acrName: $(acrName)
               image: $(image)
               app: $(app)
-              grp: $(grp)
+              resourceGroup: $(grp)
               serviceConnection: $(serviceConnection)
-              acaenv: $(acaenv)
+              acaEnvironment: $(acaenv)
               targetPort: 80
+              override: false
 
   - stage: Test
     displayName: "Run Playwright E2E Tests"
