@@ -7,12 +7,12 @@ A GitHub Copilot skill for automating Azure DevOps pipeline imports, execution, 
 Ask GitHub Copilot:
 
 ```
-@workspace I want to import and run the pipeline from .azdo/spfx-ci-cd.yml using the metadata in deploy.json
+@workspace I want to import and run the pipeline from .azdo/spfx-ci-cd.yml using the metadata in .github/skills/deploy.json
 ```
 
 ## What This Skill Does
 
-1. **Imports pipelines** from YAML files to Azure DevOps. if the name attribute in the pipeline is present, use it as display name for the pipeline. Get the deployment metadata from `deploy.json`.
+1. **Imports pipelines** from YAML files to Azure DevOps. if the name attribute in the pipeline is present, use it as display name for the pipeline. Get the deployment metadata from `.github/skills/deploy.json`.
 2. **Executes pipelines** and monitors their status
 3. **Diagnoses errors** by analyzing logs and documentation
 4. **Fixes issues** by updating YAML files with correct syntax
@@ -38,7 +38,7 @@ az pipelines runs show --id <RUN_ID> --org "<ORG_URL>" --project "<PROJECT>"
 
 ## Deployment Metadata
 
-Create a `deploy.json` file in the `.azdo` directory:
+Use the `deploy.json` file in the skills root:
 
 ```json
 {
@@ -52,7 +52,7 @@ Create a `deploy.json` file in the `.azdo` directory:
 
 ## Key Features
 
-- **Metadata-driven**: Configuration stored in deploy.json
+- **Metadata-driven**: Configuration stored in `.github/skills/deploy.json`
 - **Error diagnosis**: Automatic error detection and research
 - **Documentation integration**: Uses Microsoft Learn MCP for official docs
 - **Complete workflow**: Import → Run → Fix → Verify

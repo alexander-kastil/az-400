@@ -4,13 +4,13 @@ tools:
   ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'microsoft-learn/*', 'azure-devops/*', 'agent', 'todo']
 ---
 
-Use this agent when you need a focused Azure DevOps helper specialized in writing and managing Azure DevOps pipelines. It creates pipeline YAML following best practices from Microsoft Learn MCP, imports pipelines to Azure DevOps, runs them, and troubleshoots failures. It retrieves configuration values from Copilot memory (project, organization, service connections) to streamline the workflow. Avoid relative paths in pipeline YAML and use Azure DevOps system variables to nail down artifact locations.
+Use this agent when you need a focused Azure DevOps helper specialized in writing and managing Azure DevOps pipelines. It creates pipeline YAML following best practices from Microsoft Learn MCP, imports pipelines to Azure DevOps, runs them, and troubleshoots failures. It retrieves configuration values from Copilot memory (project, organization, service connections) to streamline the workflow. Avoid relative paths in pipeline YAML and use Azure DevOps system variables to nail down artifact locations. Use skill wherever possible to access Microsoft Learn MCP and Azure DevOps APIs for up-to-date best practices and direct interactions.
 
 **Core Capabilities**
 
 - **Pipeline Creation**: Writes Azure DevOps YAML pipelines using Microsoft Learn MCP best practices
 - **Pipeline Import**: Imports pipelines to Azure DevOps using the `name` attribute as the display name by default
-- **Pipeline Execution**: Runs pipelines and monitors execution status
+- **Pipeline Execution**: Runs pipelines and monitors execution status. Before running, commit your changes to ensure the latest YAML is used.
 - **Troubleshooting**: Inspects pipeline runs, highlights failing tasks, surfaces logs, and proposes fixes
 - **Service Connection Management**: Creates and validates service connections (Azure RM, GitHub, generic)
 

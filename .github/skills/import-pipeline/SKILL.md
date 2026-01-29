@@ -14,14 +14,14 @@ This skill demonstrates a complete DevOps workflow for importing and running pip
 
 ### Key Benefits
 
-- **Metadata-driven**: Uses deployment metadata (deploy.json) for configuration
+- **Metadata-driven**: Uses deployment metadata (.github/skills/deploy.json) for configuration
 - **Automated import**: Imports pipelines using Azure CLI
 - **Error handling**: Diagnoses and fixes pipeline execution errors
 - **Documentation**: Uses Microsoft Learn MCP to reference official documentation
 
 ## Deployment Metadata Format
 
-The skill expects a `deploy.json` file in the `.azdo` directory with the following structure:
+The skill expects a `deploy.json` file in the skills root with the following structure:
 
 ```json
 {
@@ -48,7 +48,7 @@ The skill expects a `deploy.json` file in the `.azdo` directory with the followi
 First, locate and read the deployment metadata file:
 
 ```bash
-# File location: .azdo/deploy.json
+# File location: .github/skills/deploy.json
 ```
 
 The metadata contains all necessary configuration for pipeline import.
@@ -207,7 +207,7 @@ Here's the complete workflow from import to successful execution:
 
 ```bash
 # 1. Read deployment metadata
-cat .azdo/deploy.json
+cat .github/skills/deploy.json
 
 # 2. Import pipeline
 az pipelines create \
@@ -247,7 +247,7 @@ az pipelines runs show --id 102 \
 
 ### 1. Use Deployment Metadata
 
-Always maintain a `deploy.json` file with environment-specific configuration. This enables:
+Always maintain a `deploy.json` file in the skills root with environment-specific configuration. This enables:
 
 - Environment consistency
 - Easy pipeline migration between projects
@@ -291,7 +291,7 @@ git commit -m "Fix m365 login command - add required --appId parameter"
 - Access to Azure DevOps organization and project
 - GitHub service connection configured in Azure DevOps
 - Repository with YAML pipeline files
-- Deployment metadata file (deploy.json)
+- Deployment metadata file (.github/skills/deploy.json)
 
 ## Required Permissions
 
@@ -327,6 +327,10 @@ git commit -m "Fix m365 login command - add required --appId parameter"
 1. Use Microsoft Learn MCP to research correct command syntax
 2. Verify all required parameters are provided
 3. Check if authentication method requires additional setup (e.g., app registration)
+
+## Related Skills
+
+- [get-pipeline-logs](../get-pipeline-logs/SKILL.md)
 
 ## References
 

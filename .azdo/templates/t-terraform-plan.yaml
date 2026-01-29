@@ -16,6 +16,8 @@ parameters:
     default: tfplan
 
 steps:
+  # AzureCLI@2 is used to inject the service connection/OIDC token and ARM_* vars for Terraform.
+  # A plain bash task would require manual `az login --federated-token` and extra auth wiring.
   - task: AzureCLI@2
     displayName: Terraform Init and Plan
     inputs:
