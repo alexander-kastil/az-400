@@ -25,13 +25,13 @@ stages:
         steps:
           - template: templates/t-build-docker-image.yaml
             parameters:
-              acrName: $(acrName)
-              imageName: "$(appName):green-$(Build.BuildId)"
+              acrServiceConnection: scACR
+              repository: $(appName)
               dockerfile: "$(appRoot)/Dockerfile"
               buildContext: $(appRoot)
-              repository: $(appName)
-              serviceConnection: $(serviceConnection)
-              override: true
+              tags: |
+                green-$(Build.BuildId)
+                latest
 
           - template: templates/t-deploy-container-app.yaml
             parameters:
@@ -80,13 +80,13 @@ stages:
 
           - template: templates/t-build-docker-image.yaml
             parameters:
-              acrName: $(acrName)
-              imageName: "$(appName):blue-$(Build.BuildId)"
+              acrServiceConnection: scACR
+              repository: $(appName)
               dockerfile: "$(appRoot)/Dockerfile"
               buildContext: $(appRoot)
-              repository: $(appName)
-              serviceConnection: $(serviceConnection)
-              override: true
+              tags: |
+                blue-$(Build.BuildId)
+                latest
 
           - template: templates/t-deploy-container-app.yaml
             parameters:

@@ -28,13 +28,10 @@ stages:
         steps:
           - template: templates/t-build-docker-image.yaml
             parameters:
-              acrName: $(acrName)
-              imageName: $(imageName)
+              acrServiceConnection: scACR
+              repository: $(imageName)
               dockerfile: dockerfile
               buildContext: $(appRoot)
-              repository: $(imageName)
-              serviceConnection: $(serviceConnection)
-              override: true
 
   - stage: Deploy
     displayName: "Deploy to Azure Container Apps"

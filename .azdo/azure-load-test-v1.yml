@@ -27,12 +27,10 @@ stages:
         steps:
           - template: templates/t-build-docker-image.yaml
             parameters:
-              acrName: $(acrName)
-              imageName: prime-service
+              acrServiceConnection: $(serviceConnection)
+              repository: prime-service
               dockerfile: dockerfile
               buildContext: src/services/prime-service
-              repository: prime-service
-              serviceConnection: $(serviceConnection)
 
   - stage: Deploy
     displayName: "Deploy Container App"

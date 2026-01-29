@@ -1,57 +1,40 @@
 parameters:
-  - name: acrName
+  - name: acrServiceConnection
     type: string
-  - name: imageName
+  - name: repository
     type: string
   - name: dockerfile
     type: string
   - name: buildContext
     type: string
-  - name: repository
+    default: "."
+  - name: tags
     type: string
-  - name: serviceConnection
-    type: string
-  - name: override
-    type: boolean
-    default: false
+    default: |
+      $(Build.BuildId)
+      latest
 
 steps:
   - checkout: self
 
-  - task: AzureCLI@2
-    displayName: "Check if image already exists"
+  - task: Docker@2
+    displayName: "Login to ACR"
     inputs:
-      azureSubscription: "${{ parameters.serviceConnection }}"
-      scriptType: "bash"
-      scriptLocation: "inlineScript"
-      inlineScript: |
-        IMAGE_EXISTS=$(az acr repository show-tags \
-          --name ${{ parameters.acrName }} \
-          --repository ${{ parameters.repository }} \
-          --query "contains(@, 'latest')" \
-          -o tsv 2>/dev/null || echo false)
+      command: login
+      containerRegistry: "${{ parameters.acrServiceConnection }}"
 
-        if [ "${IMAGE_EXISTS}" = "true" ] && [ "${{ parameters.override }}" = "False" ]; then
-          echo "Image ${{ parameters.repository }}:latest already exists and override=false. Skipping build."
-          echo "##vso[task.setvariable variable=skipBuild;isOutput=true]true"
-        else
-          echo "Building image. (exists=$IMAGE_EXISTS, override=${{ parameters.override }})"
-          echo "##vso[task.setvariable variable=skipBuild;isOutput=true]false"
-        fi
-    name: checkImage
-
-  - task: AzureCLI@2
-    displayName: "Build and Push Image via ACR"
-    condition: eq(variables['checkImage.skipBuild'], 'false')
+  - task: Docker@2
+    displayName: "Build and Push Image"
     inputs:
-      azureSubscription: "${{ parameters.serviceConnection }}"
-      scriptType: "bash"
-      scriptLocation: "inlineScript"
-      inlineScript: |
-        cd ${{ parameters.buildContext }}
-        az acr build \
-          --image ${{ parameters.repository }}:$(Build.BuildId) \
-          --image ${{ parameters.repository }}:latest \
-          --registry ${{ parameters.acrName }} \
-          --file ${{ parameters.dockerfile }} \
-          .
+      containerRegistry: "${{ parameters.acrServiceConnection }}"
+      repository: "${{ parameters.repository }}"
+      command: "buildAndPush"
+      Dockerfile: "${{ parameters.dockerfile }}"
+      buildContext: "${{ parameters.buildContext }}"
+      tags: ${{ parameters.tags }}
+
+  - task: Docker@2
+    displayName: "Logout of ACR"
+    inputs:
+      command: logout
+      containerRegistry: "${{ parameters.acrServiceConnection }}"
