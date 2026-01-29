@@ -98,8 +98,18 @@ stages:
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                echo "Attempting to delete existing test: prime-service-loadtest"
-                az load test delete --test-id prime-service-loadtest --resource-group $(grp) --load-test-resource $(loadTestResource) --yes --no-wait 2>/dev/null || echo "Test does not exist or deletion initiated."
+                echo "Checking for existing test: prime-service-loadtest"
+                
+                # Check if test exists
+                if az load test show --test-id prime-service-loadtest --resource-group $(grp) --load-test-resource $(loadTestResource) >/dev/null 2>&1; then
+                  echo "Test exists. Deleting..."
+                  az load test delete --test-id prime-service-loadtest --resource-group $(grp) --load-test-resource $(loadTestResource) --yes
+                  echo "Test deleted. Waiting for Azure to process deletion..."
+                  sleep 10
+                  echo "Ready to create new test."
+                else
+                  echo "Test does not exist. No deletion needed."
+                fi
 
           - task: AzureCLI@2
             displayName: "Get Container App URL"
