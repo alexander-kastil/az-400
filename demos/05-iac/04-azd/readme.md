@@ -1,5 +1,9 @@
 # Azure Developer CLI
 
+This demo illustrates how to use the Azure Developer CLI (`azd`) to deploy a containerized application to Azure Container Apps. Detailed steps are provided in [azd-into](./azd-intro/)
+
+## Links & Resources
+
 [Azure Developer CLI (azd)](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/)
 
 [AZD Template library](https://azure.github.io/awesome-azd/)
