@@ -27,6 +27,11 @@ This repository contains training materials, demos, and infrastructure for Micro
 | `.github/skills/wi-creation`       | Skill assets for workload identity creation workflows. |
 | `.github/skills/get-pipeline-logs` | Skill assets for retrieving pipeline logs.             |
 
+## General RULES
+
+- Do not over engineer!!!
+- Do not write docs if you are not asked to. If you are asked to write docs, be concise, short and to the point. Avoid more than 2 nesting levels.
+
 ## Deployment Metadata
 
 `.github/deploy.json` contains essential metadata for pipeline imports and configurations for deployment environments.
