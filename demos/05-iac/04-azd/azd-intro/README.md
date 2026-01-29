@@ -1,5 +1,14 @@
 # Azure Developer CLI Getting started
 
+## Prerequisites
+
+Install Azure Developer CLI and Bicep CLI:
+
+```
+Winget install --id Microsoft.Azure.DeveloperCLI -e
+winget install --id Microsoft.Bicep -e
+```
+
 ## Initialize your project
 
 This command sets up your project with the necessary configuration files and prepares your environment for development with Azure services.
@@ -15,4 +24,12 @@ Next we will automatically generate the Bicep files that define the infrastructu
 
 ```
 azd infra gen
+```
+
+## Deploy your application
+
+Now you can deploy your application to Azure using the following command:
+
+```
+azd up
 ```
