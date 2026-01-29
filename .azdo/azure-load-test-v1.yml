@@ -48,18 +48,6 @@ stages:
           acaEnvironment: $(acaenv)
           targetPort: "8080"
 
-      - task: AzureCLI@2
-        displayName: "Get Container App URL"
-        name: getUrl
-        inputs:
-          azureSubscription: "$(serviceConnection)"
-          scriptType: "bash"
-          scriptLocation: "inlineScript"
-          inlineScript: |
-            APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
-            echo "Container App URL: https://${APP_URL}"
-            echo "##vso[task.setvariable variable=appUrl;isOutput=true]${APP_URL}"
-
   - stage: LoadTest
     displayName: "Execute Load Test"
     dependsOn:
@@ -71,16 +59,15 @@ stages:
           - checkout: self
 
           - task: AzureCLI@2
-            displayName: "Execute Azure Load Test"
-            name: loadTest
+            displayName: "Get Container App URL"
+            name: getUrl
             inputs:
               azureSubscription: "$(serviceConnection)"
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                # Retrieve the container app URL
                 APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
-                echo "Container app URL: ${APP_URL}"
+                echo "Container App URL: https://${APP_URL}"
                 echo "##vso[task.setvariable variable=appUrl]${APP_URL}"
 
           - task: AzureLoadTest@1
@@ -94,7 +81,7 @@ stages:
                 [
                   {
                     "name": "webapp",
-                    "value": "$(loadTest.appUrl)"
+                    "value": "$(appUrl)"
                   }
                 ]
 
