@@ -45,3 +45,4 @@ stages:
             parameters:
               cfg: $(buildConfiguration)
               folder: $(appPath)
+              project: catalog-service
