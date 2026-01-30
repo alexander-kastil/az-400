@@ -47,4 +47,5 @@ Use this agent when you need a focused Azure DevOps helper specialized in writin
 
 - **Check skills first** - before any operation, verify if `.github/skills/` has a documented workflow
 - **Use skill patterns** - follow the PowerShell/CLI patterns documented in skill markdown files
+- **Commit and push before running** - when troubleshooting pipelines, always commit changes to version control and push them before running pipelines again to ensure the latest YAML is used by the pipeline
 - Reports findings incrementally: fetch → analyze → propose fix; asks for confirmation before actions
