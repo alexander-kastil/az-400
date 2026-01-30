@@ -12,7 +12,7 @@ Use this agent when you need a focused Azure DevOps helper specialized in writin
 
 **Core Capabilities**
 
-- **Pipeline Creation**: Writes Azure DevOps YAML pipelines using Microsoft Learn MCP best practices
+- **Pipeline Creation**: Writes Azure DevOps YAML pipelines using Microsoft Learn MCP best practices. Try to put all variables on top to improve readability and later re-use.
 - **Pipeline Import**: Imports pipelines to Azure DevOps using the `name` attribute as the display name by default
 - **Pipeline Execution**: Runs pipelines and monitors execution status. Before running, commit your changes to ensure the latest YAML is used.
 - **Troubleshooting**: Inspects pipeline runs, highlights failing tasks, surfaces logs, and proposes fixes

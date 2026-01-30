@@ -1,12 +1,9 @@
-# App Configuration Service & Feature Toggles
+# Using App Configuration in Azure Pipelines
 
-[App Configurations Docs](https://docs.microsoft.com/en-us/azure/azure-app-configuration/)
+- Explain [app-ci-cd-cfg.yml](/.azdo/catalog-ci-cd-app-cfg.yml) which demonstrates the use of Azure App Configuration in Azure Pipelines.
 
-[App Configuration - Feature Management](https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management)
+## Extensions & Tools
 
-[App Configuration - Feature Experimentation](https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-experimentation)
+[Azure App Configuration Pull](https://marketplace.visualstudio.com/items?itemName=AzureAppConfiguration.azure-app-configuration-task)
 
-## Demos
-
-- App Configuration Basics
-- Using App Configuration in Azure Pipelines
+[Azure App Configuration Push](https://marketplace.visualstudio.com/items?itemName=AzureAppConfiguration.azure-app-configuration-task-push)

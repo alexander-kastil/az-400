@@ -1,4 +1,4 @@
-name: 03-02-angular-cd-aca
+name: 03-02-angular-ci-cd-aca
 
 # trigger:
 #   branches:
@@ -17,14 +17,29 @@ pool:
 variables:
   acrName: "az400acrdev"
   image: "az400acrdev.azurecr.io/angular-devops"
+  repository: "angular-devops"
   app: "angular-devops-app"
   grp: "az400-dev"
   serviceConnection: wi-az400-dev
   acaenv: "az400acaenv"
 
 jobs:
+  - job: BuildAngularImage
+    displayName: Build Angular Container Image
+    steps:
+      - template: templates/t-build-docker-image.yaml
+        parameters:
+          acrServiceConnection: $(serviceConnection)
+          repository: $(repository)
+          dockerfile: src/angular/angular-devops/Dockerfile
+          buildContext: src/angular/angular-devops
+          tags: |
+            $(Build.BuildId)
+            latest
+
   - job: DeployToACA
     displayName: Deploy to ACA
+    dependsOn: BuildAngularImage
     steps:
       - template: templates/t-deploy-container-app.yaml
         parameters:
