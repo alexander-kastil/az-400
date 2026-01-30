@@ -15,9 +15,22 @@ The dockerfile uses the **Azure Artifacts Credential Provider** with the `VSS_NU
 
 ### Prerequisites
 
-1. Create a PAT in Azure DevOps with **Packaging (Read)** scope:
-   - Azure DevOps → User Settings → Personal Access Tokens → New Token
-   - Scopes: Packaging (Read)
+**Option 1: Automated (Recommended)**
+
+Run the provided script to create a PAT token automatically:
+
+```powershell
+.\get-pat.ps1
+```
+
+The script will authenticate with Azure CLI and create a 90-day PAT token with Packaging scope.
+
+**Option 2: Manual**
+
+Create a PAT in Azure DevOps:
+
+- Azure DevOps → User Settings → Personal Access Tokens → New Token
+- Scopes: Packaging (Read)
 
 ### Build Command
 
