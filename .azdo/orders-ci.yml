@@ -32,6 +32,10 @@ stages:
             displayName: "Use .NET Core SDK $(dotnetSdkVersion)"
             inputs:
               version: "$(dotnetSdkVersion)"
+          - task: NuGetAuthenticate@1
+            displayName: "Authenticate to Azure Artifacts"
+            inputs:
+              nuGetServiceConnections: $(azureSubscription)
           - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
             displayName: "Write build info"
           - task: DotNetCoreCLI@2
