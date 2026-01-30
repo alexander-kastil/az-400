@@ -1,4 +1,4 @@
-name: catalog-ci-sonar-cloud
+name: 06-03-catalog-ci-sonar-cloud
 
 trigger: none
 pr: none
@@ -11,8 +11,8 @@ variables:
   appPath: src/services/catalog-service/api/
   appTests: apps/catalog-api/api-tests/
   sonarCon: scSonarCloud
-  sonaOrg: integrations-development
-  sonarKey: integrations-development_az-400
+  sonaOrg: integrationsonline
+  sonarKey: integrationsonline
   sonarProj: az-400
 
 pool:
