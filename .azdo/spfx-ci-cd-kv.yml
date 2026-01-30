@@ -1,16 +1,5 @@
 name: 04-02-spfx-ci-cd-kv
 
-# trigger:
-#   branches:
-#     include:
-#       - master
-#   paths:
-#     include:
-#       - food-spfx-wp/*
-#     exclude:
-#       - az-pipelines/*
-#       - _images/*
-
 trigger: none
 pr: none
 
@@ -18,11 +7,12 @@ variables:
   package: foodlist-wp.sppkg
   packageLocation: /drop/src/teams/food-list/sharepoint/solution
   appPath: src/teams/food-list/
-  environment: m365-integrationsonline
   nodeVersion: "14.x"
   serviceConnection: "wi-az400"
   vault: az400-vault-dev
-  adoEnvironment: "04-02-spfx-ci-cd-kv-env"
+  adoEnvironment: "m365-integrationsonline"
+  appId: 5e8ecccb-da70-40af-808f-4860a1571f4d
+  tenantId: d92b247e-90e0-4469-a129-6a32866c0d0a
   # Do NOT set pipeline vars: username, password
 
 pool:
@@ -64,3 +54,5 @@ stages:
                     pkgLocation: $(packageLocation)
                     username: $(m365user)
                     password: $(m365pwd)
+                    appId: $(appId)
+                    tenantId: $(tenantId)

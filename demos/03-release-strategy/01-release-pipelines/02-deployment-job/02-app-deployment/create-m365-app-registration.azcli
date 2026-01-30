@@ -1,31 +1,42 @@
-appName="m365-spfx-cicd"
-tenantId=$(az account show --query tenantId -o tsv)
-sharePointAppId="00000003-0000-0ff1-ce00-000000000000"  # SharePoint Online resource ID
+appName=SPFxADOPipeline
+graphAppId=00000003-0000-0000-c000-000000000000
 
-appId=$(az ad app create \
-  --display-name "$appName" \
-  --sign-in-audience AzureADMyOrg \
-  --query appId -o tsv)
+az ad app create \
+  --display-name $appName \
+  --sign-in-audience AzureADMyOrg
+
+appId=$(az ad app list --display-name $appName --query "[0].appId" -o tsv)
+
+az ad sp create --id $appId
+
+objectId=$(az ad app show --id $appId --query id -o tsv)
+
+az rest --method PATCH \
+  --uri https://graph.microsoft.com/v1.0/applications/$appObjectId \
+  --headers "Content-Type=application/json" \
+  --body '{ "isFallbackPublicClient": true }'
+
+userReadId=$(az ad sp show --id $graphAppId \
+  --query "oauth2PermissionScopes[?value=='User.Read'].id | [0]" -o tsv)
+openidId=$(az ad sp show --id $graphAppId \
+  --query "oauth2PermissionScopes[?value=='openid'].id | [0]" -o tsv)
+profileId=$(az ad sp show --id $graphAppId \
+  --query "oauth2PermissionScopes[?value=='profile'].id | [0]" -o tsv)
+offlineAccessId=$(az ad sp show --id $graphAppId \
+  --query "oauth2PermissionScopes[?value=='offline_access'].id | [0]" -o tsv)
 
 az ad app permission add \
   --id $appId \
-  --api $sharePointAppId \
-  --api-permissions a82116e5-55eb-4c41-a434-62fe8a61c773=Role  # Sites.FullControl.All
+  --api $graphAppId \
+  --api-permissions \
+    $openidId=Scope \
+    $profileId=Scope \
+    $offlineAccessId=Scope \
+    $userReadId=Scope
 
-az ad sp create --id $appId
 az ad app permission admin-consent --id $appId
 
-sleep 10
+tenantId=$(az account show --query tenantId -o tsv)
 
-secretJson=$(az ad app credential reset \
-  --id $appId \
-  --append \
-  --display-name "CI/CD Secret" \
-  --years 2 \
-  --query '{appId:appId, password:password, tenant:tenant}')
-
-clientSecret=$(echo $secretJson | jq -r '.password')
-
-echo "m365AppId: $appId"
-echo "tenant: $tenantId"
-echo "m365ClientSecret: $clientSecret"
+echo "AppID to use with CLI for Microsoft 365:"
+echo "m365 login --authType password -u '<username>' -p '<password>' --tenant '$tenantId' --appId '$appId'"
