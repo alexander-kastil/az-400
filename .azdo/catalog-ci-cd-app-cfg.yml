@@ -17,8 +17,6 @@ variables:
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
   appConfigEP: "https://foodconfig-dev.azconfig.io"
-  deploy: false
-  adoEnvironment: "04-03-catalog-api-cicd-appcfg-env"
   configLabel: "dev"
   configKeys: "*"
 
@@ -49,13 +47,11 @@ stages:
               script: |
                 echo "App Config values loaded:"
                 printenv | grep -i "TITLE\|PREMIUM" || echo "No title/premium vars found - will use file transform"
-          - task: FileTransform@1
-            displayName: Update Configuration
+          - task: FileTransform@2
+            displayName: Transform appsettings.json with App Config variables
             inputs:
-              folderPath: "$(System.DefaultWorkingDirectory)/$(appPath)"
-              fileType: "json"
-              targetFiles: "**/appsettings.json"
-
+              folderPath: $(System.DefaultWorkingDirectory)/$(appPath)
+              jsonTargetFiles: appsettings.json
           - template: templates/t-net-build.yaml
             parameters:
               cfg: $(buildConfiguration)
@@ -64,11 +60,10 @@ stages:
   - stage: Deploy
     displayName: Deploy
     dependsOn: Build
-    condition: eq(variables['deploy'], 'true')
     jobs:
       - deployment: DeployAppService
         displayName: Deploy to Appservice
-        environment: '04-03-catalog-api-cicd-appcfg-env'
+        environment: "04-03-catalog-api-cicd-appcfg-env"
         strategy:
           runOnce:
             deploy:
@@ -80,10 +75,10 @@ stages:
                     artifactName: drop
                     downloadPath: $(System.ArtifactsDirectory)
                 - task: AzureRmWebAppDeployment@4
-                  displayName: 'Azure App Service Deploy: $(appService)'
+                  displayName: "Azure App Service Deploy: $(appService)"
                   inputs:
                     ConnectionType: AzureRM
                     azureSubscription: $(serviceConnection)
                     appType: webApp
                     WebAppName: $(appService)
-                    packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
+                    packageForLinux: "$(System.ArtifactsDirectory)/**/*.zip"
