@@ -2,8 +2,6 @@
 
 [Open Source Licenses](https://opensource.org/licenses)
 
-[Mend for Azure DevOps (formerly WhiteSource)](https://marketplace.visualstudio.com/items?itemName=whitesource.WhiteSource-azure-devops-services)
-
 [OWASP Dependency Check](https://marketplace.visualstudio.com/items?itemName=dependency-check.dependencycheck)
 
 [WhiteSource Advice](https://marketplace.visualstudio.com/items?itemName=whitesource.whitesource-advise)
@@ -11,6 +9,14 @@
 ## Demos
 
 ### Mend
+
+Install Mend Bolt Extension in Azure DevOps Organization
+
+[Mend Bolt - Free Version](https://marketplace.visualstudio.com/items?itemName=whitesource.whiteSource-bolt-v2)
+
+Go to Organization Settings -> Extensions -> Mend Bolt -> Configure
+
+Run [react-ci-mend.yml](/.azdo/react-ci-mend.yml)
 
 Mend results:
 
