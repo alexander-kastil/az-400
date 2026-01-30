@@ -10,8 +10,6 @@ variables:
   dist: dist
   pkg: reactapp
   appRoot: src/react/react-devops
-  mendToken: $(MEND_API_KEY)
-  mendUrl: "https://api.whitesourcesoftware.com"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -21,7 +19,7 @@ stages:
     displayName: "Security Scanning"
     jobs:
       - job: MendBoltScan
-        displayName: "Mend Bolt SCA Scan"
+        displayName: "Mend Bolt Free SCA Scan"
         steps:
           - task: NodeTool@0
             inputs:
@@ -32,30 +30,11 @@ stages:
             displayName: "Install Dependencies"
             workingDirectory: $(appRoot)
 
-          - task: whitesource.fs-mend.MendBolt.MendBoltTask@1
+          - task: whitesource.fs-mend.whitesource-bolt-v2.WhiteSourceBoltV2@21
             displayName: "Mend Bolt Software Composition Analysis"
             inputs:
               codeDirectory: $(appRoot)
-              scanDotNet: false
-              scanJava: false
-              scanPython: false
-              scanRuby: false
-              scanNodePackages: true
-              scanNpmPackages: true
-              scanNuget: false
-              scanMaven: false
-              scanGradle: false
-              scanPip: false
-              scanRubyGems: false
-              updateInventory: true
-              projectName: "react-devops"
-              apiKey: $(mendToken)
-              serviceUrl: $(mendUrl)
-              failOnCVSS: "7.0"
               continueOnError: false
-            env:
-              MEND_TOKEN: $(mendToken)
-              MEND_URL: $(mendUrl)
 
   - stage: Build
     displayName: "Build and Test"
