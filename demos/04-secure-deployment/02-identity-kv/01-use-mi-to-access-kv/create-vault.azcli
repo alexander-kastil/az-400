@@ -2,31 +2,38 @@ env=dev
 grp=az400-$env
 loc=westeurope
 vault=az400-vault-$env
+miName=wi-az400-dev
 
 az group create -n $grp -l $loc
 
 az keyvault create -l $loc -n $vault -g $grp --sku standard
 
+kvId=$(az keyvault show --name $vault --resource-group $grp --query id -o tsv)
+
 # Get your current user's object ID
 userId=$(az ad signed-in-user show --query id -o tsv)
+# Get the managed identity object ID used by the ADO service connection
+miObjectId=$(az identity show -g $grp -n $miName --query principalId -o tsv)
 
-# Assign Key Vault Secrets Officer role to yourself
+# Assign Key Vault Secrets Officer role to yourself (manage secrets)
 az role assignment create \
   --role "Key Vault Secrets Officer" \
   --assignee-object-id $userId \
-  --scope "/subscriptions/$(az account show --query id -o tsv)/resourceGroups/$grp/providers/Microsoft.KeyVault/vaults/$vault"
+  --scope $kvId
+
+# Assign Key Vault Secrets User role to the managed identity (read secrets)
+az role assignment create \
+  --role "Key Vault Secrets User" \
+  --assignee-object-id $miObjectId \
+  --scope $kvId
 
 az keyvault secret set --vault-name $vault --name "m365user" --value "alexander.kastil@integrations.at"
 
 az keyvault secret set --vault-name $vault --name "m365pwd" --value "PW4vm@dmin123!$"
 
-az keyvault secret set --vault-name $vault --name "sqladmin" --value "sqladmin"
+az keyvault secret set --vault-name $vault --name "tenantId" --value "d92b247e-90e0-4469-a129-6a32866c0d0a"
 
-az keyvault secret set --vault-name $vault --name "sqlpwd" --value "PW4vm@dmin123!$"
-
-az keyvault secret set --vault-name $vault --name "conSQLite" --value "Data Source=./food.db"
-
-az keyvault secret set --vault-name $vault --name "conSQLServer" --value "Data Source=mock-sql;Initial Catalog=food-db;Persist Security Info=True;User ID=sa;Password='TiTp4SQL@dmin'"
+az keyvault secret set --vault-name $vault --name "appRegId" --value "5e8ecccb-da70-40af-808f-4860a1571f4d"
 
 # Delete KV and purge it to permanently delete it
 # Do not execute

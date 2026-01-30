@@ -39,7 +39,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - task: AzureKeyVault@1
+                - task: AzureKeyVault@2
                   displayName: "Azure Key Vault: $(vault)"
                   inputs:
                     azureSubscription: $(serviceConnection)
@@ -52,5 +52,5 @@ stages:
                     pkgLocation: $(packageLocation)
                     username: $(m365user)
                     password: $(m365pwd)
-                    appId: $(appId)
+                    appId: $(appRegId)
                     tenantId: $(tenantId)
