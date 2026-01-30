@@ -5,14 +5,12 @@ COPY . .
 
 # Install Credential Provider and set env variables to enable Nuget restore with auth
 ARG PAT
-ARG FEED_URL
-ARG NUGET_ENDPOINTS
 RUN wget -qO- https://raw.githubusercontent.com/Microsoft/artifacts-credprovider/master/helpers/installcredprovider.sh | bash
-ENV NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED true
-ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS=${NUGET_ENDPOINTS}
-ENV DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER 0
+ENV NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED=true
+ENV VSS_NUGET_ACCESSTOKEN=${PAT}
+ENV DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=0
 
-RUN dotnet restore -s "${FEED_URL}" "order-service.csproj"
+RUN dotnet restore "order-service.csproj"
 RUN dotnet publish -c Release -o /app
 
 # Runtime Image
@@ -22,7 +20,7 @@ COPY --from=build /app .
 ENTRYPOINT ["dotnet", "order-service.dll"]
 
 # Build Image
-# docker build --rm -f dockerfile -t order-service . --build-arg PAT=<Token> --build-arg FEED_URL=<FeedUrl>
+# docker build --rm -f dockerfile -t order-service . --build-arg PAT=<YOUR_PAT_TOKEN>
 
 # Run Image without env vars
 # docker run -it --rm -p 5051:8080 order-service

@@ -1,45 +1,54 @@
-# Order Service
+# Order Service - Docker Build with Azure Artifacts Authentication
 
-| .NET Api Services         | Http Port | Https Port | Dapr Port | Dapr App ID          | Docker Port|
-| -------                   | --------- | ---------- | --------- | -------------        | -----      |
-| Order Service             | 5002      | 5022       | 5012      | order-service        | 5052       |
+## Scenario
 
-- Docker Build & Run: 
+This .NET service depends on a private NuGet package (`food-app-common`) hosted in Azure Artifacts feed `food-packages`. Building the Docker image requires authenticating to this private feed during `dotnet restore`.
 
-    ```bash
-    docker build --rm -f dockerfile -t order-service .
-    docker run -it --rm -p 5054:8080 order-service
-    ```
+## Solution
 
-- Environment Variables:
-    - ApplicationInsights__ConnectionString
-    - GraphCfg__TenantId
-    - GraphCfg__ClientId
-    - GraphCfg__ClientSecret    
+The dockerfile uses the **Azure Artifacts Credential Provider** with the `VSS_NUGET_ACCESSTOKEN` environment variable. This approach works identically for both local development and CI/CD pipelines:
 
-- Rest Tester:
+- **Locally**: Pass your Personal Access Token (PAT) as a build argument
+- **Pipeline**: Azure DevOps automatically provides `System.AccessToken` for authentication
 
-    ```bash
-    POST http://localhost:5004/send HTTP/1.1
-    Content-Type: application/json
+## Local Build
 
-    {
-        "subject": "A test mail",
-        "text": "Explore - Let life surprise you!",
-        "recipient": "alexander.pajer@integrations.at"
-    }
-    ```
+### Prerequisites
 
-- Dapr Run & Test:
+1. Create a PAT in Azure DevOps with **Packaging (Read)** scope:
+   - Azure DevOps → User Settings → Personal Access Tokens → New Token
+   - Scopes: Packaging (Read)
 
-    ```bash
-    dapr run --app-id order-service --app-port 5002 --dapr-http-port 5012 --resources-path ./components -- dotnet run
-    ```
-    
-    ```bash
-    dapr invoke --app-id order-service --method pubsub-test --data '{\"id\": \"1\", \"subject\": \"Explore - Let life surprise you!\" }'
-    ```   
+### Build Command
 
-    ```bash
-     dapr publish --publish-app-id order-service --pubsub 'food-pubsub" --topic "order-requests" --data "{\"subject\": \"A test mail\", \"text\": \"Explore - Let life surprise you!\", \"recipient\": \"alexander.pajer@integrations.at"}'
-    ```   
+```bash
+docker build --rm -f dockerfile -t order-service . --build-arg PAT=<YOUR_PAT_TOKEN>
+```
+
+### Run Container
+
+```bash
+docker run -it --rm -p 5051:8080 order-service
+```
+
+Access the service at `http://localhost:5051`
+
+## Pipeline Build
+
+**Pipeline**: `.azdo/orders-ci-docker-img.yml`
+
+### What It Does
+
+1. **Authenticates to Azure Artifacts** - `NuGetAuthenticate@1` task sets up credentials on the host agent
+2. **Logs into Azure Container Registry** - Authenticates to ACR using service connection `scACR`
+3. **Builds & Pushes Image** - Executes Docker build in ACR with `System.AccessToken` passed as build argument
+
+### Key Features
+
+- **No secrets in code** - Pipeline token is automatically injected by Azure DevOps
+- **ACR Task execution** - Build happens in Azure Container Registry (serverless)
+- **Private feed access** - Credential provider handles authentication during `dotnet restore`
+
+### Trigger
+
+Manual trigger only (`trigger: none`) - run from Azure DevOps UI when needed.
