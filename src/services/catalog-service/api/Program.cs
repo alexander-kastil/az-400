@@ -1,6 +1,4 @@
 using System;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -8,13 +6,13 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using FoodApp;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddConfig();
 builder.AddApplicationInsights();
+builder.AddFeatureManagement();
 
 // Get app config for local decisions
 AppConfig cfg = builder.Configuration.Get<AppConfig>();
@@ -57,6 +55,7 @@ builder.AddEndpointsApiExplorer();
 builder.AddNoCors();
 var app = builder.Build();
 
+app.UseAzureAppConfiguration();
 app.UseSwaggerUI();
 app.UseNoCors();
 

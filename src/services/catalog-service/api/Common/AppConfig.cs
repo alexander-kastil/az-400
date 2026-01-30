@@ -1,12 +1,12 @@
 namespace FoodApp
 {
-    public class AppConfig 
+    public class AppConfig
     {
         public string Title { get; set; }
         public AppSettings App { get; set; }
         public Azure Azure { get; set; }
         public Logging Logging { get; set; }
-        public ApplicationInsights ApplicationInsights {get;set;}
+        public ApplicationInsights ApplicationInsights { get; set; }
     }
 
     public class ApplicationInsights
@@ -17,6 +17,7 @@ namespace FoodApp
     public class AppSettings
     {
         public bool AuthEnabled { get; set; }
+        public bool UseAppConfig { get; set; }
         public bool UseSQLite { get; set; }
         public ConnectionStrings ConnectionStrings { get; set; }
     }

@@ -10,9 +10,9 @@ namespace FoodApp
     //dotnet-ef migrations add MIGRATION-NAME
     //dotnet-ef database update
 
-    public class FoodDBContext : DbContext
+    public class FoodDBContext(DbContextOptions<FoodDBContext> options) : DbContext(options)
     {
-        public FoodDBContext(DbContextOptions<FoodDBContext> options) : base(options)
+        public FoodDBContext() : this(new DbContextOptionsBuilder<FoodDBContext>().Options)
         {
             Database.EnsureCreated();
         }
