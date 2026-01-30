@@ -1,0 +1,14 @@
+.foodRow {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	margin: 0.4rem 1rem;
+	padding: 0.5rem 1rem;
+	background-color: lightblue;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.foodRow:hover {
+	background-color: lightpink;
+}
