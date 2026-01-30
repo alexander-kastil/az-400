@@ -30,11 +30,10 @@ stages:
             displayName: "Install Dependencies"
             workingDirectory: $(appRoot)
 
-          - task: whitesource.fs-mend.whitesource-bolt-v2.WhiteSourceBoltV2@21
+          - task: whitesource.fs-mend.mend-bolt-for-azure-devops.MendBoltForAzureDevOps@1
             displayName: "Mend Bolt Software Composition Analysis"
             inputs:
               codeDirectory: $(appRoot)
-              continueOnError: false
 
   - stage: Build
     displayName: "Build and Test"
