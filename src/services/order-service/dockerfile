@@ -5,9 +5,10 @@ COPY . .
 
 # Install Credential Provider and set env variables to enable Nuget restore with auth
 ARG PAT
+ARG FEED_URL=https://pkgs.dev.azure.com/integrationsonline/az-400/_packaging/food-packages/nuget/v3/index.json
 RUN wget -qO- https://raw.githubusercontent.com/Microsoft/artifacts-credprovider/master/helpers/installcredprovider.sh | bash
 ENV NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED=true
-ENV VSS_NUGET_ACCESSTOKEN=${PAT}
+ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS="{\"endpointCredentials\": [{\"endpoint\":\"${FEED_URL}\", \"username\":\"docker\", \"password\":\"${PAT}\"}]}"
 ENV DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=0
 
 RUN dotnet restore "order-service.csproj"
