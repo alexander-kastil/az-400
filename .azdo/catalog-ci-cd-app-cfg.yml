@@ -41,8 +41,32 @@ stages:
             inputs:
               folderPath: $(System.DefaultWorkingDirectory)/$(appPath)
               jsonTargetFiles: appsettings.json
-          - template: templates/t-net-build.yaml
-            parameters:
-              cfg: $(buildConfiguration)
-              folder: $(appPath)
-              project: catalog-service
+          - task: UseDotNet@2
+            displayName: Install .NET 10 SDK
+            inputs:
+              packageType: sdk
+              version: 10.0.x
+          - task: DotNetCoreCLI@2
+            displayName: Restore project dependencies
+            inputs:
+              command: restore
+              projects: $(appPath)/catalog-service.csproj
+          - task: DotNetCoreCLI@2
+            displayName: Build the project
+            inputs:
+              command: build
+              arguments: --no-restore --configuration $(buildConfiguration)
+              projects: $(appPath)/catalog-service.csproj
+          - task: DotNetCoreCLI@2
+            displayName: Publish the project
+            inputs:
+              command: publish
+              projects: $(appPath)/catalog-service.csproj
+              publishWebProjects: false
+              arguments: --no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)
+              zipAfterPublish: true
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: $(Build.ArtifactStagingDirectory)
+              ArtifactName: drop
+              publishLocation: Container
