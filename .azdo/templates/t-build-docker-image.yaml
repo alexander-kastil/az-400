@@ -27,7 +27,7 @@ steps:
       containerRegistry: "${{ parameters.acrServiceConnection }}"
       repository: "${{ parameters.repository }}"
       command: "buildAndPush"
-      Dockerfile: "${{ parameters.dockerfile }}"
+      dockerfile: "${{ parameters.dockerfile }}"
       buildContext: "${{ parameters.buildContext }}"
       tags: ${{ parameters.tags }}
 

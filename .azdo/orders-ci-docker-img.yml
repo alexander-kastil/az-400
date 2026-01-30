@@ -54,7 +54,7 @@ stages:
               containerRegistry: $(acr)
               repository: "$(imageName)"
               command: "buildAndPush"
-              Dockerfile: "$(appPath)dockerfile"
+              dockerfile: "$(appPath)dockerfile"
               tags: "latest"
               arguments: "--build-arg PAT=$(PATToken) --build-arg FEED_URL=$(feedUrl) --build-arg NUGET_ENDPOINTS='$(VSS_NUGET_EXTERNAL_FEED_ENDPOINTS)'"
 

@@ -30,7 +30,7 @@ venv.bak/
 .gitignore
 
 # Exclude Docker files (avoid recursion)
-Dockerfile*
+dockerfile*
 .dockerignore
 
 # Exclude logs

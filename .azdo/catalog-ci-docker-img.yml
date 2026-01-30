@@ -37,7 +37,7 @@ stages:
               containerRegistry: $(acr)
               repository: "$(imageName)"
               command: "buildAndPush"
-              Dockerfile: "$(appPath)dockerfile"
+              dockerfile: "$(appPath)dockerfile"
               tags: "latest"
 
           - task: Docker@2
