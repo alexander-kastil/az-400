@@ -56,7 +56,7 @@ stages:
             inputs:
               script: |
                 printenv
-          - task: FileTransform@1
+          - task: FileTransform@2
             displayName: Update Configuration
             inputs:
               folderPath: "$(System.DefaultWorkingDirectory)/$(appPath)"
@@ -79,18 +79,17 @@ stages:
           runOnce:
             deploy:
               steps:
-                - task: DownloadBuildArtifacts@0
+                - task: DownloadPipelineArtifact@2
                   inputs:
                     buildType: "current"
-                    downloadType: "single"
                     artifactName: "drop"
-                    downloadPath: "$(System.ArtifactsDirectory)"
+                    targetPath: "$(Pipeline.Workspace)/drop"
 
-                - task: AzureRmWebAppDeployment@4
+                - task: AzureRmWebAppDeployment@5
                   displayName: "Azure App Service Deploy: $(appService)"
                   inputs:
                     ConnectionType: "AzureRM"
                     azureSubscription: $(serviceConnection)
                     appType: "webApp"
                     WebAppName: $(appService)
-                    packageForLinux: "$(System.ArtifactsDirectory)/**/*.zip"
+                    package: "$(Pipeline.Workspace)/drop/**/*.zip"
