@@ -12,6 +12,7 @@ variables:
   app: "prime-service-dev"
   grp: "az400-dev"
   serviceConnection: "wi-az400-dev"
+  dockerRegistry: "scACR"
   acaenv: "az400acaenv"
   targetPort: 8080
   loadTestResource: "az400-load-test"
@@ -27,7 +28,7 @@ stages:
         steps:
           - template: templates/t-build-docker-image.yaml
             parameters:
-              acrServiceConnection: $(serviceConnection)
+              acrServiceConnection: $(dockerRegistry)
               repository: prime-service
               dockerfile: dockerfile
               buildContext: src/services/prime-service
