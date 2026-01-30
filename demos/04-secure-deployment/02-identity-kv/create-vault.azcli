@@ -10,18 +10,15 @@ az keyvault create -l $loc -n $vault -g $grp --sku standard
 
 kvId=$(az keyvault show --name $vault --resource-group $grp --query id -o tsv)
 
-# Get your current user's object ID
-userId=$(az ad signed-in-user show --query id -o tsv)
-# Get the managed identity object ID used by the ADO service connection
-miObjectId=$(az identity show -g $grp -n $miName --query principalId -o tsv)
-
 # Assign Key Vault Secrets Officer role to yourself (manage secrets)
+userId=$(az ad signed-in-user show --query id -o tsv)
 az role assignment create \
   --role "Key Vault Secrets Officer" \
   --assignee-object-id $userId \
   --scope $kvId
 
 # Assign Key Vault Secrets User role to the managed identity (read secrets)
+miObjectId=$(az identity show -g $grp -n $miName --query principalId -o tsv)
 az role assignment create \
   --role "Key Vault Secrets User" \
   --assignee-object-id $miObjectId \
