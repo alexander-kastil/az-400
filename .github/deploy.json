@@ -5,5 +5,6 @@
     "ADOOrg": "https://dev.azure.com/integrationsonline",
     "ADOProject": "az-400",
     "AzureContainerAppsEnvironment": "az400acaenv",
-    "AzureContainerRegistry": "az400acrdev"
+    "AzureContainerRegistry": "az400acrdev",
+    "DockerRegistry": "scACR"
 }
