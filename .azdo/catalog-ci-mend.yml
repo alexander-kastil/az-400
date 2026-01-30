@@ -1,12 +1,4 @@
-name: catalog-ci-mend
-
-# trigger:
-#   branches:
-#     include:
-#       - master
-#   paths:
-#     include:
-#      - src/services/catalog-service/api/*
+name: 06-02-catalog-ci-mend
 
 trigger: none
 pr: none
@@ -15,7 +7,6 @@ variables:
   dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
   releaseBranchName: master
-  serviceConnection: wi-az400-dev
   appPath: src/services/catalog-service/api/
 
 pool:
@@ -48,7 +39,6 @@ steps:
       publishWebProjects: false
       arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
       zipAfterPublish: true
-
   - task: WhiteSource@21
     inputs:
       cwd: "$(System.DefaultWorkingDirectory)"

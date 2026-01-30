@@ -14,6 +14,8 @@ Install Mend Bolt Extension in Azure DevOps Organization
 
 [Mend Bolt - Free Version](https://marketplace.visualstudio.com/items?itemName=whitesource.whiteSource-bolt-v2)
 
+[Mend Docs](https://docs.mend.io/integrations/latest/mend-bolt-for-azure-pipelines?_gl=1*1e0grrn*_gcl_au*MTMxMzY2ODQ4NC4xNzY5NzkyOTky)
+
 Go to Organization Settings -> Extensions -> Mend Bolt -> Configure
 
 Run [react-ci-mend.yml](/.azdo/react-ci-mend.yml)
