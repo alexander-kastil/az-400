@@ -1,0 +1,99 @@
+name: "06-02-react-ci-mend"
+
+trigger:
+  - main
+pr:
+  - main
+
+variables:
+  nodeVer: "22.x"
+  dist: dist
+  pkg: reactapp
+  appRoot: src/react/react-devops
+  mendToken: $(MEND_API_KEY)
+  mendUrl: "https://api.whitesourcesoftware.com"
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: Security
+    displayName: "Security Scanning"
+    jobs:
+      - job: MendBoltScan
+        displayName: "Mend Bolt SCA Scan"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: "Install Node.js $(nodeVer)"
+
+          - script: npm ci
+            displayName: "Install Dependencies"
+            workingDirectory: $(appRoot)
+
+          - task: whitesource.fs-mend.MendBolt.MendBoltTask@1
+            displayName: "Mend Bolt Software Composition Analysis"
+            inputs:
+              codeDirectory: $(appRoot)
+              scanDotNet: false
+              scanJava: false
+              scanPython: false
+              scanRuby: false
+              scanNodePackages: true
+              scanNpmPackages: true
+              scanNuget: false
+              scanMaven: false
+              scanGradle: false
+              scanPip: false
+              scanRubyGems: false
+              updateInventory: true
+              projectName: "react-devops"
+              apiKey: $(mendToken)
+              serviceUrl: $(mendUrl)
+              failOnCVSS: "7.0"
+              continueOnError: false
+            env:
+              MEND_TOKEN: $(mendToken)
+              MEND_URL: $(mendUrl)
+
+  - stage: Build
+    displayName: "Build and Test"
+    dependsOn: Security
+    condition: succeeded()
+    jobs:
+      - job: BuildJob
+        displayName: "Build React App"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: "Install Node.js $(nodeVer)"
+
+          - script: npm ci
+            displayName: "Install Dependencies"
+            workingDirectory: $(appRoot)
+
+          - script: npm run lint
+            displayName: "Run Linter"
+            workingDirectory: $(appRoot)
+            continueOnError: true
+
+          - script: npm run build
+            displayName: "Build Application"
+            workingDirectory: $(appRoot)
+
+          - task: CopyFiles@2
+            displayName: "Copy Build Artifacts"
+            inputs:
+              SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(dist)"
+              Contents: "**"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/$(pkg)"
+              CleanTargetFolder: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish Pipeline Artifact"
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/$(pkg)"
+              artifact: $(pkg)
+              publishLocation: "pipeline"
