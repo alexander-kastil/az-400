@@ -32,7 +32,7 @@ jobs:
         parameters:
           acrServiceConnection: $(dockerRegistry)
           repository: $(repository)
-          dockerfile: src/angular/angular-devops/Dockerfile
+          dockerfile: src/angular/angular-devops/dockerfile
           buildContext: src/angular/angular-devops
           tags: |
             $(Build.BuildId)
