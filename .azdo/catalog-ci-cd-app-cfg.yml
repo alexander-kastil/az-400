@@ -27,26 +27,15 @@ stages:
   - stage: Build
     jobs:
       - job: Build
-        displayName: "Transform Config and Build"
+        displayName: Transform Config and Build
         steps:
-          - task: CmdLine@2
-            displayName: Printing Env before
-            inputs:
-              script: |
-                printenv
           - task: AzureAppConfiguration@8
             displayName: Read App Config
             inputs:
               azureSubscription: $(serviceConnection)
-              AppConfigurationEndpoint: "$(appConfigEP)"
+              AppConfigurationEndpoint: $(appConfigEP)
               KeyFilter: $(configKeys)
               Label: $(configLabel)
-          - task: CmdLine@2
-            displayName: Display environment variables from App Config
-            inputs:
-              script: |
-                echo "App Config values loaded:"
-                printenv | grep -i "TITLE\|PREMIUM" || echo "No title/premium vars found - will use file transform"
           - task: FileTransform@2
             displayName: Transform appsettings.json with App Config variables
             inputs:
