@@ -1,4 +1,4 @@
-name: 07-02-orders-ci
+name: "07-02-orders-ci"
 
 # trigger:
 #   branches:
@@ -11,17 +11,16 @@ name: 07-02-orders-ci
 trigger: none
 pr: none
 
-pool:
-  vmImage: ubuntu-latest
-
 variables:
+  azureSubscription: wi-az400-dev
   proj: az-400
   feed: food-packages
   dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
-  releaseBranchName: master
-  serviceConnection: wi-az400-dev
   appPath: src/services/order-service/
+
+pool:
+  vmImage: ubuntu-latest
 
 stages:
   - stage: "Build"
