@@ -36,8 +36,6 @@ stages:
             displayName: "Write build info"
           - task: NuGetAuthenticate@1
             displayName: "Authenticate NuGet feeds"
-            inputs:
-              nuGetServiceConnections: $(azureSubscription)
           - task: DotNetCoreCLI@2
             displayName: "Restore project dependencies"
             inputs:
