@@ -18,11 +18,11 @@ variables:
   serviceConnection: wi-az400-dev
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
-  appConfigEP: "https://az400-config-dev.azconfig.io"
+  appConfigEP: "https://foodconfig-dev.azconfig.io"
   deploy: false
   adoEnvironment: "04-03-catalog-api-cicd-appcfg-env"
-
-# assign permissions to service connection pricipal on app config service
+  configLabel: "dev"
+  configKeys: "*"
 
 pool:
   vmImage: ubuntu-latest
@@ -43,19 +43,14 @@ stages:
             inputs:
               azureSubscription: $(serviceConnection)
               AppConfigurationEndpoint: "$(appConfigEP)"
-              KeyFilter: "*"
-              Label: "dev"
+              KeyFilter: $(configKeys)
+              Label: $(configLabel)
           - task: CmdLine@2
-            displayName: Printing Env after
+            displayName: Display environment variables from App Config
             inputs:
               script: |
-                printenv
-
-          - task: CmdLine@2
-            displayName: Printing Env after setting var
-            inputs:
-              script: |
-                printenv
+                echo "App Config values loaded:"
+                printenv | grep -i "TITLE\|PREMIUM" || echo "No title/premium vars found - will use file transform"
           - task: FileTransform@1
             displayName: Update Configuration
             inputs:
