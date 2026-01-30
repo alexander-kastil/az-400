@@ -83,6 +83,8 @@ Format: `<module>-<demo>-<description>` (from YAML `name:` attribute)
 - **Java** - Jobs and services (`src/jobs/blob-java/`)
 - **SPFx** - SharePoint Framework (`src/spfx/food-list/`)
 
+For dockerfiles we use the convention `dockerfile` (all lowercase) to avoid issues on case-sensitive systems.
+
 ### Infrastructure Technologies
 
 - **Bicep** - Modular templates in `infra/bicep/` (preferred for new IaC)
