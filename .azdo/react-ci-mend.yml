@@ -30,10 +30,51 @@ stages:
             displayName: "Install Dependencies"
             workingDirectory: $(appRoot)
 
-          - task: whitesource.fs-mend.mend-bolt-for-azure-devops.MendBoltForAzureDevOps@1
+          - task: mend@21
             displayName: "Mend Bolt Software Composition Analysis"
             inputs:
-              codeDirectory: $(appRoot)
+              cwd: $(appRoot)
+
+  - stage: Build
+    displayName: "Build and Test"
+    dependsOn: Security
+    condition: succeeded()
+    jobs:
+      - job: BuildJob
+        displayName: "Build React App"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: "Install Node.js $(nodeVer)"
+
+          - script: npm ci
+            displayName: "Install Dependencies"
+            workingDirectory: $(appRoot)
+
+          - script: npm run lint
+            displayName: "Run Linter"
+            workingDirectory: $(appRoot)
+            continueOnError: true
+
+          - script: npm run build
+            displayName: "Build Application"
+            workingDirectory: $(appRoot)
+
+          - task: CopyFiles@2
+            displayName: "Copy Build Artifacts"
+            inputs:
+              SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(dist)"
+              Contents: "**"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/$(pkg)"
+              CleanTargetFolder: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish Pipeline Artifact"
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/$(pkg)"
+              artifact: $(pkg)
+              publishLocation: "pipeline"
 
   - stage: Build
     displayName: "Build and Test"
