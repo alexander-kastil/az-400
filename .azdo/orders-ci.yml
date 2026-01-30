@@ -34,11 +34,17 @@ stages:
               version: "$(dotnetSdkVersion)"
           - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
             displayName: "Write build info"
+          - task: NuGetAuthenticate@1
+            displayName: "Authenticate NuGet feeds"
+            inputs:
+              nuGetServiceConnections: $(azureSubscription)
           - task: DotNetCoreCLI@2
             displayName: "Restore project dependencies"
             inputs:
               command: "restore"
               projects: "$(appPath)/*.csproj"
+              feedsToUse: "config"
+              nugetConfigPath: "$(appPath)nuget.config"
           - task: DotNetCoreCLI@2
             displayName: "Build"
             inputs:
