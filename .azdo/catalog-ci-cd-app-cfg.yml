@@ -12,9 +12,7 @@ trigger: none
 pr: none
 
 variables:
-  dotnetSdkVersion: "10.0.x"
   buildConfiguration: Release
-  releaseBranchName: master
   serviceConnection: wi-az400-dev
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
@@ -62,3 +60,32 @@ stages:
             parameters:
               cfg: $(buildConfiguration)
               folder: $(appPath)
+
+  - stage: Deploy
+    displayName: Deploy
+    dependsOn: Build
+    condition: eq(variables['deploy'], 'true')
+
+    jobs:
+      - deployment: DeployAppService
+        displayName: Deploy to Appservice
+        environment: $(adoEnvironment)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    buildType: "current"
+                    downloadType: "single"
+                    artifactName: "drop"
+                    downloadPath: "$(System.ArtifactsDirectory)"
+
+                - task: AzureRmWebAppDeployment@4
+                  displayName: "Azure App Service Deploy: $(appService)"
+                  inputs:
+                    ConnectionType: "AzureRM"
+                    azureSubscription: $(serviceConnection)
+                    appType: "webApp"
+                    WebAppName: $(appService)
+                    packageForLinux: "$(System.ArtifactsDirectory)/**/*.zip"
