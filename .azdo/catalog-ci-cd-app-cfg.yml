@@ -22,7 +22,7 @@ variables:
   deploy: false
   adoEnvironment: "04-03-catalog-api-cicd-appcfg-env"
 
-# assign permissions to service connection pricipal on app config service
+# assign permissions to service connection principal on app config service
 
 pool:
   vmImage: ubuntu-latest
