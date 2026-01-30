@@ -19,7 +19,7 @@ variables:
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
   appConfigEP: "https://foodconfig-dev.azconfig.io"
-  deploy: false
+  deploy: true
   adoEnvironment: "04-03-catalog-api-cicd-appcfg-env"
 
 # assign permissions to service connection principal on app config service
@@ -51,17 +51,22 @@ stages:
               script: |
                 printenv
 
-          - task: CmdLine@2
-            displayName: Printing Env after setting var
+          - task: AzureCLI@2
+            displayName: Export App Config to appsettings.json
             inputs:
-              script: |
-                printenv
-          - task: FileTransform@2
-            displayName: Update Configuration
-            inputs:
-              folderPath: "$(System.DefaultWorkingDirectory)/$(appPath)"
-              fileType: "json"
-              targetFiles: "**/appsettings.json"
+              azureSubscription: $(serviceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az appconfig kv export \
+                  --endpoint "$(appConfigEP)" \
+                  --destination file \
+                  --path "$(System.DefaultWorkingDirectory)/$(appPath)/appsettings.json" \
+                  --format json \
+                  --label "dev" \
+                  --auth-mode login
+                echo "##[section]App Config exported successfully"
+                cat "$(System.DefaultWorkingDirectory)/$(appPath)/appsettings.json"
 
           - template: templates/t-net-build.yaml
             parameters:
