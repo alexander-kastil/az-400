@@ -22,8 +22,14 @@ Run [react-ci-mend.yml](/.azdo/react-ci-mend.yml)
 
 Mend results:
 
-![mend](_images/mend-01.jpg)
+Inventory:
 
-![mend](_images/mend-02.jpg)
+![mend](_images/inventory.png)
 
-![mend](_images/mend-03.jpg)
+Vulnerabilities:
+
+![mend](_images/vulnerability.png)
+
+License risks:
+
+![mend](_images/license.png)
