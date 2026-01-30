@@ -32,19 +32,13 @@ stages:
             displayName: "Use .NET Core SDK $(dotnetSdkVersion)"
             inputs:
               version: "$(dotnetSdkVersion)"
-          - task: NuGetToolInstaller@1
-            inputs:
-              checkLatest: true
           - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
             displayName: "Write build info"
-          - task: NuGetCommand@2
+          - task: DotNetCoreCLI@2
             displayName: "Restore project dependencies"
             inputs:
               command: "restore"
-              restoreSolution: $(appPath)/*.csproj
-              feedsToUse: "select"
-              vstsFeed: $(proj)/$(feed)
-              includeNuGetOrg: true
+              projects: "$(appPath)/*.csproj"
           - task: DotNetCoreCLI@2
             displayName: "Build"
             inputs:
