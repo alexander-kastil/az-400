@@ -1,4 +1,4 @@
-name: "02-04-docker-ci-img"
+name: "02-04-ci-docker-img"
 
 trigger: none
 pr: none
