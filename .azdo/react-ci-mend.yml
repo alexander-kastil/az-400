@@ -35,8 +35,7 @@ stages:
 
           - script: npm run build
             displayName: "Build Application"
-            workingDirectory: $(appRoot)
-
+            workingDirectory: $(appRoot)        
           - task: CopyFiles@2
             displayName: "Copy Build Artifacts"
             inputs:
