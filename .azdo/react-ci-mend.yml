@@ -43,7 +43,10 @@ stages:
               Contents: "**"
               TargetFolder: "$(Build.ArtifactStagingDirectory)/$(pkg)"
               CleanTargetFolder: true
-
+          - task: WhiteSource@21
+            inputs:
+              cwd: '$(System.DefaultWorkingDirectory)'
+              projectName: 'ReactApp'
           - task: PublishPipelineArtifact@1
             displayName: "Publish Pipeline Artifact"
             inputs:
