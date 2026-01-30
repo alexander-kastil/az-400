@@ -1,4 +1,4 @@
-name: orders-ci-docker-img
+name: 07-02-orders-ci-docker-img
 
 # trigger:
 #   branches:
