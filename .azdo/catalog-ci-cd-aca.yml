@@ -21,6 +21,7 @@ variables:
   app: "catalog-service-v1"
   grp: "az400-dev"
   serviceConnection: wi-az400-dev
+  dockerRegistry: scACR
   acaenv: "az400acaenv"
 
 jobs:
@@ -29,7 +30,7 @@ jobs:
     steps:
       - template: templates/t-build-docker-image.yaml
         parameters:
-          acrServiceConnection: $(serviceConnection)
+          acrServiceConnection: $(dockerRegistry)
           repository: $(repository)
           dockerfile: src/services/catalog-api/dockerfile
           buildContext: src/services/catalog-api
