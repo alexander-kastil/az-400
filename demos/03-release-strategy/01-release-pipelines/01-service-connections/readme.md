@@ -72,7 +72,7 @@ bash delete-workload-identity.sh
 
 ## Using Workload Identity in Pipelines
 
-Reference the service connection in your pipelines using the connection name `scWorkload`. Example from [catalog-ci-cd-workload-identity.yml](../../.azdo/catalog-ci-cd-workload-identity.yml):
+Reference the service connection in your pipelines using the connection name `scWorkload`. Example usage in a pipeline:
 
 ```yaml
 variables:

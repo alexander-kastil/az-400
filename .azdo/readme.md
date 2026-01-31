@@ -8,7 +8,6 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 
 |                                                                              |                                                                                         |
 | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [02-01-food-shop-ci-cd-swa](food-shop-ci-cd-swa.yml)                         | Food shop Angular UI CI/CD deployed to Azure Static Web Apps                            |
 | [02-02-angular-ci](angular-ci.yml)                                           | Builds Angular application with unit tests and produces build artifacts                 |
 | [02-02-angular-ci-docker-img](angular-ci-docker-img.yml)                     | Containerizes Angular application and pushes image to Azure Container Registry          |
 | [02-02-payment-func-py-ci](payment-func-py-ci.yml)                           | Builds and tests Python Azure Functions with dependency validation                      |
@@ -30,9 +29,7 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 | [03-02-angular-ci-cd-aca](angular-ci-cd-aca.yml)                             | Builds Angular container image and deploys to Azure Container Apps                      |
 | [03-02-angular-ci-cd-swa](angular-ci-cd-swa.yml)                             | CI/CD pipeline deploying Angular UI to Azure Static Web Apps                            |
 | [03-02-catalog-api-ci-cd](catalog-ci-cd.yml)                                 | Complete CI/CD for .NET Catalog API with build, test, and App Service deployment        |
-| [03-02-catalog-cd-aca](catalog-cd-aca.yml)                                   | CD pipeline deploying .NET Catalog API container to Azure Container Apps                |
 | [03-02-catalog-ci-cd-aca](catalog-ci-cd-aca.yml)                             | Builds .NET API Docker image and deploys to Azure Container Apps                        |
-| [03-02-catalog-ci-cd-workload-identity](catalog-ci-cd-workload-identity.yml) | CI/CD demonstrating keyless authentication using Azure workload identity federation     |
 | [03-02-spfx-ci-cd-template](spfx-ci-cd.yml)                                  | SharePoint Framework CI/CD with template-based packaging and deployment                 |
 | [03-02-utils-func-node-ci-cd](utils-func-node-ci-cd.yml)                     | CI/CD for Node.js utility functions with testing and Azure Functions deployment         |
 | [03-03-azure-load-test-cd](azure-load-test-cd.yml)                           | Load testing pipeline executing JMeter tests and analyzing performance metrics          |
@@ -44,7 +41,6 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 | [04-03-catalog-ci-cd-app-cfg](catalog-ci-cd-app-cfg.yml)                     | .NET API CI/CD with Azure App Configuration integration for dynamic settings            |
 | [05-01-catalog-iac-cli](catalog-iac-cli.yml)                                 | Infrastructure provisioning for message queues using Azure CLI                          |
 | [05-01-catalog-provision-ci-cd-cli](catalog-provision-ci-cd-cli.yml)         | Infrastructure provisioning using Azure CLI with IaC patterns                           |
-| [05-02-acaenv-iac-bicep](acaenv-iac-bicep.yml)                               | Container Apps environment infrastructure provisioning with Bicep templates             |
 | [05-02-catalog-ci-cd-bicep](catalog-ci-cd-bicep.yml)                         | Complete CI/CD with Bicep infrastructure as code for resource provisioning              |
 | [05-02-food-app-iac](food-app-iac.yml)                                       | Complete food app infrastructure setup with Bicep for App Service and databases         |
 | [05-03-catalog-ci-cd-terraform](catalog-ci-cd-terraform.yml)                 | CI/CD pipeline using Terraform for cloud infrastructure deployment                      |

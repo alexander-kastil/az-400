@@ -23,7 +23,6 @@ This creates a resource group and Container Apps managed environment for hosting
 
 |                                                                       |                                                                                                                                                              |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [catalog-cd-aca.yml](/.azdo/catalog-cd-aca.yml)                       | .NET Catalog API deployment with workload identity federation for secure, keyless authentication. Builds Docker image and deploys to Container Apps.         |
 | [angular-ci-cd-aca.yml](/.azdo/angular-ci-cd-aca.yml)                 | Angular UI CI/CD pipeline with multi-stage Docker build for optimized image size. Automatically builds and deploys containerized app to Container Apps.      |
 | [payment-func-py-ci-cd-aca.yml](/.azdo/payment-func-py-ci-cd-aca.yml) | Python Azure Function containerization and deployment with configurable replica scaling (min/max). Uses reusable template-based build steps for consistency. |
 
