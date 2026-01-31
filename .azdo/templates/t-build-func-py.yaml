@@ -34,9 +34,11 @@ jobs:
         displayName: "Run tests"
 
       - script: |
+          mkdir -p $(Build.ArtifactStagingDirectory)
           cd ${{ parameters.appPath }}
-          zip -r ../../${{ parameters.artifactName }}.zip .
+          zip -r $(Build.ArtifactStagingDirectory)/${{ parameters.artifactName }}.zip .
         displayName: "Archive function app"
 
-      - publish: ${{ parameters.artifactName }}.zip
+      - publish: $(Build.ArtifactStagingDirectory)/${{ parameters.artifactName }}.zip
         artifact: functionapp
+        displayName: "Publish artifact"
