@@ -1,5 +1,15 @@
 # Implementing Continuous Integration using Azure DevOps pipelines
 
+## Demos
+
+| Pipeline                                                | Description                                                                                                     |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [angular-ci.yml](/.azdo/angular-ci.yml)                 | Builds and tests Angular app. Installs Node.js, runs npm install and build, and compiles TypeScript.            |
+| [react-ci.yml](/.azdo/react-ci.yml)                     | Builds and tests React app. Uses Node.js with npm for dependency installation and build.                        |
+| [spring-ci.yml](/.azdo/spring-ci.yml)                   | Builds Java Spring Boot application. Installs Java 17 and uses Maven with caching for faster builds.            |
+| [payment-func-py-ci.yml](/.azdo/payment-func-py-ci.yml) | Builds Python Azure Function for payment processing. Installs Python 3.12 and prepares function for deployment. |
+| [python-mcp-ci.yml](/.azdo/python-transcriber-mcp.yml)  | Builds and tests Python MCP Server for YouTube transcription. Installs Python 3.11 and runs tests.              |
+
 ## Links & Resources
 
 [YAML schema reference](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema)

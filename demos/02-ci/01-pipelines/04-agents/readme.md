@@ -12,7 +12,6 @@
 ## Demo Folders
 
 - [01-custom-agents/](01-custom-agents/) - Self-hosted Docker agents on Azure Container Instances
-- [02-test-agents/](02-test-agents/) - Testing custom agents with various workloads
 - [03-az-managed-pools/](03-az-managed-pools/) - Azure Managed DevOps Pools (zero-ops agent management)
 - [04-virtual-machines/](04-virtual-machines/) - Self-hosted agents on Azure Windows VMs
 - [05-container-apps/](05-container-apps/) - Self-hosted agents using Azure Container Apps
