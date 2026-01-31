@@ -2,7 +2,11 @@
 
 This directory contains 50+ Azure DevOps pipeline definitions demonstrating CI/CD patterns across multiple technology stacks and deployment scenarios.
 
-## Copilot Skills & Agent
+## Copilot Agent & Skills
+
+### Azure DevOps Agent
+
+The **AzDevOps** agent provides specialized Azure DevOps pipeline expertise. It writes YAML pipelines following Microsoft Learn best practices, imports pipelines to Azure DevOps, runs them, troubleshoots failures, and manages service connections. The agent automatically retrieves configuration (org, project, service connections) from Copilot memory, saving setup time. Use it for: creating new pipelines, diagnosing pipeline failures, managing workload identity service connections, and importing complex multi-stage pipelines.
 
 ### Copilot Skills
 
@@ -24,10 +28,6 @@ Sample `.github/deploy.json`:
 ```
 
 **get-pipeline-logs**: Retrieves logs from the latest Azure DevOps pipeline run with automatic run ID detection. Useful for troubleshooting failures when you need to see detailed task output. Example: "Get the logs from the latest catalog-ci-cd pipeline run."
-
-### Azure DevOps Agent
-
-The **AzDevOps** agent provides specialized Azure DevOps pipeline expertise. It writes YAML pipelines following Microsoft Learn best practices, imports pipelines to Azure DevOps, runs them, troubleshoots failures, and manages service connections. The agent automatically retrieves configuration (org, project, service connections) from Copilot memory, saving setup time. Use it for: creating new pipelines, diagnosing pipeline failures, managing workload identity service connections, and importing complex multi-stage pipelines.
 
 ## Pipelines by Module
 
