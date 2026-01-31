@@ -1,0 +1,82 @@
+parameters:
+  - name: acrName
+    type: string
+  - name: image
+    type: string
+  - name: app
+    type: string
+  - name: resourceGroup
+    type: string
+  - name: serviceConnection
+    type: string
+  - name: acaEnvironment
+    type: string
+  - name: storageAccount
+    type: string
+  - name: minReplicas
+    type: string
+    default: "1"
+  - name: maxReplicas
+    type: string
+    default: "10"
+
+steps:
+  - task: AzureCLI@2
+    displayName: "Check if function app already exists"
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        APP_EXISTS=$(az functionapp show -n ${{ parameters.app }} -g ${{ parameters.resourceGroup }} &>/dev/null && echo true || echo false)
+        echo "##vso[task.setvariable variable=appExists;isOutput=true]${APP_EXISTS}"
+
+  - task: AzureCLI@2
+    displayName: "Fetch ACR credentials"
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        ACR_PASSWORD=$(az acr credential show --name ${{ parameters.acrName }} --query "passwords[0].value" -o tsv)
+        echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
+
+  - task: AzureCLI@2
+    displayName: "Create function app on Container Apps"
+    condition: eq(variables['checkApp.appExists'], 'false')
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        az functionapp create \
+          --name ${{ parameters.app }} \
+          --resource-group ${{ parameters.resourceGroup }} \
+          --environment ${{ parameters.acaEnvironment }} \
+          --storage-account ${{ parameters.storageAccount }} \
+          --functions-version 4 \
+          --runtime python \
+          --image ${{ parameters.image }} \
+          --registry-server ${{ parameters.acrName }}.azurecr.io \
+          --registry-username ${{ parameters.acrName }} \
+          --registry-password $(acrPassword) \
+          --min-replicas ${{ parameters.minReplicas }} \
+          --max-replicas ${{ parameters.maxReplicas }}
+        echo "✓ Function app created successfully"
+
+  - task: AzureCLI@2
+    displayName: "Update function app container image"
+    condition: eq(variables['checkApp.appExists'], 'true')
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        az functionapp config container set \
+          --name ${{ parameters.app }} \
+          --resource-group ${{ parameters.resourceGroup }} \
+          --docker-custom-image-name ${{ parameters.image }} \
+          --docker-registry-server-url https://${{ parameters.acrName }}.azurecr.io \
+          --docker-registry-server-user ${{ parameters.acrName }} \
+          --docker-registry-server-password $(acrPassword)
+        echo "✓ Function app updated successfully"

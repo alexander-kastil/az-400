@@ -12,7 +12,9 @@ variables:
   serviceConnection: wi-az400-dev
   acaEnvironment: az400acaenv
   appName: payment-func-py
-  targetPort: "80"
+  storageAccount: az400storage
+  minReplicas: "1"
+  maxReplicas: "10"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -46,7 +48,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - template: templates/t-deploy-container-app.yaml
+                - template: templates/t-deploy-func-aca.yaml
                   parameters:
                     acrName: $(acrName)
                     image: "$(acrName).azurecr.io/$(imageName):$(Build.BuildId)"
@@ -54,5 +56,6 @@ stages:
                     resourceGroup: $(resourceGroup)
                     serviceConnection: $(serviceConnection)
                     acaEnvironment: $(acaEnvironment)
-                    targetPort: $(targetPort)
-                    override: true
+                    storageAccount: $(storageAccount)
+                    minReplicas: $(minReplicas)
+                    maxReplicas: $(maxReplicas)
