@@ -6,16 +6,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace FoodApp
 {
-    public class OrderAggregates : IOrderAggregates
+    public class OrderAggregates(IConfiguration config) : IOrderAggregates
     {
-        private Container container;
-        public OrderAggregates(IConfiguration config)
-        {
-            AppConfig cfg = config.Get<AppConfig>();
-            CosmosClient client = new CosmosClient(cfg.CosmosDB.GetConnectionString());
-            container = client.GetContainer(cfg.CosmosDB.DBName, cfg.CosmosDB.OrderAggregatesContainer);
-        }
-    
+        private Container container = new CosmosClient(config.Get<AppConfig>().CosmosDB.GetConnectionString())
+            .GetContainer(config.Get<AppConfig>().CosmosDB.DBName, config.Get<AppConfig>().CosmosDB.OrderAggregatesContainer);
+
         public async Task<Order> GetOrderByIdAsync(string id, string customerId)
         {
             try
@@ -27,7 +22,7 @@ namespace FoodApp
             {
                 return null;
             }
-        }        
+        }
         public Task<IEnumerable<Order>> GetAllOrdersForCustomer(string customerId)
         {
             var sql = "SELECT * FROM orders o where o.type='order' and o.customer.Id='" + customerId + "'";

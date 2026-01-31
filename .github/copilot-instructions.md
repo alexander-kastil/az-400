@@ -13,23 +13,11 @@ This repository contains training materials, demos, and infrastructure for Micro
 - **`src/`** - Sample applications (Angular, React, .NET, Python, Java, SPFx)
 - **`infra/`** - Infrastructure as Code (Bicep, Terraform, Azure CLI)
 
-### Agents & Skills
-
-#### Agents
-
-- AzDevOps.agent - Specialized AI coding agent for Azure DevOps pipelines and related code.
-
-#### Skills
-
-| Path                               | Description                                            |
-| ---------------------------------- | ------------------------------------------------------ |
-| `.github/skills/import-pipeline/`  | Skill assets for importing pipelines from YAML.        |
-| `.github/skills/wi-creation`       | Skill assets for workload identity creation workflows. |
-| `.github/skills/get-pipeline-logs` | Skill assets for retrieving pipeline logs.             |
+Always start applications from their respective project folders and not the repository root.
 
 ## General RULES
 
-- Do not over engineer!!!
+- Write clean code. No comments. Do not over engineer!!!
 - Do not write docs if you are not asked to. If you are asked to write docs, be concise, short and to the point. Avoid more than 2 nesting levels.
 
 ## Deployment Metadata

@@ -32,7 +32,7 @@ var studentTools = new[]
     AIFunctionFactory.Create(StudentPlugin.GetStudentsInSchool)
 };
 
-var studentAgent = chatClient.CreateAIAgent(
+var studentAgent = chatClient.AsAIAgent(
     instructions: "You help answer student roster questions. Use the provided tools to fetch data rather than guessing.",
     name: "student-assistant",
     tools: studentTools);
@@ -56,6 +56,17 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.Equals("/index.html", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.Redirect("/", permanent: false);
+        return;
+    }
+
+    await next();
+});
 
 app.UseAuthorization();
 

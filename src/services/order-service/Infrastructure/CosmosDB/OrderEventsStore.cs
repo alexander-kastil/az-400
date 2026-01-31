@@ -4,15 +4,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace FoodApp
 {
-    public class OrderEventsStore : IOrderEventsStore
+    public class OrderEventsStore(IConfiguration config) : IOrderEventsStore
     {
-        private Container container;
-        public OrderEventsStore(IConfiguration config)
-        {
-            AppConfig cfg = config.Get<AppConfig>();
-            CosmosClient client = new CosmosClient(cfg.CosmosDB.GetConnectionString());
-            container = client.GetContainer(cfg.CosmosDB.DBName, cfg.CosmosDB.OrderEventsContainer);
-        }
+        private Container container = new CosmosClient(config.Get<AppConfig>().CosmosDB.GetConnectionString())
+            .GetContainer(config.Get<AppConfig>().CosmosDB.DBName, config.Get<AppConfig>().CosmosDB.OrderEventsContainer);
 
         public async Task<OrderEventResponse> CreateOrderEventAsync(OrderEvent evt)
         {

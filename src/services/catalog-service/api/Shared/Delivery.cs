@@ -1,9 +1,12 @@
 namespace FoodApp
 {
-    public class Delivery{
+    public class Delivery
+    {
         private decimal baseRate = 0.2M;
-        public decimal getDeliveryCost(decimal Distance){
-            return Distance * baseRate;
+
+        public decimal GetDeliveryCost(decimal distance)
+        {
+            return distance * baseRate;
         }
     }
 }
