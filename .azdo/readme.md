@@ -9,6 +9,7 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 |                                                                              |                                                                                         |
 | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | [02-02-angular-ci](angular-ci.yml)                                           | Builds Angular application with unit tests and produces build artifacts                 |
+| [02-02-catalog-ci](catalog-ci.yml)                                           | Simple .NET Catalog API CI pipeline with build and publish steps                        |
 | [02-02-angular-ci-docker-img](angular-ci-docker-img.yml)                     | Containerizes Angular application and pushes image to Azure Container Registry          |
 | [02-02-payment-func-py-ci](payment-func-py-ci.yml)                           | Builds and tests Python Azure Functions with dependency validation                      |
 | [02-02-payment-func-py-docker-img](payment-func-py-docker-img.yml)           | Builds Docker image for Python Azure Function and pushes to ACR                         |

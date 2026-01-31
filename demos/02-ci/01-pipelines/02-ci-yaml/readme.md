@@ -4,7 +4,7 @@ Demonstrates building and publishing a .NET Core application using Azure Pipelin
 
 ## Demos
 
-**YAML Pipeline Configuration** - The [02-02-net-api-ci-yaml.yml](./02-02-net-api-ci-yaml.yml) pipeline implements a multi-step build process that installs the .NET 10 SDK, compiles the project, publishes artifacts, and conditionally publishes the build output. Key features include stage-based organization, task reuse with DotNetCoreCLI, and conditional artifact publishing based on the source branch.
+**YAML Pipeline Configuration** - The [02-02-catalog-ci.yml](/.azdo/catalog-ci.yml) pipeline implements a multi-step build process that installs the .NET 10 SDK, compiles the project, publishes artifacts, and conditionally publishes the build output. Key features include stage-based organization, task reuse with DotNetCoreCLI, and conditional artifact publishing based on the source branch.
 
 The pipeline structure demonstrates best practices for YAML pipelines:
 
