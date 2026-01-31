@@ -2,33 +2,6 @@
 
 This directory contains 50+ Azure DevOps pipeline definitions demonstrating CI/CD patterns across multiple technology stacks and deployment scenarios.
 
-## Copilot Agent & Skills
-
-### Azure DevOps Agent
-
-The **AzDevOps** agent provides specialized Azure DevOps pipeline expertise. It writes YAML pipelines following Microsoft Learn best practices, imports pipelines to Azure DevOps, runs them, troubleshoots failures, and manages service connections. The agent automatically retrieves configuration (org, project, service connections) from Copilot memory, saving setup time. Use it for: creating new pipelines, diagnosing pipeline failures, managing workload identity service connections, and importing complex multi-stage pipelines.
-
-### Copilot Skills
-
-**import-pipeline**: Automates the import of pipeline YAML files to Azure DevOps using deployment metadata from `.github/deploy.json`. It handles pipeline creation, execution, and error diagnosis all in one command. Example: "Import the catalog-ci-cd.yml pipeline and run it for me."
-
-Sample `.github/deploy.json`:
-
-```json
-{
-    "Azure Service Connection (ARM)": "my-service-connection",
-    "Git Repo Url": "https://github.com/myusername/my-repo",
-    "GitHub Service Connection ID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-    "ADOOrg": "https://dev.azure.com/myorgname",
-    "ADOProject": "my-project",
-    "AzureContainerAppsEnvironment": "my-aca-env",
-    "AzureContainerRegistry": "myacrname",
-    "DockerRegistry": "my-docker-registry-connection"
-}
-```
-
-**get-pipeline-logs**: Retrieves logs from the latest Azure DevOps pipeline run with automatic run ID detection. Useful for troubleshooting failures when you need to see detailed task output. Example: "Get the logs from the latest catalog-ci-cd pipeline run."
-
 ## Pipelines by Module
 
 Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align with the AZ-400 certification curriculum. The naming convention is `<module>-<demo>-<description>`.
