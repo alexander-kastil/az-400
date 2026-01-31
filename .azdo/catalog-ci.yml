@@ -2,7 +2,7 @@ name: "02-02-catalog-ci"
 trigger:
   branches:
     include:
-      - master
+      - main
 
 pool:
   vmImage: "ubuntu-latest"
@@ -18,23 +18,23 @@ stages:
 
         steps:
           - task: UseDotNet@2
-            displayName: "Install .NET 10 SDK"
+            displayName: "Install .NET SDK"
             inputs:
               packageType: "sdk"
-              version: "10.x"
+              version: "8.x"
 
           - task: DotNetCoreCLI@2
-            displayName: dotnet build (simple-api only)
+            displayName: dotnet build (catalog service)
             inputs:
               command: build
-              projects: "simple-api.csproj"
+              projects: "src/services/catalog-service/api/catalog-service.csproj"
               arguments: "--configuration $(buildConfiguration)"
 
           - task: DotNetCoreCLI@2
-            displayName: dotnet publish (simple-api only)
+            displayName: dotnet publish (catalog service)
             inputs:
               command: "publish"
-              projects: "simple-api.csproj"
+              projects: "src/services/catalog-service/api/catalog-service.csproj"
               publishWebProjects: false
               arguments: "--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)"
 
