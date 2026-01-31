@@ -11,8 +11,8 @@ variables:
   resourceGroup: az400-dev
   serviceConnection: wi-az400-dev
   acaEnvironment: az400acaenv
-  appName: payment-func-py
-  storageAccount: az400storage
+  appName: payment-func-py-aca
+  storageAccount: az400funcstoragedev
   minReplicas: "1"
   maxReplicas: "10"
 
