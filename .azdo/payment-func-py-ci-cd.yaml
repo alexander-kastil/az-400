@@ -16,6 +16,8 @@ variables:
   functionAppName: "payment-func-py-app"
   pythonVersion: "3.12"
   adoEnvironment: "03-02-payment-func-py-ci-cd"
+  resourceGroup: "az400-dev-rg"
+  azureSubscription: "wi-az400-dev"
 
 stages:
   - stage: Build
@@ -24,8 +26,8 @@ stages:
       - template: templates/t-build-func-py.yaml
         parameters:
           pythonVersion: $(pythonVersion)
-          appPath: src/functions/payment-py
-          requirementsPath: src/functions/payment-py/requirements.txt
+          appPath: src/az-functions/payment-py
+          requirementsPath: src/az-functions/payment-py/requirements.txt
           artifactName: payment-func-py
 
   - stage: Deploy
