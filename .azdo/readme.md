@@ -29,9 +29,9 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 | [03-02-catalog-ci-cd-workload-identity](catalog-ci-cd-workload-identity.yml) | CI/CD demonstrating keyless authentication using Azure workload identity federation     |
 | [03-03-azure-load-test](azure-load-test-cd.yml)                              | Performance testing pipeline that executes load tests and analyzes results              |
 | [03-03-catalog-api-ci-unittest-template](catalog-ci-unittest-template.yml)   | Unit testing pipeline for .NET Catalog API using reusable templates                     |
-| [04-01-blue-green-react-aca](blue-green-react-aca.yaml)                       | Blue-Green deployment with traffic switching for zero-downtime releases                |
+| [04-01-blue-green-react-aca](blue-green-react-aca.yaml)                      | Blue-Green deployment with traffic switching for zero-downtime releases                 |
 | [04-02-spfx-ci-cd-kv](spfx-ci-cd-kv.yml)                                     | SharePoint Framework deployment with Key Vault integration for secure secret management |
-| [04-03-catalog-ci-cd-app-cfg](catalog-ci-cd-app-cfg.yml)                     | .NET API CI/CD with Azure App Configuration integration for dynamic settings           |
+| [04-03-catalog-ci-cd-app-cfg](catalog-ci-cd-app-cfg.yml)                     | .NET API CI/CD with Azure App Configuration integration for dynamic settings            |
 | [05-01-catalog-provision-ci-cd-cli](catalog-provision-ci-cd-cli.yml)         | Infrastructure provisioning using Azure CLI with IaC patterns                           |
 | [05-02-catalog-ci-cd-bicep](catalog-ci-cd-bicep.yml)                         | Complete CI/CD with Bicep infrastructure as code for resource provisioning              |
 | [05-03-catalog-ci-cd-terraform](catalog-ci-cd-terraform.yml)                 | CI/CD pipeline using Terraform for cloud infrastructure deployment                      |
