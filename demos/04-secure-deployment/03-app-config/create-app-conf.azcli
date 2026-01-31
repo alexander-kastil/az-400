@@ -1,7 +1,7 @@
 env=dev
 grp=az400-$env
 loc=westeurope
-cfg=foodconfig-$env
+cfg=az400config-$env
 miName=wi-az400-dev
 
 az appconfig create -g $grp -n $cfg -l $loc --sku free

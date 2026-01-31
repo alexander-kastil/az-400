@@ -18,7 +18,7 @@ variables:
   serviceConnection: wi-az400-dev
   appPath: src/services/catalog-service/api/
   appService: food-catalog-api-yaml
-  appConfigEP: "https://foodconfig-dev.azconfig.io"
+  appConfigEP: "https://az400config-dev.azconfig.io"
   deploy: true
   adoEnvironment: "04-03-catalog-api-cicd-appcfg-env"
 
