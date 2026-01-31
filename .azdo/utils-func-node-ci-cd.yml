@@ -5,7 +5,7 @@ pr: none
 
 variables:
   serviceConnection: wi-az400-dev
-  functionAppName: utils-ts-func-dev
+  functionAppName: utils-func-node-dev
   appPath: src/az-functions/utils-ts/
   adoEnvironment: "03-02-utils-func-node-ci-cd"
 
