@@ -16,7 +16,7 @@ Sample `.github/deploy.json`:
 
 ```json
 {
-    "Service Connection": "my-service-connection",
+    "Azure Service Connection (ARM)": "my-service-connection",
     "Git Repo Url": "https://github.com/myusername/my-repo",
     "GitHub Service Connection ID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "ADOOrg": "https://dev.azure.com/myorgname",
