@@ -12,78 +12,50 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  nodeVer: "22.14.0"
+  nodeVersion: "22.14.0"
   dist: angular-devops
-  apiUrl: "https://mockapi.azurewebsites.net"
+  distFolder: "angular-devops"
   appRoot: src/angular/angular-devops
+  # replace variables in environment.ts. Could be used for API URL etc.
+  greeting: "Hello from Azure DevOps Pipeline"
   # add the deployment token as pipeline variable
+  token: 021d8e7ce5c18210cb29e1fe44df74026e00a787f6dcccf6fb56bbe43818dc0101-fba83791-4a05-46f1-a3f0-3c8f42c776b4010311704d6f0010
 
 stages:
   - stage: Build
     displayName: Build Angular
-
     jobs:
       - job: Build
+        displayName: Build Angular
         steps:
-          - task: NodeTool@0
+          - task: qetza.replacetokens.replacetokens-task.replacetokens@6
+            displayName: "Replace tokens in environment.ts"
             inputs:
-              versionSpec: $(nodeVer)
-            displayName: Install Node $(nodeVer)
-
-          - task: replacetokens@5
-            displayName: Update Config
-            inputs:
-              rootDirectory: "$(System.DefaultWorkingDirectory)/$(appRoot)"
-              targetFiles: "**/*.prod.ts"
-              encoding: "auto"
+              sources: "$(appLocation)/src/environments/environment.ts"
               tokenPattern: "doublebraces"
-              writeBOM: true
-              actionOnMissing: "warn"
-              keepToken: false
-              actionOnNoFiles: "continue"
-              enableTransforms: false
-              enableRecursion: false
-              useLegacyPattern: false
-              enableTelemetry: true
-
-          - task: Cache@2
-            inputs:
-              key: "$(System.DefaultWorkingDirectory)/$(appRoot)/package-lock.json"
-              path: "$(System.DefaultWorkingDirectory)/$(appRoot)/node_modules"
-              cacheHitVar: "npmCache"
-
-          - script: npm ci
-            displayName: "npm ci"
-            workingDirectory: $(appRoot)
-            condition: eq(variables['npmCache'],False)
-
-          - script: npm run build
-            displayName: "Build App"
-            workingDirectory: $(appRoot)
-
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: "$(System.DefaultWorkingDirectory)/$(appRoot)/dist/$(dist)/browser"
-              ArtifactName: "ngapp"
-              publishLocation: "Container"
-            displayName: "Publish Artifacts"
+              escape: "off"
+              logLevel: "info"
+          - template: templates/angular-build.yml
+            parameters:
+              nodeVersion: $(nodeVersion)
+              appLocation: $(appRoot)
+              distFolder: $(distFolder)
+              buildConfiguration: "production"
+              artifactName: "app-build"
+              publishOutputPath: "$(appRoot)/dist/$(distFolder)/browser"
 
   - stage: Deploy
     displayName: Deploy to static WA
     jobs:
-      - job: Deploy
-        steps:
-          - checkout: self
-            submodules: true
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: "current"
-              artifact: "ngapp"
-              targetPath: "$(Pipeline.Workspace)/ngapp"
-          - task: AzureStaticWebApp@0
-            inputs:
-              workingDirectory: "$(Pipeline.Workspace)"
-              app_location: "ngapp"
-              skip_app_build: true
-              skip_api_build: true
-              azure_static_web_apps_api_token: "$(token)"
+      - template: templates/t-angular-static-web-app-deploy.yml
+        parameters:
+          artifactName: "app-build"
+          targetPath: "$(Pipeline.Workspace)/app-build"
+          deploymentToken: "$(deploymentToken)"
+          appLocation: "/"
+          outputLocation: "/"
+          skipAppBuild: true
+          skipApiBuild: true
+          isStaticExport: true
+          workingDirectory: "$(Pipeline.Workspace)/app-build"
+          environmentName: "$(environment)"
