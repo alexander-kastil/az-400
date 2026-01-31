@@ -31,10 +31,11 @@ stages:
           - task: qetza.replacetokens.replacetokens-task.replacetokens@6
             displayName: "Replace tokens in environment.ts"
             inputs:
-              sources: "$(appLocation)/src/environments/environment.ts"
+              sources: "$(appRoot)/src/environments/environment.ts"
               tokenPattern: "doublebraces"
               escape: "off"
               logLevel: "info"
+
           - template: templates/t-angular-build.yml
             parameters:
               nodeVersion: $(nodeVersion)
