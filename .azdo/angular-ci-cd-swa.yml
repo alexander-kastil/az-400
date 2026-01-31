@@ -35,7 +35,7 @@ stages:
               tokenPattern: "doublebraces"
               escape: "off"
               logLevel: "info"
-          - template: templates/angular-build.yml
+          - template: templates/t-angular-build.yml
             parameters:
               nodeVersion: $(nodeVersion)
               appLocation: $(appRoot)
