@@ -9,6 +9,7 @@
 | [spring-ci.yml](/.azdo/spring-ci.yml)                   | Builds Java Spring Boot application. Installs Java 17 and uses Maven with caching for faster builds.            |
 | [payment-func-py-ci.yml](/.azdo/payment-func-py-ci.yml) | Builds Python Azure Function for payment processing. Installs Python 3.12 and prepares function for deployment. |
 | [python-mcp-ci.yml](/.azdo/python-transcriber-mcp.yml)  | Builds and tests Python MCP Server for YouTube transcription. Installs Python 3.11 and runs tests.              |
+| [spfx-ci.yml](/.azdo/spfx-ci.yml)                       | SharePoint Framework CI pipeline with build, test, and validation steps                                         |
 
 ## Links & Resources
 

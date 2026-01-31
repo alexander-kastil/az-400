@@ -1,4 +1,4 @@
-name: docker-ci-img
+name: 02-04-food-shop-ci-docker-img
 
 # trigger:
 #   branches:

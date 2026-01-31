@@ -2,7 +2,7 @@
 
 - Using Azure CLI Task in pipeline
 
-- Show [catalog-provision-ci-cd-cli](/.azdo/catalog-provision-ci-cd-cli.yml)
+- Show [catalog-iac-cli](/.azdo/catalog-iac-cli.yml)
 
 ## Links & Resources
 

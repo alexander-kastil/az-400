@@ -1,4 +1,4 @@
-name: catalog-build-docker-img
+name: 02-04-catalog-ci-docker-img
 
 # trigger:
 #   branches:

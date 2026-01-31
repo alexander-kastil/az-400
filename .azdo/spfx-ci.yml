@@ -1,4 +1,4 @@
-name: spfx-ci
+name: 02-06-spfx-ci
 
 # trigger:
 #   branches:
@@ -15,7 +15,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  appPath: src/teams/food-list/  
+  appPath: src/teams/food-list/
 
 stages:
   - stage: Build

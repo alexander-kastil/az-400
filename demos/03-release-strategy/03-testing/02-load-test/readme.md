@@ -29,7 +29,7 @@ The recommended approach uses an Azure DevOps pipeline for fully automated, repe
 
    ```bash
    # Navigate to Azure DevOps Pipelines
-   # Select: .azdo/azure-load-test.yml
+   # Select: .azdo/azure-load-test-cd.yml
    # Click: "Run pipeline"
    ```
 
