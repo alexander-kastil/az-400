@@ -1,4 +1,4 @@
-name: angular-ci-cd-swa.yml
+name: 03-02-angular-ci-cd-swa.yml
 
 # trigger:
 #   branches:
