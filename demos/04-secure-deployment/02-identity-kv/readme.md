@@ -1,9 +1,15 @@
 # Identities & Key Vault
 
-### Microsoft 365 SharePoint and Teams WebPart Deployment using Key Vault
+## Demos
 
-> Note: This demo is based on the app registration created in the previous [demo](/demos/03-release-strategy/01-release-pipelines/02-deployment-job/02-app-deployment/create-m365-app-registration.azcli).
+|                                                 |                                                                                         |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [04-02-spfx-ci-cd-kv](/.azdo/spfx-ci-cd-kv.yml) | SharePoint Framework deployment with Key Vault integration for secure secret management |
 
-- Create KeyVault using `create-vault.azcli`
+## Links & Resources
 
-- [spfx-ci-cd-kv.yml](/.azdo/spfx-ci-cd-kv.yml) now uses a Key Vault task to fetch secrets from Key Vault during deployment
+[Azure Key Vault](https://docs.microsoft.com/de-de/azure/key-vault/general/) — Secure secret storage
+
+[Azure Key Vault task](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-key-vault?view=azure-devops) — Retrieve secrets in pipelines
+
+[Azure Managed Identities](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/) — Passwordless authentication for Azure services

@@ -1,6 +1,10 @@
 # Using App Configuration in Azure Pipelines
 
-- Explain [app-ci-cd-cfg.yml](/.azdo/catalog-ci-cd-app-cfg.yml) which demonstrates the use of Azure App Configuration in Azure Pipelines.
+## Demos
+
+|                                                                 |                                                                                         |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [04-03-catalog-ci-cd-app-cfg](/.azdo/catalog-ci-cd-app-cfg.yml) | .NET API CI/CD with Azure App Configuration integration for dynamic settings management |
 
 ## Extensions & Tools
 

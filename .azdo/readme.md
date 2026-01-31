@@ -27,10 +27,11 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 | [03-02-spfx-ci-cd-template](spfx-ci-cd.yml)                                  | SharePoint Framework CI/CD with template-based packaging and deployment                 |
 | [03-02-utils-func-node-ci-cd](utils-func-node-ci-cd.yml)                     | CI/CD for Node.js utility functions with testing and Azure Functions deployment         |
 | [03-02-catalog-ci-cd-workload-identity](catalog-ci-cd-workload-identity.yml) | CI/CD demonstrating keyless authentication using Azure workload identity federation     |
-| [03-03-azure-load-test](azure-load-test-v1.yml)                              | Performance testing pipeline that executes load tests and analyzes results              |
+| [03-03-azure-load-test](azure-load-test-cd.yml)                              | Performance testing pipeline that executes load tests and analyzes results              |
 | [03-03-catalog-api-ci-unittest-template](catalog-ci-unittest-template.yml)   | Unit testing pipeline for .NET Catalog API using reusable templates                     |
+| [04-01-blue-green-react-aca](blue-green-react-aca.yaml)                       | Blue-Green deployment with traffic switching for zero-downtime releases                |
 | [04-02-spfx-ci-cd-kv](spfx-ci-cd-kv.yml)                                     | SharePoint Framework deployment with Key Vault integration for secure secret management |
-| [04-03-catalog-api-cicd-appcfg](catalog-ci-cd-app-cfg.yml)                   | .NET API CI/CD with Azure App Configuration integration for dynamic settings            |
+| [04-03-catalog-ci-cd-app-cfg](catalog-ci-cd-app-cfg.yml)                     | .NET API CI/CD with Azure App Configuration integration for dynamic settings           |
 | [05-01-catalog-provision-ci-cd-cli](catalog-provision-ci-cd-cli.yml)         | Infrastructure provisioning using Azure CLI with IaC patterns                           |
 | [05-02-catalog-ci-cd-bicep](catalog-ci-cd-bicep.yml)                         | Complete CI/CD with Bicep infrastructure as code for resource provisioning              |
 | [05-03-catalog-ci-cd-terraform](catalog-ci-cd-terraform.yml)                 | CI/CD pipeline using Terraform for cloud infrastructure deployment                      |
@@ -46,23 +47,19 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 
 These pipelines either have generic names or alternative naming patterns:
 
-- [catalog-api-ci-cd-mi](catalog-ci-cd-workload-identity.yml) - Alternative naming for workload identity demo
-- [catalog-build-docker-img](catalog-ci-docker-img.yml) - Docker image build pipeline
-- [catalog-ci](catalog-ci.yml) - Managed pool CI pipeline
-- [catalog-ci](catalog-ci-managed-pool.yml) - Catalog CI on managed pool
-- [catalog-ci-unittest-deploy](catalog-ci-unittest-deploy.yml) - Unit testing with deployment
-- [catalog-cd-cd-environment-gate](catalog-cd-cd-work-item-gate.yml) - Environment gate demo
-- [Deploy UI to Static Website](food-shop-ci-cd-static-webapp.yml) - Static Web Apps deployment
-- [docker-ci-img](food-shop-ci-docker-img.yml) - Food shop Docker image build
-- [blob-console-img](blob-console-docker-img.yml) - Blob console container image
-- [food-app-provision](food-app-provision.yml) - Food app provisioning pipeline
-- [provision-azure-cli](provision-azure-cli.yml) - Azure CLI provisioning template
-- [provision-bicep-aca-env](provision-acaenv-bicep.yml) - Container Apps environment provisioning
-- [react-unittest](react-unittest.yml) - React unit testing pipeline
-- [react-ci-docker-img](react-ci-docker-img.yml) - React Docker image with alternate naming
+- [catalog-ci-docker-img](catalog-ci-docker-img.yml) - Docker image build pipeline
+- [catalog-ci-unittest](catalog-ci-unittest.yml) - Unit testing pipeline
+- [catalog-cd-environment-gate](catalog-cd-environment-gate.yml) - Environment gate demo
+- [food-shop-ci-cd-swa](food-shop-ci-cd-swa.yml) - Static Web Apps deployment
+- [food-shop-ci-docker-img](food-shop-ci-docker-img.yml) - Food shop Docker image build
+- [blob-console-ci-docker-img](blob-console-ci-docker-img.yml) - Blob console container image
+- [food-app-iac](food-app-iac.yml) - Food app infrastructure provisioning
+- [catalog-iac-cli](catalog-iac-cli.yml) - Azure CLI infrastructure template
+- [acaenv-iac-bicep](acaenv-iac-bicep.yml) - Container Apps environment provisioning
+- [react-ci-unittest](react-ci-unittest.yml) - React unit testing pipeline
+- [react-ci-docker-img](react-ci-docker-img.yml) - React Docker image build
 - [spfx-ci](spfx-ci.yml) - Basic SharePoint Framework CI
-- [sk-build-docker-img](af-studentsai-docker-img.yml) - AI students project Docker image
-- [blue-green-react-aca](blue-green-react-aca.yaml) - React deployment with blue-green strategy
+- [af-students-ai-ci-docker-img](af-students-ai-ci-docker-img.yml) - AI students project Docker image
 - [react-playwright-e2e](react-playwright-e2e.yaml) - End-to-end testing with Playwright
 
 ## Template Directory
