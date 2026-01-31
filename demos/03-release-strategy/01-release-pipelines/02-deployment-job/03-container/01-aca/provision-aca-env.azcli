@@ -1,0 +1,9 @@
+env=dev
+grp=az400-$env
+loc=westeurope
+acr=az400acr$env
+acaenv=az400acaenv
+
+az group create -n $grp -l $loc
+
+az containerapp env create -n $acaenv -g $grp -l $loc

@@ -1,0 +1,12 @@
+env=dev
+grp=az400-$env
+loc=westeurope
+storage=az400funcstorage$env
+
+az group create -n $grp -l $loc
+
+az storage account  create -n $storage -g $grp --sku Standard_LRS
+
+az functionapp create -n utils-func-node-$env -g $grp --storage-account $storage --flexconsumption-location $loc --runtime node --runtime-version 22 --functions-version 4
+
+az functionapp create -n payment-func-py-$env -g $grp --storage-account $storage --flexconsumption-location $loc --os-type Linux --runtime python --runtime-version 3.12 --functions-version 4
