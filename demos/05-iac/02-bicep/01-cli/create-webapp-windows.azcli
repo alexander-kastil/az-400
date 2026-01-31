@@ -1,9 +1,8 @@
-rnd=$RANDOM
 env=dev
 grp=az400-bicep-$env
 loc=westeurope
 bicep=webapp-windows.bicep
-app=bicep-site-$rnd
+app=bicep-site-$env
 
 az group create -n $grp --location $loc
 

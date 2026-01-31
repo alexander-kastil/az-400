@@ -1,10 +1,9 @@
 env=dev
-rnd=$RANDOM
 grp=az400-$env
 loc=westeurope
-acct=storage$rnd$env
-plan=az400-$rnd-$env
-web=policy-$rnd-$env
+acct=storage$env$env
+plan=az400-$env-$env
+web=policy-$env-$env
 
 az group create -n $grp -l $loc
 

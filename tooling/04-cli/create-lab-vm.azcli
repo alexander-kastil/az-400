@@ -1,7 +1,7 @@
-rnd=$RANDOM
+env=$RANDOM
 loc=westeurope
 grp=az204-lab
-vmname=labvm-$rnd
+vmname=labvm-$env
 user=az204lab
 pwd=Lab@dmin1233
 

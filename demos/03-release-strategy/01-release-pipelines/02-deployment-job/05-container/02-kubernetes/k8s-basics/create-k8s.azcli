@@ -23,7 +23,7 @@ kubectl apply -f foodui.yaml --namespace $env
 kubectl get deployment $app -n $env
 kubectl get pods -n $env
 kubectl get pods -l app=foodapi -n $env
-# Get the serive IP and use it on the assigned port
+# Get the service IP and use it on the assigned port
 kubectl get service $app -n $env
 
 # browse deployment - port taken from yaml

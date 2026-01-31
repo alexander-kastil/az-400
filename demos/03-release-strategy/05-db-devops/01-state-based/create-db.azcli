@@ -1,9 +1,9 @@
-rnd=prod
-grp=az204-m11-dbdevops-$rnd
+env=prod
+grp=az204-m11-dbdevops-$env
 loc=westeurope
 server=sql-$RANDOM
-db=demodb$rnd
-acct=dbdevops$rnd
+db=demodb$env
+acct=dbdevops$env
 container=dbbackup
 dacpac=DemoDB.bacpac
 user=sqladmin
@@ -23,7 +23,7 @@ az sql server firewall-rule create -g $grp -s $server -n current-client-ip --sta
 
 az storage account create -l $loc -n $acct -g $grp --sku Standard_LRS
 
-key=$(az storage account keys list -n $acct --query "[0].[value][0]" -o tsv)
+key=$(az storage account keys list -n $acct --query "[0].value" -o tsv)
 
 az storage container create -n $container --account-key $key --account-name $acct
 
