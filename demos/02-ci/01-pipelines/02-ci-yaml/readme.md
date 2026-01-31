@@ -1,57 +1,22 @@
 # YAML Pipelines
 
+Demonstrates building and publishing a .NET Core application using Azure Pipelines YAML syntax. YAML pipelines provide a code-first approach to defining CI workflows, with full version control and integration with the repository.
+
 ## Demos
 
-Add `simple-api-ci` to `simple-api` repo
+**YAML Pipeline Configuration** - The [02-02-net-api-ci-yaml.yml](./02-02-net-api-ci-yaml.yml) pipeline implements a multi-step build process that installs the .NET 10 SDK, compiles the project, publishes artifacts, and conditionally publishes the build output. Key features include stage-based organization, task reuse with DotNetCoreCLI, and conditional artifact publishing based on the source branch.
 
-```yml
-name: "simple-api-ci-yaml"
-trigger:
-  branches:
-    include:
-      - master
+The pipeline structure demonstrates best practices for YAML pipelines:
 
-pool:
-  vmImage: "ubuntu-latest"
+- Triggered on `master` branch commits
+- Uses Azure Pipelines hosted agents (`ubuntu-latest`)
+- Defines build configuration variables for flexibility
+- Publishes artifacts for downstream release pipelines
 
-variables:
-  buildConfiguration: "Release"
+**Pipeline Import** - Import the pipeline into your Azure DevOps project:
 
-stages:
-  - stage: "Build"
-    jobs:
-      - job: "Build"
-        displayName: "Build Api"
+![Add pipeline](./_images/add-pipeline.jpg)
+_Step 1: Add a new pipeline from the Pipelines menu_
 
-        steps:
-          - task: UseDotNet@2
-            displayName: "Install .NET 5 SDK"
-            inputs:
-              packageType: "sdk"
-              version: "5.x"
-
-          - task: DotNetCoreCLI@2
-            displayName: Build
-            inputs:
-              command: build
-              projects: "**/*.csproj"
-              arguments: "--configuration $(buildConfiguration)"
-
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "publish"
-              publishWebProjects: true
-              arguments: "--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)"
-
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-              ArtifactName: "drop"
-              publishLocation: "Container"
-```
-
-Import the Pipeline
-
-![add-pipeline](_images/add-pipeline.jpg)
-
-![select-pipeline](_images/select-pipeline.jpg)
+![Select pipeline](./_images/select-pipeline.jpg)
+_Step 2: Select the YAML file from your repository_
