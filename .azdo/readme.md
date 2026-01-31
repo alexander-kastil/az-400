@@ -38,6 +38,7 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 | [03-02-catalog-ci-cd-aca](catalog-ci-cd-aca.yml)                             | Builds .NET API Docker image and deploys to Azure Container Apps                        |
 | [03-02-spfx-ci-cd-template](spfx-ci-cd.yml)                                  | SharePoint Framework CI/CD with template-based packaging and deployment                 |
 | [03-02-utils-func-node-ci-cd](utils-func-node-ci-cd.yml)                     | CI/CD for Node.js utility functions with testing and Azure Functions deployment         |
+| [03-02-catalog-ci-cd-workload-identity](catalog-ci-cd-workload-identity.yml) | CI/CD demonstrating keyless authentication using Azure workload identity federation     |
 | [03-03-azure-load-test](azure-load-test-v1.yml)                              | Performance testing pipeline that executes load tests and analyzes results              |
 | [03-03-catalog-api-ci-unittest-template](catalog-ci-unittest-template.yml)   | Unit testing pipeline for .NET Catalog API using reusable templates                     |
 | [04-02-spfx-ci-cd-kv](spfx-ci-cd-kv.yml)                                     | SharePoint Framework deployment with Key Vault integration for secure secret management |
@@ -52,7 +53,6 @@ Pipelines are named using module prefixes (e.g., `02-02`, `03-02`) that align wi
 | [07-02-orders-ci](orders-ci.yml)                                             | Builds orders microservice with unit tests and artifact staging                         |
 | [07-02-orders-ci-docker-img](orders-ci-docker-img.yml)                       | Containerizes orders microservice and publishes to container registry                   |
 | [02-04-payment-func-py-ci-cd-aca](payment-func-py-ci-cd-aca.yml)             | Python Azure Functions CI/CD with containerization and Container Apps deployment        |
-| [03-02-catalog-ci-cd-workload-identity](catalog-ci-cd-workload-identity.yml) | CI/CD demonstrating keyless authentication using Azure workload identity federation     |
 
 ## Pipelines Without Module Prefix
 
