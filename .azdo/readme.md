@@ -8,6 +8,21 @@ This directory contains 50+ Azure DevOps pipeline definitions demonstrating CI/C
 
 **import-pipeline**: Automates the import of pipeline YAML files to Azure DevOps using deployment metadata from `.github/deploy.json`. It handles pipeline creation, execution, and error diagnosis all in one command. Example: "Import the catalog-ci-cd.yml pipeline and run it for me."
 
+Sample `.github/deploy.json`:
+
+```json
+{
+    "Service Connection": "my-service-connection",
+    "Git Repo Url": "https://github.com/myusername/my-repo",
+    "GitHub Service Connection ID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "ADOOrg": "https://dev.azure.com/myorgname",
+    "ADOProject": "my-project",
+    "AzureContainerAppsEnvironment": "my-aca-env",
+    "AzureContainerRegistry": "myacrname",
+    "DockerRegistry": "my-docker-registry-connection"
+}
+```
+
 **get-pipeline-logs**: Retrieves logs from the latest Azure DevOps pipeline run with automatic run ID detection. Useful for troubleshooting failures when you need to see detailed task output. Example: "Get the logs from the latest catalog-ci-cd pipeline run."
 
 ### Azure DevOps Agent
