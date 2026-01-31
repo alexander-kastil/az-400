@@ -2,9 +2,11 @@
 
 ## Demos
 
-- Execute `create-catalog-api.azcli`
-- Show imported Designer pipeline `Catalog-Multistage-Release.json`
-- Show YAML pipeline `catalog-ci-cd.yml`
+Execute [create-catalog-api.azcli](../create-catalog-api.azcli) to provision Azure App Service instances for Dev and Staging environments.
+
+Import and examine [Catalog-Multistage-Release.json](Catalog-Multistage-Release.json), a multi-stage release definition that demonstrates environment progression. Deploys to Dev and Staging using the Azure App Service Deploy task with environment-specific variables for web app names.
+
+Compare with YAML-based approach using deployment jobs and environments for the same release workflow.
 
 ## Links & Resources
 

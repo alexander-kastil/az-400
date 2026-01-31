@@ -1,9 +1,13 @@
 ---
 name: Describe Demos
 description: This prompt is used to describe the demos
+agent: agent
+model: Claude Haiku 4.5 (copilot)
 ---
 
 # Documentation Enhancement Prompt
+
+Work with the current file attached to this prompt.
 
 Try to find the Scripts, Pipelines, or other items being demonstrated in the source files provided.
 
@@ -21,4 +25,9 @@ Try to find the Scripts, Pipelines, or other items being demonstrated in the sou
 - 1-2 standout technical details
 - Keep length consistent across items
 
-Do not touch "## Links & Resources" sections unless specified.
+**Important:**
+
+- When there are multiple items, separate them with a paragraph.
+- When references to files or scripts are present, mention them by name and link them if possible.
+- If there are links to images, check if they link is valid, try to fix broken links and integrate them into the description. Each image should have a descriptive caption.
+- Do not touch "## Links & Resources" sections unless specified.
