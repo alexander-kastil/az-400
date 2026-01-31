@@ -9,7 +9,6 @@ loadTest=az400-load-test
 
 az group create -n $grp --l $loc
 
-# Create Azure Load Testing resource
 az extension add -n load --upgrade
 az load create -g $grp -n $loadTest -l $loc
 
