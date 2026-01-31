@@ -2,11 +2,9 @@
 
 ## Overview
 
-This demo showcases Azure Load Testing for the **Prime Service** - a .NET API that calculates prime numbers and returns performance metrics. The service is containerized and deployed to Azure Container Apps.
+This demo showcases automated load testing for the **Prime Service** — a .NET API that calculates prime numbers up to a given number. The service is containerized, deployed to Azure Container Apps, and stress-tested using Apache JMeter and Azure Load Testing to measure response times and throughput under load.
 
-## Prime Service API
-
-The PrimesService calculates the count of prime numbers up to a given number and returns the time taken:
+The Prime Service endpoint returns performance metrics including execution time and the container instance ID:
 
 ```c#
 [HttpGet]
@@ -23,42 +21,34 @@ public IActionResult Get(int n)
 
 ## Automated Pipeline Approach (Recommended)
 
-For automated, repeatable load testing without local dependencies, use the Azure DevOps pipeline:
+The recommended approach uses an Azure DevOps pipeline for fully automated, repeatable load testing without requiring local dependencies.
 
 ### Quick Start
 
 1. **Run the Pipeline**
+
    ```bash
    # Navigate to Azure DevOps Pipelines
    # Select: .azdo/azure-load-test.yml
    # Click: "Run pipeline"
    ```
 
-2. **What the Pipeline Does**
-   - Builds container image in Azure Container Registry
-   - Deploys to Azure Container Apps
-   - Runs smoke tests
-   - Executes load tests (when configured)
-   - Optional: Cleans up resources
+2. **Pipeline Stages**
+   - **Build**: Container image built in Azure Container Registry (ACR) using `az acr build`
+   - **Deploy**: Service deployed to Azure Container Apps
+   - **Test**: Smoke tests verify deployment, followed by automated load tests
+   - **Cleanup**: Optional resource cleanup (disabled by default)
 
-3. **Benefits**
-   - ✅ No local setup required
-   - ✅ Consistent test environment
-   - ✅ Full automation
-   - ✅ Integrated with CI/CD
-   - ✅ Audit trail in pipeline history
+3. **Key Benefits**
+   - ✅ No local setup required (no JMeter installation needed)
+   - ✅ Consistent, repeatable test environment
+   - ✅ Full integration with CI/CD workflows
+   - ✅ Complete audit trail in pipeline execution history
+   - ✅ Parallel execution scaling with multiple engine instances
 
-### Pipeline Configuration
+### Pipeline Configuration Details
 
-The pipeline (`azure-load-test.yml`) includes:
-- **Build Stage**: Builds image in ACR using `az acr build`
-- **Deploy Stage**: Deploys to Azure Container Apps
-- **Load Test Stage**: Executes load tests
-- **Cleanup Stage**: Optional resource cleanup
-
-See [load-test.md](./load-test.md) for detailed implementation plan.
-
-## Manual Testing Approach (Original)
+The [load-test.md](./load-test.md) document provides the complete implementation plan, including architecture components, Azure resource setup, and step-by-step configuration instructions.
 
 ## Manual Testing Approach (Original)
 
@@ -66,99 +56,98 @@ For manual testing or local development:
 
 ### Prerequisites
 
-- Install [Apache JMeter](https://jmeter.apache.org/) and requirements:
+For local development or manual testing, you can deploy the service and execute load tests manually using Apache JMeter.
 
-  ```powershell
-  choco install jdk8 -y
-  choco install jmeter -y
-  ```
+### Prerequisites
+
+Install Apache JMeter and Java:
+
+```powershell
+winget install EclipseAdoptium.Temurin.8
+winget install ApacheJMeter.ApacheJMeter
+```
 
 ### Deploy the Service
 
-### Deploy the Service
-
-Deploy `PrimesService` to [Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/) using:
+Deploy the Prime Service to [Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/) using one of these options:
 
 **Option 1: Visual Studio Code**
-- Use the [Container Apps Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurecontainerapps)
 
-  ![ext](_images/code-ext.png)
+Use the [Azure Container Apps extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurecontainerapps) to deploy directly from VS Code:
+
+![VS Code Container Apps extension for deploying to Azure Container Apps](_images/code-ext.png)
 
 **Option 2: Azure CLI Script**
-- Execute `create-prime-service.azcli`
 
-### Test the Deployed Service
+Execute the [create-prime-service.azcli](./create-prime-service.azcli) script for automated deployment via CLI.
 
-### Test the Deployed Service
+### Verify Service Deployment
+
+Once deployed, verify the service is accessible:
 
 ```bash
 curl https://primes-api.kindplant-307af914.westeurope.azurecontainerapps.io/api/primes/10000
 ```
 
-> Note: The url is taken from the container app overview. Add `/api/primes/10000` to the url.
+Replace the URL with your actual container app URL (available from the Container Apps overview page in the Azure Portal).
 
-### Configure JMeter Load Test
+### Configure and Run Load Tests
 
-#### Using Original Test Plan
+#### Parameterized Test Plan (Recommended)
 
-- Create a new JMeter test plan by importing `test-prime-service.jmx` into the JMeter GUI
+Use [test-prime-service-parameterized.jmx](./test-prime-service-parameterized.jmx) with dynamic parameters passed via command line:
 
-  ![JMeter test plan](_images/jmeter.png)
+```bash
+jmeter -n -t test-prime-service-parameterized.jmx \
+  -Jwebapp=your-app.azurecontainerapps.io \
+  -Jthreads=250 \
+  -Jrampup=30 \
+  -Jduration=60
+```
 
-- Update the URL in the JMeter test plan according to your URL and save:
+This approach eliminates the need to edit XML files for each test run and supports easy parameter variation.
 
-  ```bash
-  primes-api.kindplant-307af914.westeurope.azurecontainerapps.io
-  ```
+#### Original Test Plan
 
-#### Using Parameterized Test Plan (Recommended)
+The [test-prime-service.jmx](./test-prime-service.jmx) file is a standard JMeter test plan with hardcoded configuration. Load it into the JMeter GUI and update the service URL before running:
 
-- Use `test-prime-service-parameterized.jmx` which supports dynamic configuration
-- Pass parameters via command line or Azure Load Testing:
-
-  ```bash
-  jmeter -n -t test-prime-service-parameterized.jmx \
-    -Jwebapp=your-app.azurecontainerapps.io \
-    -Jthreads=250 \
-    -Jrampup=30 \
-    -Jduration=60
-  ```
+![JMeter test plan configuration showing HTTP Request samplers and assertions](_images/jmeter.png)
 
 ### Run Load Test in Azure Portal
 
-### Run Load Test in Azure Portal
+Azure Load Testing provides a managed service for load testing with visual test result analysis:
 
-1. **Create Load Testing Instance**
-   - Search for "Azure Load Testing" in the Azure Portal
-   - Click "Create" and accept defaults
+1. **Create Azure Load Testing Instance**
 
-  ![Load testing instance](_images/load-testing.png)
+   Search for "Azure Load Testing" in the Azure Portal and create a new instance:
 
-2. **Create and Configure Test**
-   - Choose "Upload JMeter script"
-   - Upload your JMX file
-   - Configure test parameters
+   ![Azure Load Testing create resource page](_images/load-testing.png)
 
-  ![test1](_images/test-1.png)
-  ![test2](_images/test-2.png)
-  ![test3](_images/test-3.png)
+2. **Upload and Configure Test**
 
-3. **Execute and Review**
-   - Run the test
-   - Examine results and performance metrics
+   Create a new test and upload your JMeter script:
 
-  ![test-result](_images/test-result.png)
+   ![Upload JMeter test file dialog](_images/test-1.png)
 
-## Test Files
+   Configure test parameters (threads, ramp-up, duration, etc.):
 
-- `test-prime-service.jmx` - Original JMeter test plan with hardcoded URL
-- `test-prime-service-parameterized.jmx` - Parameterized test plan for dynamic configuration
-- `create-prime-service.azcli` - Azure CLI script for manual deployment
-- `load-test.md` - Detailed implementation plan and documentation
+   ![Configure test parameters and load settings](_images/test-2.png)
 
-## Resources
+   Map load test parameters to JMeter variables:
+
+   ![Parameter mapping configuration between Azure Load Testing and JMeter variables](_images/test-3.png)
+
+3. **Execute and Review Results**
+   Artifacts
+
+- [test-prime-service.jmx](./test-prime-service.jmx) — Original JMeter test plan with hardcoded service URL (basic approach)
+- [test-prime-service-parameterized.jmx](./test-prime-service-parameterized.jmx) — Parameterized JMeter test plan supporting dynamic configuration via CLI arguments
+- [create-prime-service.azcli](./create-prime-service.azcli) — Azure CLI script for automated service deployment to Container Apps
+- [prime-service-loadtest.yaml](./prime-service-loadtest.yaml) — Azure Load Testing configuration file defining test metadata and JMeter script reference
+- [load-test.md](./load-test.md) — Comprehensive implementation guide covering architecture, setup steps, and troubleshooting
+
+## Links & Resources
 
 - [Azure Load Testing Documentation](https://learn.microsoft.com/en-us/azure/load-testing/)
 - [Azure Container Apps Documentation](https://learn.microsoft.com/en-us/azure/container-apps/)
 - [JMeter Documentation](https://jmeter.apache.org/usermanual/index.html)
-- [Prime Service Source Code](../../../src/services/prime-service/)

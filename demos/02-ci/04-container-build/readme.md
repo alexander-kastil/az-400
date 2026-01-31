@@ -12,13 +12,12 @@
 
 ## Demos
 
-- Build .NET WebApi -> [.ado/catalog-docker-img.yml](/.ado/catalog-docker-img.yml)
-
-- Build Angular FrontEnd -> [deploy/pipeline/food-shop-docker-img.yml](/.ado/food-shop-docker-img.yml)
-
-- Build Azure Function Python -> [deploy/pipeline/payment-py-docker-img.yml](/.ado/payment-py-docker-img.yml)
-
-- Build Spring Boot Job -> [deploy/pipeline/blob-console-img.yml](/.ado/blob-console-img.yml)
+|                                                                              |                                                                                 |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [catalog-docker-img.yml](../../.azdo/catalog-docker-img.yml)                 | Builds Docker image for .NET Catalog API and pushes to Azure Container Registry |
+| [food-shop-docker-img.yml](../../.azdo/food-shop-docker-img.yml)             | Containerizes Angular application with multi-stage build optimization           |
+| [payment-func-py-docker-img.yml](../../.azdo/payment-func-py-docker-img.yml) | Packages Python Azure Function in Docker image for container deployment         |
+| [blob-console-img.yml](../../.azdo/blob-console-img.yml)                     | Creates container image for Spring Boot console application                     |
 
 ## Additional Labs & Walkthroughs
 
