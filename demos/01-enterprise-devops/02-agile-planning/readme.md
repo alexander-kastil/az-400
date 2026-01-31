@@ -2,11 +2,15 @@
 
 ## Demos
 
-- Connect Azure Boards and GitHub Issues
-- Add Status Badge to README.md using the boards settings
-- Add a work item in ADO Boards and note the Task ID. Make some code changed in the cloned repo and commit the changes using the `AB#<TASK_ID>` notation in the commit message.
-- GitHub Actions: Use sync issues action
-- Create an Issue from within VS Code
+**Connect Azure Boards and GitHub Issues** — Integrate GitHub issues with Azure Boards using either the GitHub App for seamless web-based connection, or PAT tokens for programmatic control. Enables unified issue tracking across both platforms.
+
+**Add Status Badge to README** — Display live project status in your repository's README using board settings, providing visibility into active work items.
+
+**Link Commits to Work Items** — Associate code changes with tracking by using the `AB#<TASK_ID>` notation in commit messages. Add a work item in ADO Boards, note its Task ID, then reference it when committing code changes to create automatic traceability.
+
+**Sync Issues with GitHub Actions** — Automatically export GitHub issues to Azure Boards work items using the [GitHub Issues to Azure DevOps](https://github.com/marketplace/actions/github-issues-to-azure-devops) action. This workflow syncs issues across the entire issue lifecycle (opened, edited, closed, labeled, assigned, etc.).
+
+**Create Issues from VS Code** — Use the [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github) extension to create and manage issues directly within the editor using the command palette, keeping your workflow seamless without context switching.
 
 ---
 
@@ -24,27 +28,27 @@ There are two options to connect Azure Boards and GitHub Issues:
 
 #### Setup Connection using PAT Tokens
 
-Create two PAT tokens. One for Azure DevOps and on for GitHub and store them as secrets:
+Create two PAT tokens and store them as secrets:
 
-- `ADO_PERSONAL_ACCESS_TOKEN`
-  - Azure DevOps | User settings | Security | Personal access tokens
-  - repo permissions
+**Azure DevOps Token (`ADO_PERSONAL_ACCESS_TOKEN`)**
 
-- `GH_PERSONAL_ACCESS_TOKEN`
-  - GitHub | Personal settings | Developer settings | Personal access tokens
-  - read / write
+- Navigate to Azure DevOps → User settings → Security → Personal access tokens
+- Create a new token with **repo** scope
 
----
+**GitHub Token (`GH_PERSONAL_ACCESS_TOKEN`)**
+
+- Navigate to GitHub → Personal settings → Developer settings → Personal access tokens
+- Create a new token with **repo** permissions and **read/write** access
 
 ### GitHub Actions: Use sync issues action
 
 - On the GitHub marketplace search for these extensions:
 
-[GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
+  [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
 
-[GitHub Issues to Azure DevOps](https://github.com/marketplace/actions/github-issues-to-azure-devops).
+  [GitHub Issues to Azure DevOps](https://github.com/marketplace/actions/github-issues-to-azure-devops).
 
-[Sync Pull Requests to Azure Boards](https://github.com/marketplace/actions/sync-pull-requests-to-azure-boards)
+  [Sync Pull Requests to Azure Boards](https://github.com/marketplace/actions/sync-pull-requests-to-azure-boards)
 
 - Generate a PAT token for the ADO and persist it to the repo settings as secret.
 

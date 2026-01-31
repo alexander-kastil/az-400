@@ -8,237 +8,258 @@
 
 [Github Pull Request and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
 
-## Demos 
+## Demos
 
-1. Demonstrate basic Git commands
+**Configure Git Locally** — Set up your Git identity with user name and email, manage credentials, and configure `.gitignore` rules to prevent tracking unwanted files. These foundational settings ensure commits are attributed correctly and sensitive files remain out of version control.
+
+**Master Core Git Workflow** — Learn essential commands for initializing repositories, staging changes, committing with meaningful messages, and reviewing commit history. This covers the fundamental cycle of tracking changes: `init`, `status`, `add`, and `commit`.
+
+**Branch Management** — Create, list, and switch between branches to organize parallel work streams. Push branches to remote repositories and merge changes back, enabling collaborative development with proper isolation of features.
+
+**Handle Detached HEAD States** — Understand what happens when checking out specific commits and how to recover work by saving the state into a new branch. Useful for inspecting historical code and experimental fixes without affecting the main branch.
+
+**Stash and Switch Safely** — Use `git stash` to temporarily save uncommitted changes before switching branches, preventing loss of work. Apply stashes selectively to different branches, maintaining clean working directories.
+
+**Clean Up Untracked Files** — Remove local artifacts from branch switches using `git clean` with various flags (`-f`, `-fd`, `-fx`) to clean files and folders based on your needs without affecting committed code.
+
+**Sync with Remote** — Keep your local branch up-to-date with remote changes using `git fetch` and `git rebase`, ensuring your work is based on the latest upstream commits.
+
+**Tag Releases** — Create both lightweight and annotated tags to mark important versions. Annotated tags include metadata like author and message, making them ideal for releases. Push tags to remote and manage versions across the codebase.
 
 ## Configuration
 
-Set User and E-Mail
+**Set User and Email**
 
-```
+Configure your identity globally so commits are attributed correctly:
+
+```bash
 git config --global user.name "Your Name"
-git config --global user.email "your.email@yourdomain.com
+git config --global user.email "your.email@yourdomain.com"
 ```
 
-Unset Credentials
+**Unset Credentials**
 
-```
+Remove stored credentials when switching authentication methods:
+
+```bash
 git config --global --unset credential.helper
 ```
 
-## Configure ignored files
+**Configure Ignored Files**
 
-To Configure ignored files add a `.gitignore` file to the root of your project. A valid `.gitignore` file can be generated at https://www.gitignore.io/
+Create a `.gitignore` file in the root of your project to exclude files from tracking. Generate patterns for your tech stack at [gitignore.io](https://www.gitignore.io/).
 
 ## Basic Git Commands
 
-Init Git:
+**Initialize Repository**
 
-```
+```bash
 git init
 ```
 
-Get Status
+**Check Status**
 
-```
+View what's staged, unstaged, or untracked:
+
+```bash
 git status
 ```
 
+**Stage Changes**
+
 Stage all files:
 
-```
+```bash
 git add .
 ```
 
-Stage a specific file and all TypeScript files:
+Stage specific file and all TypeScript files:
 
-```
-git add file.txt | *.ts
+```bash
+git add file.txt *.ts
 ```
 
-Commit files:
+**Commit Changes**
 
-```
+Save staged changes with a descriptive message:
+
+```bash
 git commit -m "your checkin comment"
 ```
 
 ## Status & Updates
 
-Show Commit logs:
+**View Commit History**
 
-```
+```bash
 git log
 ```
 
-Check for remote updates:
+**Check for Remote Updates**
 
-```
+```bash
 git remote update
 ```
 
-Show Status (Adds/Delets/Changes):
+**Review Working Directory Status**
 
-```
+See all additions, deletions, and changes:
+
+```bash
 git status
 ```
 
 ## Branching
 
-List Branches:
+**List Local and Remote Branches**
 
-```
-git branch
-```
+View all branches in your repository:
 
-List remote branches:
-
-```
-git branch -r
+```bash
+git branch         # Local branches
+git branch -r      # Remote branches
 ```
 
-Create Branch:
+**Create a New Branch**
 
-```
+```bash
 git branch feature/myfeature
 ```
 
-Push new Branch to remote:
+**Push Branch to Remote**
 
-```
+```bash
 git push origin [name_of_your_new_branch]
 ```
 
-Switch to Branch:
+**Switch Between Branches**
 
-```
+```bash
 git checkout [name_of_your_branch]
 ```
 
-> Note: When switching branches it is always good advice to check the status with `git status` on a windows machine. When there are changes from other branches on the disk you can clean the branch using `git clean -f`
+> **Tip**: On Windows, check status with `git status` after switching. Clean untracked files from other branches using `git clean -f`.
 
-Merge Branch:
+**Merge Branches**
 
-```
+Switch to the target branch first, then merge:
+
+```bash
+git checkout [target_branch]
 git merge [branch_to_merge]
 ```
 
-> Note: You might have to switch to the branch that you might want to merge into befor executing merge
+## Checkout Specific Commits
 
-## Checkout specific Commits
+**Navigate to a Specific Commit**
 
-Get a spcific Commit:
+Use the commit SHA to inspect historical code:
 
-```
+```bash
 git checkout <sha1>
 ```
 
-sha1:
+Find the SHA in your commit history or using a tool like [Git Graph VS Code](https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph).
 
-![commits](_images/commits.png)
+> **Note**: This creates a detached HEAD state—you're viewing the repository at that point in time without being on a branch.
 
-![sha1](_images/sha1.png)
+**Discard Detached HEAD Changes**
 
-> Note: This will result in a detached Head.
+Return to your main branch and discard any changes:
 
-If you want to delete your changes associated with the detached HEAD:
-
-```
+```bash
 git checkout master
 ```
 
-If you want to keep the detached state save it into a new branch and continue from there:
+**Preserve Detached HEAD Work**
 
-```
+Save your detached work into a new branch to continue development:
+
+```bash
 git branch branch-name
+git checkout branch-name
 ```
-
-> Note: You will have to switch to the branch you saved to afterwards
 
 ## Changing Branches
 
-Saving work befor switching the branch - alternative to stage and commit:
+**Stash Work Temporarily**
 
-```
-git stash | git stash push
-```
+Save uncommitted changes without committing when you need to switch branches:
 
-List stashes:
-
-```
-git stash list
-```
-
-Use a stash:
-
-```
-git stash apply | git stash apply stash@{2}
+```bash
+git stash              # or git stash push
+git stash list         # View all stashes
+git stash apply        # Apply latest stash
+git stash apply stash@{2}  # Apply specific stash
 ```
 
-Switch to Branch:
+**Switch to Another Branch**
 
-```
+```bash
 git checkout [name_of_your_branch]
 ```
 
-Cleaning up after branch switches - ie to remove untracked files from other branches on local disk:
+**Clean Up Local Files**
 
--n flag is used to perform dry run.
--f flag is used to remove untracked files.
--fd flag is used to remove untracked files and folders.
--fx flag is used to remove untracked and ignored files.
+Remove untracked files left behind from branch switches. Use the flag that fits your needs:
 
+```bash
+git clean -f      # Remove untracked files
+git clean -fd     # Remove untracked files and directories
+git clean -fx     # Remove untracked and ignored files
+git clean -n      # Dry run (preview changes)
 ```
-git clean -fd | git clean -f folderpath 
+
+Clean specific folder:
+
+```bash
+git clean -f folderpath
 ```
 
-Update a Branch from master / main:
+**Sync Local Branch with Remote**
 
-```
+Update your branch with the latest upstream changes:
+
+```bash
 git fetch
 git rebase origin/master
 ```
 
 ## Tags
 
-Create Lightweight tag :
+**Create Lightweight Tag**
 
-```
-git tag -l v1.1.0
-```
+A simple pointer to a commit:
 
-Create Annotated tag :
-
-```
-git tag -a v2.0.1 -m "fixed Bug on replaced data layer. do not use v.2.0.0"
+```bash
+git tag v1.1.0
 ```
 
-List all tags:
+**Create Annotated Tag**
 
-```
-git tag
-```
+Stores full object with author, date, and message (recommended for releases):
 
-Show a specific tag:
-
-```
-git show v2.0.1
+```bash
+git tag -a v2.0.1 -m "fixed Bug on replaced data layer. do not use v2.0.0"
 ```
 
-Push tags to Remote:
+**List and Inspect Tags**
 
-```
-git push origin v2.0.1 | git push --tags
-```
-
-Delete tag:
-
-```
-git tag -d v2.0.1
+```bash
+git tag                # List all tags
+git show v2.0.1        # Show details of a specific tag
 ```
 
-Checkout tag:
+**Push Tags to Remote**
 
+```bash
+git push origin v2.0.1     # Push specific tag
+git push --tags            # Push all tags
 ```
-git checkout 2.0.1
+
+**Manage Tags**
+
+```bash
+git tag -d v2.0.1      # Delete local tag
+git checkout v2.0.1    # Checkout tag
 ```
