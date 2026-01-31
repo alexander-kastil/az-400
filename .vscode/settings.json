@@ -1,12 +1,6 @@
 {
-    "github.copilot.chat.codeGeneration.instructions": [
-        {
-            "file": ".github/copilot.instructions.md"
-        }
-    ],
     "github.copilot.chat.setupTests.enabled": true,
-    "github.copilot.chat.startDebugging.enabled": true,
-    "chat.commandCenter.enabled": true,
+    "chat.commandCenter.enabled": false,
     "git.ignoreLimitWarning": true,
     "cSpell.words": [
         "Agentic"
@@ -15,5 +9,16 @@
     "azureFunctions.projectLanguage": "C#",
     "azureFunctions.projectRuntime": "~4",
     "debug.internalConsoleOptions": "neverOpen",
-    "azureFunctions.preDeployTask": "publish (functions)"
+    "azureFunctions.preDeployTask": "publish (functions)",
+    "github.copilot.chat.tools.terminal.allowlist": [
+        "git status",
+        "git add",
+        "git restore",
+        "git commit",
+        "git push",
+        "az pipelines create",
+        "az pipelines runs show",
+        "cd",
+        "Start-Sleep"
+    ]
 }

@@ -13,7 +13,7 @@ pr: none
 
 variables:
   serviceConnection: wi-az400-dev
-  functionAppName: "payment-func-py-app"
+  functionAppName: "payment-func-py-dev"
   pythonVersion: "3.12"
   adoEnvironment: "03-02-payment-func-py-ci-cd"
   resourceGroup: "az400-dev"
