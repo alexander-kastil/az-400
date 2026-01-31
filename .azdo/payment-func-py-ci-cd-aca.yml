@@ -1,0 +1,58 @@
+name: 02-04-payment-func-py-ci-cd-aca
+
+trigger: none
+pr: none
+
+variables:
+  appPath: src/az-functions/payment-py/
+  imageName: payment-func-py
+  acrServiceConnection: scACR
+  acrName: az400acrdev
+  resourceGroup: az400-dev
+  serviceConnection: wi-az400-dev
+  acaEnvironment: az400acaenv
+  appName: payment-func-py
+  targetPort: "80"
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: Build
+    displayName: "Build Payment Service Python"
+    jobs:
+      - job: BuildImage
+        displayName: "Build Docker Image"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: $(acrServiceConnection)
+              repository: $(imageName)
+              dockerfile: "$(appPath)dockerfile"
+              buildContext: $(appPath)
+              tags: |
+                $(Build.BuildId)
+                latest
+
+  - stage: Deploy
+    displayName: "Deploy to Azure Container Apps"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - deployment: DeployACA
+        displayName: "Deploy to ACA"
+        environment: 02-04-payment-func-py-aca-env
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: templates/t-deploy-container-app.yaml
+                  parameters:
+                    acrName: $(acrName)
+                    image: "$(acrName).azurecr.io/$(imageName):$(Build.BuildId)"
+                    app: $(appName)
+                    resourceGroup: $(resourceGroup)
+                    serviceConnection: $(serviceConnection)
+                    acaEnvironment: $(acaEnvironment)
+                    targetPort: $(targetPort)
+                    override: true
