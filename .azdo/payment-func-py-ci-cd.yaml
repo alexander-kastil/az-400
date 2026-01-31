@@ -16,7 +16,7 @@ variables:
   functionAppName: "payment-func-py-app"
   pythonVersion: "3.12"
   adoEnvironment: "03-02-payment-func-py-ci-cd"
-  resourceGroup: "az400-dev-rg"
+  resourceGroup: "az400-dev"
   azureSubscription: "wi-az400-dev"
 
 stages:
