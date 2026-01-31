@@ -12,4 +12,6 @@
 
   > Note: Use this link to learn more about the [Token Replacement Task](https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens) and make sure to install it in your Azure DevOps organization.
 
-- [.azdo/utils-ts-func-ci-cd.yml](/.azdo/utils-ts-func-ci-cd.yml) pipeline that deploys the function app to Azure Functions using deployment job.
+- [payment-func-py-ci-cd.yaml](/.azdo/payment-func-py-ci-cd.yaml) demonstrates a Python Azure Function deployment pipeline using a build template for dependency management and a deployment job with `AzureCLI` for zip-based function app deployment. Useful for Python-based serverless workloads.
+
+- [utils-func-node-ci-cd.yml](/.azdo/utils-func-node-ci-cd.yml) demonstrates a Node.js Azure Function deployment pipeline using a build template for TypeScript compilation and the `AzureFunctionApp@2` task for streamlined deployment to Linux function apps.
