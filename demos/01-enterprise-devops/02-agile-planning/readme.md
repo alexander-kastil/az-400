@@ -1,32 +1,15 @@
 # Plan Agile with GitHub Projects and Azure Boards
 
-## Links & Resources
-
-[Azure Boards documentation](https://docs.microsoft.com/en-us/azure/devops/boards/?view=azure-devops)
-
-[Azure Boards Glossary](https://learn.microsoft.com/en-us/azure/devops/project/navigation/glossary?view=azure-devops)
-
-[Connect Azure Boards to GitHub](https://learn.microsoft.com/en-us/azure/devops/boards/github/connect-to-github?view=azure-devops)
-
-## Tools and Extensions
-
-[GitHub Azure Boards App](https://github.com/marketplace/azure-boards)
-
-[GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
-
-[GitHub Actions: Issues to Azure DevOps](https://github.com/marketplace/actions/github-issues-to-azure-devops).
-
-[Sync Pull Requests to Azure Boards](https://github.com/marketplace/actions/sync-pull-requests-to-azure-boards)
-
 ## Demos
 
 - Connect Azure Boards and GitHub Issues
 - Add Status Badge to README.md using the boards settings
 - Add a work item in ADO Boards and note the Task ID. Make some code changed in the cloned repo and commit the changes using the `AB#<TASK_ID>` notation in the commit message.
 - GitHub Actions: Use sync issues action
-- Create an Issue from within VS Code 
+- Create an Issue from within VS Code
 
 ---
+
 ### Connect Azure Boards and GitHub Issues
 
 There are two options to connect Azure Boards and GitHub Issues:
@@ -35,11 +18,11 @@ There are two options to connect Azure Boards and GitHub Issues:
 
 - In Azure DevOps, navigate to the project settings and add a new GitHub connection to your GitHub repo. Alternatively install the [Azure Boards](https://github.com/marketplace/azure-boards) App from the marketplace
 
-- In GitHub, navigate to the https://github.com/settings/profile, configure Azure Boards and check the installation using the configure button. 
+- In GitHub, navigate to the https://github.com/settings/profile, configure Azure Boards and check the installation using the configure button.
 
 - Select the organization and the project.
 
-#### Setup Connection using  PAT Tokens
+#### Setup Connection using PAT Tokens
 
 Create two PAT tokens. One for Azure DevOps and on for GitHub and store them as secrets:
 
@@ -52,9 +35,10 @@ Create two PAT tokens. One for Azure DevOps and on for GitHub and store them as 
   - read / write
 
 ---
+
 ### GitHub Actions: Use sync issues action
 
-- On the GitHub marketplace search for these extensions: 
+- On the GitHub marketplace search for these extensions:
 
 [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
 
@@ -102,10 +86,29 @@ Create two PAT tokens. One for Azure DevOps and on for GitHub and store them as 
   ```
 
 ---
+
 ### Create an Issue from within VS Code
 
 - Install the [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github) Extension in VS Code and add an issue using F1 and `Create Issue From Selection`.
 
   ![create-issue](./_images/create-issue.png)
 
-- Wait until the issue is synced to ADO Boards.  
+- Wait until the issue is synced to ADO Boards.
+
+## Links & Resources
+
+[Azure Boards documentation](https://docs.microsoft.com/en-us/azure/devops/boards/?view=azure-devops)
+
+[Azure Boards Glossary](https://learn.microsoft.com/en-us/azure/devops/project/navigation/glossary?view=azure-devops)
+
+[Connect Azure Boards to GitHub](https://learn.microsoft.com/en-us/azure/devops/boards/github/connect-to-github?view=azure-devops)
+
+## Tools and Extensions
+
+[GitHub Azure Boards App](https://github.com/marketplace/azure-boards)
+
+[GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
+
+[GitHub Actions: Issues to Azure DevOps](https://github.com/marketplace/actions/github-issues-to-azure-devops).
+
+[Sync Pull Requests to Azure Boards](https://github.com/marketplace/actions/sync-pull-requests-to-azure-boards)

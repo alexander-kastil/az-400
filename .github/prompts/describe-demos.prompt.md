@@ -30,4 +30,5 @@ Try to find the Scripts, Pipelines, or other items being demonstrated in the sou
 - When there are multiple items, separate them with a paragraph.
 - When references to files or scripts are present, mention them by name and link them if possible.
 - If there are links to images, check if they link is valid, try to fix broken links and integrate them into the description. Each image should have a descriptive caption.
+- If there are code snippets, check if they are relevant to the description and include them if they add value. Render them in markdown code blocks.
 - Do not touch "## Links & Resources" sections unless specified.
