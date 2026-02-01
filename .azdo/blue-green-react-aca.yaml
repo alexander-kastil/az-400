@@ -1,0 +1,102 @@
+name: 04-01-blue-green-react-aca
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  acrName: "az400acrdev"
+  acaEnvironment: "az400acaenv"
+  resourceGroup: "az400-dev"
+  serviceConnection: "wi-az400-dev"
+  adoEnvironment: "04-01-blue-green-react-aca-env"
+  appName: "react-blue-green"
+  appRoot: "src/react/react-devops"
+  targetPort: "3000"
+  nodeVersion: "22.x"
+
+stages:
+  - stage: DeployGreen
+    displayName: "Deploy GREEN (lightgreen)"
+    jobs:
+      - job: BuildAndDeployGreen
+        displayName: "Build & Deploy GREEN"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: scACR
+              repository: $(appName)
+              dockerfile: "$(appRoot)/dockerfile"
+              buildContext: $(appRoot)
+              tags: |
+                green-$(Build.BuildId)
+                latest
+
+          - template: templates/t-deploy-container-app.yaml
+            parameters:
+              acrName: $(acrName)
+              image: "$(acrName).azurecr.io/$(appName):green-$(Build.BuildId)"
+              app: $(appName)
+              resourceGroup: $(resourceGroup)
+              serviceConnection: $(serviceConnection)
+              acaEnvironment: $(acaEnvironment)
+              targetPort: $(targetPort)
+              override: true
+
+  - stage: DeployBlue
+    displayName: "Deploy BLUE (lightblue)"
+    dependsOn: DeployGreen
+    condition: succeeded()
+    jobs:
+      - deployment: DeployBlue
+        displayName: "Deploy BLUE"
+        environment: $(adoEnvironment)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: PowerShell@2
+                  displayName: "Update CSS: lightgreen → lightblue"
+                  inputs:
+                    targetType: inline
+                    script: |
+                      $file = "$(appRoot)/src/App.css"
+                      $content = (Get-Content $file -Raw) -replace "lightgreen", "lightblue"
+                      Set-Content $file $content
+                      Write-Host "✓ CSS Updated: lightgreen → lightblue"
+
+                - template: templates/t-build-docker-image.yaml
+                  parameters:
+                    acrServiceConnection: scACR
+                    repository: $(appName)
+                    dockerfile: "$(appRoot)/dockerfile"
+                    buildContext: $(appRoot)
+                    tags: |
+                      blue-$(Build.BuildId)
+                      latest
+
+                - template: templates/t-deploy-container-app.yaml
+                  parameters:
+                    acrName: $(acrName)
+                    image: "$(acrName).azurecr.io/$(appName):blue-$(Build.BuildId)"
+                    app: $(appName)
+                    resourceGroup: $(resourceGroup)
+                    serviceConnection: $(serviceConnection)
+                    acaEnvironment: $(acaEnvironment)
+                    targetPort: $(targetPort)
+                    override: true
+
+                - task: AzureCLI@2
+                  displayName: "Switch Traffic to BLUE"
+                  inputs:
+                    azureSubscription: $(serviceConnection)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      BLUE=$(az containerapp revision list -n $(appName) -g $(resourceGroup) \
+                        --query "[?contains(name, 'blue')].name" -o tsv | head -1)
+                      az containerapp ingress traffic set -n $(appName) -g $(resourceGroup) \
+                        --revision-weights "$BLUE=100"
+                      echo "✓ Traffic switched to BLUE (lightblue)"

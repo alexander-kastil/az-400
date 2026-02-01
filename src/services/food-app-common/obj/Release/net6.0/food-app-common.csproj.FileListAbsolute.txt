@@ -1,0 +1,13 @@
+E:\git-classes\az-native\app\services\food-app-common\bin\Release\net6.0\food-app-common.deps.json
+E:\git-classes\az-native\app\services\food-app-common\bin\Release\net6.0\food-app-common.dll
+E:\git-classes\az-native\app\services\food-app-common\bin\Release\net6.0\food-app-common.pdb
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\food-app-common.csproj.AssemblyReference.cache
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\food-app-common.GeneratedMSBuildEditorConfig.editorconfig
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\food-app-common.AssemblyInfoInputs.cache
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\food-app-common.AssemblyInfo.cs
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\food-app-common.csproj.CoreCompileInputs.cache
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\food-app-common.sourcelink.json
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\food-app-common.dll
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\refint\food-app-common.dll
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\food-app-common.pdb
+E:\git-classes\az-native\app\services\food-app-common\obj\Release\net6.0\ref\food-app-common.dll

@@ -1,0 +1,18 @@
+env=dev
+grp=az400-$env
+loc=westeurope
+acct=storage$env$env
+plan=az400-$env-$env
+web=policy-$env-$env
+
+az group create -n $grp -l $loc
+
+# Stop here and point out the location brazilsouth which is not allowed
+
+az storage account create -l brazilsouth  -n $acct -g $grp --sku Standard_LRS
+
+az storage account create -l $loc  -n $acct -g $grp --sku Standard_LRS
+
+az appservice plan create -n $plan -g $grp --sku FREE
+
+az webapp create -n $web -g $grp --plan $plan --runtime "DOTNET|8.0"

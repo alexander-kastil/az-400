@@ -1,0 +1,39 @@
+env=dev
+grp=az400-$env
+loc=westeurope
+vault=az400-vault-$env
+miName=wi-az400-dev
+
+az group create -n $grp -l $loc
+
+az keyvault create -l $loc -n $vault -g $grp --sku standard
+
+kvId=$(az keyvault show --name $vault --resource-group $grp --query id -o tsv)
+
+# Assign Key Vault Secrets Officer role to yourself (manage secrets)
+userId=$(az ad signed-in-user show --query id -o tsv)
+az role assignment create \
+  --role "Key Vault Secrets Officer" \
+  --assignee-object-id $userId \
+  --scope $kvId
+
+# Assign Key Vault Secrets User role to the managed identity (read secrets)
+miObjectId=$(az identity show -g $grp -n $miName --query principalId -o tsv)
+az role assignment create \
+  --role "Key Vault Secrets User" \
+  --assignee-object-id $miObjectId \
+  --scope $kvId
+
+az keyvault secret set --vault-name $vault --name "m365user" --value "alexander.kastil@integrations.at"
+
+az keyvault secret set --vault-name $vault --name "m365pwd" --value "PW4vm@dmin123!$"
+
+az keyvault secret set --vault-name $vault --name "tenantId" --value "d92b247e-90e0-4469-a129-6a32866c0d0a"
+
+az keyvault secret set --vault-name $vault --name "appRegId" --value "5e8ecccb-da70-40af-808f-4860a1571f4d"
+
+# Delete KV and purge it to permanently delete it
+# Do not execute
+
+az keyvault delete -n $vault
+az keyvault purge -n $vault

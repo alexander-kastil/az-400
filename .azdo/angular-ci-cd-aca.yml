@@ -1,0 +1,54 @@
+name: 03-02-angular-ci-cd-aca
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/angular/angular-devops/*
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/angular-devops"
+  repository: "angular-devops"
+  app: "angular-devops-app"
+  grp: "az400-dev"
+  serviceConnection: wi-az400-dev
+  dockerRegistry: scACR
+  acaenv: "az400acaenv"
+
+jobs:
+  - job: BuildAngularImage
+    displayName: Build Angular Container Image
+    steps:
+      - template: templates/t-build-docker-image.yaml
+        parameters:
+          acrServiceConnection: $(dockerRegistry)
+          repository: $(repository)
+          dockerfile: src/angular/angular-devops/dockerfile
+          buildContext: src/angular/angular-devops
+          tags: |
+            $(Build.BuildId)
+            latest
+
+  - job: DeployToACA
+    displayName: Deploy to ACA
+    dependsOn: BuildAngularImage
+    steps:
+      - template: templates/t-deploy-container-app.yaml
+        parameters:
+          acrName: $(acrName)
+          image: $(image)
+          app: $(app)
+          resourceGroup: $(grp)
+          serviceConnection: $(serviceConnection)
+          acaEnvironment: $(acaenv)
+          targetPort: 80
+          override: false

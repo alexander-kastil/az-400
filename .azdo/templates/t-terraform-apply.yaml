@@ -1,0 +1,54 @@
+parameters:
+  - name: serviceConnection
+    type: string
+  - name: workingDirectory
+    type: string
+  - name: subscriptionId
+    type: string
+  - name: planFile
+    type: string
+    default: tfplan
+  - name: outputName
+    type: string
+    default: ""
+
+steps:
+  # AzureCLI@2 is used to inject the service connection/OIDC token and ARM_* vars for Terraform.
+  # A plain bash task would require manual `az login --federated-token` and extra auth wiring.
+  - task: AzureCLI@2
+    displayName: Terraform Apply
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: bash
+      scriptLocation: inlineScript
+      workingDirectory: ${{ parameters.workingDirectory }}
+      addSpnToEnvironment: true
+      inlineScript: |
+        set -e
+
+        if ! command -v terraform >/dev/null 2>&1; then
+          echo "Terraform not found. Installing..."
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install terraform -y
+        else
+          echo "Terraform already installed:"
+          terraform version | head -n 1
+        fi
+
+        export ARM_CLIENT_ID=$servicePrincipalId
+        export ARM_TENANT_ID=$tenantId
+        export ARM_SUBSCRIPTION_ID=${{ parameters.subscriptionId }}
+        export ARM_USE_OIDC=true
+        export ARM_OIDC_TOKEN=$idToken
+
+        terraform init -input=false
+
+        # Fix execute permissions on provider binaries after artifact download
+        find .terraform/providers -type f -name 'terraform-provider-*' -exec chmod +x {} \; 2>/dev/null || true
+
+        terraform apply -auto-approve ${{ parameters.planFile }}
+
+        if [ -n "${{ parameters.outputName }}" ]; then
+          terraform output -raw ${{ parameters.outputName }}
+        fi

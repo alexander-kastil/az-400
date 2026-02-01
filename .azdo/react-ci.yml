@@ -1,0 +1,53 @@
+name: "02-02-react-ci"
+
+trigger: none
+pr: none
+
+variables:
+  nodeVer: "22.x"
+  dist: dist
+  pkg: reactapp
+  appRoot: src/react/react-devops
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: Build
+    displayName: "Build and Test"
+    jobs:
+      - job: BuildJob
+        displayName: "Build React App"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: "Install Node.js $(nodeVer)"
+
+          - script: npm ci
+            displayName: "Install Dependencies"
+            workingDirectory: $(appRoot)
+
+          - script: npm run lint
+            displayName: "Run Linter"
+            workingDirectory: $(appRoot)
+            continueOnError: true
+
+          - script: npm run build
+            displayName: "Build Application"
+            workingDirectory: $(appRoot)
+
+          - task: CopyFiles@2
+            displayName: "Copy Build Artifacts"
+            inputs:
+              SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(dist)"
+              Contents: "**"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/$(pkg)"
+              CleanTargetFolder: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish Pipeline Artifact"
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/$(pkg)"
+              artifact: $(pkg)
+              publishLocation: "pipeline"

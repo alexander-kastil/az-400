@@ -1,0 +1,24 @@
+env=dev
+grp=az400-$env
+loc=westeurope
+acr=az400acr$env
+acaenv=az400acaenv
+app=prime-service-$env
+img=$acr.azurecr.io/prime-service
+loadTest=az400-load-test
+
+az group create -n $grp --l $loc
+
+az extension add -n load --upgrade
+az load create -g $grp -n $loadTest -l $loc
+
+pwd=$(az acr credential show -n $acr -g $grp --query passwords[0].value -o tsv)
+loginSrv=$(az acr list -g $grp --query "[?name=='$acr'].loginServer" -o tsv) 
+
+az containerapp env create -n $containerEnv -g $grp -l $loc
+
+cd src/services/prime-service
+az acr build --image prime-service --registry $acr --file dockerfile .
+cd ../../..
+
+az containerapp create -n $app -g $grp --image $img --environment $acaenv --image $img --target-port 8080 --ingress external --registry-username $acr --registry-password $pwd --registry-server $loginSrv 

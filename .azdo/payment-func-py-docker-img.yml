@@ -1,0 +1,33 @@
+name: "02-04-payment-func-py-docker-img"
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/az-functions/payment-py/*
+
+trigger: none
+pr: none
+
+variables:
+  appPath: src/az-functions/payment-py/
+  imageName: payment-func-py
+  acr: scACR
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: "BuildImg"
+    displayName: "Build Payment Service Python"
+    jobs:
+      - job: "Build"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: $(acr)
+              repository: $(imageName)
+              dockerfile: "$(appPath)dockerfile"
+              buildContext: $(appPath)

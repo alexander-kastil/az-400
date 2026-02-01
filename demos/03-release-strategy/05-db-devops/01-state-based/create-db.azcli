@@ -1,0 +1,32 @@
+env=prod
+grp=az204-m11-dbdevops-$env
+loc=westeurope
+server=sql-$RANDOM
+db=demodb$env
+acct=dbdevops$env
+container=dbbackup
+dacpac=DemoDB.bacpac
+user=sqladmin
+pwd=Pa$$w0rd1234!
+
+az group create -n $grp -l $loc
+
+az sql server create -l $loc -g $grp -n $server -u $user -p $pwd
+
+az sql db create -g $grp -s $server -n $db --service-objective Basic
+
+az sql server firewall-rule create -g $grp -s $server -n azure-rule --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+
+ip=$(curl ipinfo.io/ip)
+
+az sql server firewall-rule create -g $grp -s $server -n current-client-ip --start-ip-address $ip --end-ip-address $ip
+
+az storage account create -l $loc -n $acct -g $grp --sku Standard_LRS
+
+key=$(az storage account keys list -n $acct --query "[0].value" -o tsv)
+
+az storage container create -n $container --account-key $key --account-name $acct
+
+az storage blob upload --container-name $container --file ./$dacpac --name $dacpac --account-key $key --account-name $acct
+
+az sql db import -s $server -n $db -g $grp --admin-user $user --admin-password $pwd --storage-key $key --storage-key-type StorageAccessKey --storage-uri "https://$acct.blob.core.windows.net/$container/$dacpac"

@@ -1,0 +1,30 @@
+env=k8s
+grp=az400-m03-$env
+loc=westeurope
+aks=foodcluster-$RANDOM
+app=catalog-api
+
+# Install kubectl command line client locally:
+# az aks install-cli
+
+az group create -n $grp -l $loc
+az aks create -g $grp -n $aks --node-count 1 --generate-ssh-keys 
+az aks get-credentials -g $grp -n $aks
+
+# Get a list of cluster nodes:
+kubectl get nodes
+
+# Create a namespace
+kubectl create namespace $env
+kubectl apply -f foodapi.yaml --namespace $env
+kubectl apply -f foodui.yaml --namespace $env
+
+# Get some metadata
+kubectl get deployment $app -n $env
+kubectl get pods -n $env
+kubectl get pods -l app=foodapi -n $env
+# Get the service IP and use it on the assigned port
+kubectl get service $app -n $env
+
+# browse deployment - port taken from yaml
+# ie: http://20.93.247.200:8081

@@ -1,0 +1,39 @@
+# Build Image
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /build
+COPY . .
+
+# Install Credential Provider and set env variables to enable Nuget restore with auth
+ARG PAT
+ARG FEED_URL=https://pkgs.dev.azure.com/integrationsonline/az-400/_packaging/food-packages/nuget/v3/index.json
+RUN wget -qO- https://raw.githubusercontent.com/Microsoft/artifacts-credprovider/master/helpers/installcredprovider.sh | bash
+ENV NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED=true
+ENV VSS_NUGET_EXTERNAL_FEED_ENDPOINTS="{\"endpointCredentials\": [{\"endpoint\":\"${FEED_URL}\", \"username\":\"docker\", \"password\":\"${PAT}\"}]}"
+ENV DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=0
+
+RUN dotnet restore "order-service.csproj"
+RUN dotnet publish -c Release -o /app
+
+# Runtime Image
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "order-service.dll"]
+
+# Build Image
+# docker build --rm -f dockerfile -t order-service . --build-arg PAT=<YOUR_PAT_TOKEN>
+
+# Run Image without env vars
+# docker run -it --rm -p 5051:8080 order-service
+
+# Run Image with env vars
+# docker run -it --rm -p 5051:8080 order-service -e "App:UserSQLite=true" -e "App:ConnectionStrings:SQLServerConnection=<SQLSERVER_CONNECTION_STRING>"
+
+# Browse using: 
+# http://localhost:5051
+# http://localhost:5051/food
+# http://localhost:5051/config
+
+# Publish Image to dockerhub
+# docker tag order-service alexander-kastil/order-service
+# docker push alexander-kastil/order-service

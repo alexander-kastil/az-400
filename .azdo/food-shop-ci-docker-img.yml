@@ -1,0 +1,30 @@
+name: 02-04-food-shop-ci-docker-img
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+
+trigger: none
+pr: none
+
+variables:
+  appPath: src/angular/food-shop/
+  imageName: food-shop
+  acr: scACR
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: "BuildImg"
+    displayName: "Build Shop UI Image"
+    jobs:
+      - job: "Build"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: $(acr)
+              repository: $(imageName)
+              dockerfile: "$(appPath)dockerfile"
+              buildContext: $(appPath)

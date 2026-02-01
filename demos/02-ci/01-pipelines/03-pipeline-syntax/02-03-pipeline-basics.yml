@@ -1,0 +1,79 @@
+name: "02-01-03-pipeline-basics"
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - SomePath
+
+trigger: none
+pr: none
+
+variables:
+  # execJob used in condition is defined as pipeline var
+  # inline syntax
+  provision: true
+  # two line syntax
+  name: somevar
+  value: somevarvalue
+  # control whether stageBJobB runs
+  execJob: "false"
+
+  # enable debugging
+  System.Debug: true
+
+pool:
+  vmImage: "ubuntu-latest"
+
+# use a self hosted pool
+# pool:
+#     name: linux-self-hosted
+
+stages:
+  - stage: stageA
+    jobs:
+      - job: stageAJobA
+        # pool:
+        # vmImage: "ubuntu-latest"
+
+        steps:
+          - task: Bash@3
+            displayName: stageA-jobA
+            inputs:
+              targetType: "inline"
+              script: echo 'Executing JobA'
+
+      - job: stageAJobB
+        dependsOn: []
+        # pool:
+        #   vmImage: "ubuntu-latest"
+
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: echo 'Executing JobB'
+
+  - stage: stageB
+    # pool:
+    #   vmImage: "ubuntu-latest"
+
+    jobs:
+      - job: stageBJobA
+
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: echo 'Executing JobA'
+
+      - job: stageBJobB
+        condition: and(succeeded(), eq(variables['execJob'], 'true'))
+
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: echo 'Executing JobB'

@@ -1,0 +1,52 @@
+name: "02-02-spring-ci"
+
+trigger: none
+pr: none
+
+variables:
+  javaVer: "17"
+  appRoot: "src/jobs/blob-spring"
+  buildDir: "target"
+  artifactName: "spring-app"
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildJob
+        steps:
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: "$(javaVer)"
+              jdkArchitectureOption: "x64"
+              jdkSourceOption: "PreInstalled"
+
+          - task: Cache@2
+            inputs:
+              key: 'maven | "$(Agent.OS)" | $(appRoot)/pom.xml'
+              path: $(HOME)/.m2
+
+          - bash: |
+              cd $(appRoot)
+              mvn clean package -DskipTests=false
+            displayName: "Build with Maven"
+
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: "JUnit"
+              testResultsFiles: "$(appRoot)/**/surefire-reports/TEST-*.xml"
+              publishRunAttachments: true
+
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: "$(System.DefaultWorkingDirectory)/$(appRoot)/$(buildDir)"
+              Contents: "*.jar"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/$(artifactName)"
+              artifact: "$(artifactName)"

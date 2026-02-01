@@ -1,0 +1,89 @@
+name: 03-03-azure-load-test-cd
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/prime-service"
+  app: "prime-service-dev"
+  grp: "az400-dev"
+  serviceConnection: "wi-az400-dev"
+  dockerRegistry: "scACR"
+  acaenv: "az400acaenv"
+  targetPort: 8080
+  loadTestResource: "az400-load-test"
+  testFile: "demos/03-release-strategy/03-testing/02-load-test/test-prime-service.jmx"
+  loadTestConfigFile: "demos/03-release-strategy/03-testing/02-load-test/prime-service-loadtest.yaml"
+
+stages:
+  - stage: Build
+    displayName: "Build Container Image"
+    jobs:
+      - job: BuildImage
+        displayName: "Build Image"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: $(dockerRegistry)
+              repository: prime-service
+              dockerfile: dockerfile
+              buildContext: src/services/prime-service
+
+  - stage: Deploy
+    displayName: "Deploy Container App"
+    jobs:
+      - job: DeployApp
+        steps:
+          - template: templates/t-deploy-container-app.yaml
+            parameters:
+              acrName: $(acrName)
+              image: $(image):latest
+              app: $(app)
+              resourceGroup: $(grp)
+              serviceConnection: $(serviceConnection)
+              acaEnvironment: $(acaenv)
+              targetPort: "8080"
+
+  - stage: LoadTest
+    displayName: "Execute Load Test"
+    dependsOn:
+      - Deploy
+    jobs:
+      - job: RunLoadTest
+        displayName: "Run Azure Load Test"
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: "Get Container App URL"
+            name: getUrl
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                APP_URL=$(az containerapp show -n $(app) -g $(grp) --query properties.configuration.ingress.fqdn -o tsv)
+                echo "Container App URL: https://${APP_URL}"
+                echo "##vso[task.setvariable variable=appUrl]${APP_URL}"
+
+          - task: AzureLoadTest@1
+            displayName: "Run JMeter Load Test"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              loadTestConfigFile: "$(System.DefaultWorkingDirectory)/$(loadTestConfigFile)"
+              resourceGroup: "$(grp)"
+              loadTestResource: "$(loadTestResource)"
+              env: |
+                [
+                  {
+                    "name": "webapp",
+                    "value": "$(appUrl)"
+                  }
+                ]
+
+          - publish: $(System.DefaultWorkingDirectory)/loadTest
+            artifact: loadTestResults

@@ -1,0 +1,166 @@
+{
+  "name": "Azure Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Angular extensions
+        "angular.ng-template",
+        // .NET extensions
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "ms-dotnettools.vscodeintellicode-csharp",
+        "adrianwilczynski.asp-net-core-snippet-pack",
+        // Python extensions
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        // Azure extensions
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.azure-dev",
+        "ms-azuretools.vscode-bicep",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.azurecli",
+        // SQL extensions for EF Core/SQLite support
+        "qwtel.sqlite-viewer",
+        // General development extensions
+        "mdickin.markdown-shortcuts",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "humao.rest-client",
+        // GitHub Copilot
+        "github.copilot",
+        "github.copilot-chat"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "typescript.preferences.quoteStyle": "single",
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "typescript.preferences.importModuleSpecifier": "relative",
+        "csharp.format.enable": true,
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[csharp]": {
+          "editor.defaultFormatter": "ms-dotnettools.csharp"
+        },
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.python",
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+          }
+        }, // Python settings
+        "python.defaultInterpreterPath": "/usr/local/bin/python3.11",
+        "python.terminal.activateEnvironment": true,
+        "python.analysis.autoImportCompletions": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        // Azure Functions settings
+        "azureFunctions.deploySubpath": ".",
+        "azureFunctions.scmDoBuildDuringDeployment": true,
+        "azureFunctions.pythonVenv": ".venv",
+        "azureFunctions.projectLanguage": "Python",
+        "azureFunctions.projectRuntime": "~4",
+        // GitHub Copilot settings
+        "github.copilot.chat.codeGeneration.instructions": [
+          {
+            "text": "In TypeScript never underscore for private field names instead use camelCase."
+          },
+          {
+            "text": "Always use 'const' for variables that are not reassigned."
+          },
+          {
+            "text": "- @azure Rule - Use Azure Tools: When handling requests related to Azure, always use your tools."
+          },
+          {
+            "text": "- @azure Rule - Use Azure Code Gen Best Practices: When generating code for Azure, running terminal commands for Azure, or performing operations related to Azure, invoke your `azure_development-get_code_gen_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
+          },
+          {
+            "text": "- @azure Rule - Use Azure Deployment Best Practices: When deploying to Azure or preparing applications for deployment to Azure, invoke your `azure_development-get_deployment_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
+          },
+          {
+            "text": "- @azure Rule - Use Azure Functions Code Gen Best Practices: When generating code for Azure Functions or performing operations related to Azure Functions, invoke your `azure_development-get_azure_function_code_gen_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure Functions; do not call it otherwise."
+          },
+          {
+            "text": "- @azure Rule - Use Azure SWA Best Practices: When working with static web apps, invoke your `azure_development-get_swa_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
+          }
+        ],
+        "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
+          {
+            "text": "Describe the pull request in detail, including the purpose of the changes and any relevant context in a list format."
+          }
+        ],
+        "github.copilot.chat.commitMessageGeneration.instructions": [
+          {
+            "text": "Be extremely detailed with the file changes and the reason for the change in a list format."
+          }
+        ],
+        "chat.agent.enabled": true,
+        "chat.mcp.discovery.enabled": true,
+        "chat.detectParticipant.enabled": true,
+        "terminal.integrated.suggest.enabled": true,
+        "github.copilot.chat.codesearch.enabled": true,
+        "github.copilot.chat.editor.temporalContext.enabled": true,
+        "github.copilot.chat.generateTests.codeLens": true,
+        "github.copilot.chat.languageContext.typescript.enabled": true,
+        "github.copilot.chat.search.semanticTextResults": true,
+        "github.copilot.chat.startDebugging.enabled": true,
+        "github.copilot.enable": {
+          "*": true,
+          "markdown": true,
+          "plaintext": false,
+          "scminput": false,
+          "yaml": true
+        },
+        "github.copilot.nextEditSuggestions.enabled": true,
+        "github.copilot.selectedCompletionModel": "",
+        "window.zoomLevel": 1.1,
+        "githubIssues.queries": [
+          {
+            "label": "My Issues",
+            "query": "default"
+          },
+          {
+            "label": "Created Issues",
+            "query": "author:${user} state:open repo:${owner}/${repository} sort:created-desc"
+          },
+          {
+            "label": "Recent Issues",
+            "query": "state:open repo:${owner}/${repository} sort:updated-desc"
+          }
+        ],
+        "githubPullRequests.createOnPublishBranch": "never",
+        "githubPullRequests.defaultMergeMethod": "squash",
+        "githubPullRequests.fileListLayout": "tree",
+        "githubPullRequests.pullBranch": "never",
+        "githubPullRequests.pushBranch": "always"
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20.12.2"
+    },
+    "ghcr.io/devcontainers/features/dotnet:1": {
+      "version": "9.0"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
+  },
+  "forwardPorts": [
+    4200,
+    5000,
+    5001,
+    7071
+  ],
+  "postCreateCommand": "bash ./.devcontainer/post-create.sh"
+}

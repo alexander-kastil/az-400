@@ -1,0 +1,61 @@
+appName=SPFxADOPipeline
+graphAppId=00000003-0000-0000-c000-000000000000
+
+az ad app create \
+  --display-name $appName \
+  --sign-in-audience AzureADMyOrg
+
+appId=$(az ad app list --display-name $appName --query "[0].appId" -o tsv)
+
+# create the service principal only if it doesn't exist
+az ad sp show --id $appId > /dev/null 2>&1 || az ad sp create --id $appId
+
+objectId=$(az ad app show --id $appId --query id -o tsv)
+
+az rest --method PATCH \
+  --uri https://graph.microsoft.com/v1.0/applications/$objectId \
+  --headers "Content-Type=application/json" \
+  --body '{ "isFallbackPublicClient": true }'
+
+userReadId=$(az ad sp show --id $graphAppId \
+  --query "oauth2PermissionScopes[?value=='User.Read'].id | [0]" -o tsv)
+openidId=$(az ad sp show --id $graphAppId \
+  --query "oauth2PermissionScopes[?value=='openid'].id | [0]" -o tsv)
+profileId=$(az ad sp show --id $graphAppId \
+  --query "oauth2PermissionScopes[?value=='profile'].id | [0]" -o tsv)
+offlineAccessId=$(az ad sp show --id $graphAppId \
+  --query "oauth2PermissionScopes[?value=='offline_access'].id | [0]" -o tsv)
+
+az ad app permission add \
+  --id $appId \
+  --api $graphAppId \
+  --api-permissions \
+    $openidId=Scope \
+    $profileId=Scope \
+    $offlineAccessId=Scope \
+    $userReadId=Scope
+
+# SharePoint Online app-only permissions (required for app catalog upload)
+spoAppId=00000003-0000-0ff1-ce00-000000000000
+spoAllSitesFullControlScopeId=$(az ad sp show --id $spoAppId \
+  --query "oauth2PermissionScopes[?value=='AllSites.FullControl'].id | [0]" -o tsv)
+spoFullControlRoleId=$(az ad sp show --id $spoAppId \
+  --query "appRoles[?value=='Sites.FullControl.All'].id | [0]" -o tsv)
+
+az ad app permission add \
+  --id $appId \
+  --api $spoAppId \
+  --api-permissions \
+    $spoAllSitesFullControlScopeId=Scope \
+    $spoFullControlRoleId=Role
+
+# grant delegated permissions so password-based auth is effective
+az ad app permission grant --id $appId --api $graphAppId --scope "openid profile offline_access User.Read"
+az ad app permission grant --id $appId --api $spoAppId --scope "AllSites.FullControl"
+
+az ad app permission admin-consent --id $appId
+
+tenantId=$(az account show --query tenantId -o tsv)
+
+echo "AppID to use with CLI for Microsoft 365:"
+echo "m365 login --authType password -u '<username>' -p '<password>' --tenant '$tenantId' --appId '$appId'"

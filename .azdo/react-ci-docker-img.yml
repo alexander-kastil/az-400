@@ -1,0 +1,25 @@
+name: 02-04-react-ci-docker-img
+
+trigger: none
+pr: none
+
+variables:
+  imageName: react-devops
+  acr: scACR
+  appRoot: src/react/react-devops
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: "BuildImg"
+    displayName: "Build React Image"
+    jobs:
+      - job: "Build"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: $(acr)
+              repository: $(imageName)
+              dockerfile: $(appRoot)/dockerfile
+              buildContext: $(appRoot)

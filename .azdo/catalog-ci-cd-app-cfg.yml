@@ -1,0 +1,100 @@
+name: 04-03-catalog-ci-cd-app-cfg
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - apps/catalog-api/*
+
+trigger: none
+pr: none
+
+variables:
+  dotnetSdkVersion: "10.0.x"
+  buildConfiguration: Release
+  releaseBranchName: master
+  serviceConnection: wi-az400-dev
+  appPath: src/services/catalog-service/api/
+  appService: food-catalog-api-yaml
+  appConfigEP: "https://az400config-dev.azconfig.io"
+  deploy: true
+  adoEnvironment: "04-03-catalog-api-cicd-appcfg-env"
+
+# assign permissions to service connection principal on app config service
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        displayName: "Transform Config and Build"
+        steps:
+          - task: CmdLine@2
+            displayName: Printing Env before
+            inputs:
+              script: |
+                printenv
+          - task: AzureAppConfiguration@8
+            displayName: Read App Config
+            inputs:
+              azureSubscription: $(serviceConnection)
+              AppConfigurationEndpoint: "$(appConfigEP)"
+              KeyFilter: "*"
+              Label: "dev"
+          - task: CmdLine@2
+            displayName: Printing Env after
+            inputs:
+              script: |
+                printenv
+
+          - task: AzureCLI@2
+            displayName: Export App Config to appsettings.json
+            inputs:
+              azureSubscription: $(serviceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az appconfig kv export \
+                  --endpoint "$(appConfigEP)" \
+                  --destination file \
+                  --path "$(System.DefaultWorkingDirectory)/$(appPath)/appsettings.json" \
+                  --format json \
+                  --label "dev" \
+                  --auth-mode login
+                echo "##[section]App Config exported successfully"
+                cat "$(System.DefaultWorkingDirectory)/$(appPath)/appsettings.json"
+
+          - template: templates/t-net-build.yaml
+            parameters:
+              cfg: $(buildConfiguration)
+              folder: $(appPath)
+
+  - stage: Deploy
+    displayName: Deploy
+    dependsOn: Build
+    jobs:
+      - deployment: DeployAppService
+        displayName: Deploy to Appservice
+        environment: $(adoEnvironment)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    buildType: "current"
+                    artifactName: "drop"
+                    targetPath: "$(Pipeline.Workspace)/drop"
+
+                - task: AzureRmWebAppDeployment@5
+                  displayName: "Azure App Service Deploy: $(appService)"
+                  inputs:
+                    ConnectionType: "AzureRM"
+                    azureSubscription: $(serviceConnection)
+                    appType: "webApp"
+                    WebAppName: $(appService)
+                    package: "$(Pipeline.Workspace)/drop/**/*.zip"

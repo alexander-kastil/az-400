@@ -1,0 +1,13 @@
+env=dev
+grp=az400-$env
+loc=westeurope
+app=angular-devops-$env
+
+az group create -n $grp -l $loc
+
+# we create an empty Static Web App because whe want to execute the build manually in the pipeline
+az staticwebapp create -n $app -g $grp
+
+deployToken=$(az staticwebapp secrets list -n $app -g $grp --query properties.apiKey -o tsv)
+
+echo Copy the deplyoment token: $deployToken

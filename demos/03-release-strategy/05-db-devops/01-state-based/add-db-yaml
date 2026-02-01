@@ -1,0 +1,38 @@
+trigger:
+- master
+
+pool:
+vmImage: "windows-latest"
+
+variables:
+configuration: release
+platform: "any cpu"
+solutionPath: # Add the path to your Visual Studio solution file here
+
+steps:
+
+- task: VSBuild@1
+  displayName: Build solution
+  inputs:
+    solution: $(solutionPath)
+    platform: $(platform)
+    configuration: $(configuration)
+    clean: true
+
+# When the dacpac is built it will be in the projects bin/configuation folder 
+# to get into an artifact (probably with some other things you want to publish like an Azure function)
+# we need to move it somewhere else. This will move it to a folder called drop
+- task: CopyFiles@2
+  displayName: Copy DACPAC
+  inputs:
+    SourceFolder: "$(Build.SourcesDirectory)/MyProject.Database/bin/$(configuration)"
+    Contents: ".dacpac"
+    TargetFolder: "$(Build.ArtifactStagingDirectory)/drop"
+
+# Published the contents of the drop folder into an artifact
+- task: PublishBuildArtifacts@1
+  displayName: "Publish artifact"
+  inputs:
+    PathtoPublish: "$(Build.ArtifactStagingDirectory)/drop"
+    ArtifactName: # Artifact name goes here
+    publishLocation: container

@@ -1,0 +1,52 @@
+name: 03-01-catalog-cd-aca-task
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - apps/catalog-api/*
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  acrName: "az400acrdev"
+  imageToDeploy: "az400acrdev.azurecr.io/catalog-service:latest"
+  app: "catalog-service-v1"
+  grp: "az400-dev"
+  acaenv: "az400acaenv"
+  serviceConnection: wi-az400-dev
+
+stages:
+  - stage: Deploy
+    jobs:
+      - job: Deploy
+        displayName: Deploy to ACA
+        steps:
+          - checkout: none
+          - task: AzureCLI@2
+            displayName: Get ACR Credentials
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                USERNAME=$(az acr credential show -n $(acrName) --query username -o tsv)
+                PASSWORD=$(az acr credential show -n $(acrName) --query passwords[0].value -o tsv)
+                echo "##vso[task.setvariable variable=acrUsername]$USERNAME"
+                echo "##vso[task.setvariable variable=acrPassword;issecret=true]$PASSWORD"
+          - task: AzureContainerApps@1
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              acrName: $(acrName)
+              acrUsername: $(acrUsername)
+              acrPassword: $(acrPassword)
+              imageToDeploy: "$(imageToDeploy)"
+              containerAppName: "$(app)"
+              resourceGroup: "$(grp)"
+              containerAppEnvironment: "$(acaenv)"

@@ -1,0 +1,73 @@
+parameters:
+  - name: acrName
+    type: string
+  - name: image
+    type: string
+  - name: app
+    type: string
+  - name: resourceGroup
+    type: string
+  - name: serviceConnection
+    type: string
+  - name: acaEnvironment
+    type: string
+  - name: targetPort
+    type: string
+    default: "80"
+  - name: override
+    type: boolean
+    default: false
+
+steps:
+  - task: AzureCLI@2
+    displayName: "Check if container app already exists"
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        APP_EXISTS=$(az containerapp show -n ${{ parameters.app }} -g ${{ parameters.resourceGroup }} &>/dev/null && echo true || echo false)
+
+        if [ "${APP_EXISTS}" = "true" ] && [ "${{ parameters.override }}" = "False" ]; then
+          echo "Container app ${{ parameters.app }} already exists and override=false. Skipping deploy."
+          echo "##vso[task.setvariable variable=skipDeploy;isOutput=true]true"
+        else
+          echo "Proceeding with deploy. (exists=$APP_EXISTS, override=${{ parameters.override }})"
+          echo "##vso[task.setvariable variable=skipDeploy;isOutput=true]false"
+        fi
+    name: checkApp
+
+  - task: AzureCLI@2
+    displayName: "Fetch ACR credentials"
+    condition: eq(variables['checkApp.skipDeploy'], 'false')
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        # Fetch ACR admin credentials and surface password as pipeline variable
+        ACR_PASSWORD=$(az acr credential show --name ${{ parameters.acrName }} --query "passwords[0].value" -o tsv)
+        echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
+
+  - task: AzureCLI@2
+    displayName: "Deploy to Azure Container Apps"
+    condition: eq(variables['checkApp.skipDeploy'], 'false')
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        # Create or update the container app
+        if az containerapp show -n ${{ parameters.app }} -g ${{ parameters.resourceGroup }} &>/dev/null; then
+          echo "Updating existing container app..."
+          az containerapp update -n ${{ parameters.app }} -g ${{ parameters.resourceGroup }} --image ${{ parameters.image }}
+        else
+          echo "Creating new container app..."
+          az containerapp create -n ${{ parameters.app }} -g ${{ parameters.resourceGroup }} --image ${{ parameters.image }} \
+            --environment ${{ parameters.acaEnvironment }} \
+            --target-port ${{ parameters.targetPort }} \
+            --ingress external \
+            --registry-server ${{ parameters.acrName }}.azurecr.io \
+            --registry-username ${{ parameters.acrName }} \
+            --registry-password $(acrPassword)
+        fi

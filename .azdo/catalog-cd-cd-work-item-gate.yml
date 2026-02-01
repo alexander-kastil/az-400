@@ -1,0 +1,86 @@
+name: catalog-cd-cd-environment-gate
+
+trigger: none
+pr: none
+
+variables:
+  dotnetSdkVersion: "10.0.x"
+  buildConfiguration: Release
+  releaseBranchName: master
+  serviceConnection: wi-az400-dev
+  grp: az400-dev
+  appPath: src/services/catalog-service/api/
+  appService: food-catalog-api-gate
+  templateFile: infra/bicep/webapp-windows.bicep
+  adoEnvironment: catalog-appservice-gate
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: BuildProvision
+    displayName: Build and Provision
+    jobs:
+      - job: Build
+        steps:
+          - template: templates/t-net-build.yaml
+            parameters:
+              cfg: $(buildConfiguration)
+              folder: $(appPath)
+
+      - job: Provision
+
+        steps:
+          - task: AzureCLI@2
+            displayName: "Provision AppService"
+            inputs:
+              azureSubscription: "$(serviceConnection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az deployment group create \
+                  --resource-group $(grp) \
+                  --template-file $(templateFile) \
+                  --parameters webAppName=$(appService)
+
+  - stage: Gate
+    jobs:
+      - job: QueryWorkItem
+        timeoutInMinutes: 2
+        pool: server
+        steps:
+          - task: queryWorkItems@0
+            inputs:
+              queryId: "1"
+              maxThreshold: "0"
+              minThreshold: "0"
+
+  - stage: Deploy
+    displayName: Deploy to AppService
+    dependsOn: Gate
+
+    jobs:
+      - deployment: DeployAppService
+        displayName: Deploy to AppService
+        environment: $(adoEnvironment)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: none
+
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    buildType: "current"
+                    downloadType: "single"
+                    artifactName: "drop"
+                    downloadPath: "$(System.ArtifactsDirectory)"
+
+                - task: AzureRmWebAppDeployment@4
+                  displayName: "Deploy: $(appService)"
+                  inputs:
+                    ConnectionType: "AzureRM"
+                    azureSubscription: $(serviceConnection)
+                    appType: "webApp"
+                    WebAppName: $(appService)
+                    packageForLinux: "$(System.ArtifactsDirectory)/**/*.zip"

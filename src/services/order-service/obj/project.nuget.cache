@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "dgSpecHash": "SZVTZsVd/CA=",
+  "success": false,
+  "projectFilePath": "D:\\git-classes\\az-400\\src\\services\\order-service\\order-service.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "message": "PackageReference System.Linq will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "projectPath": "D:\\git-classes\\az-400\\src\\services\\order-service\\order-service.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\git-classes\\az-400\\src\\services\\order-service\\order-service.csproj",
+      "libraryId": "System.Linq",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "Unable to load the service index for source https://pkgs.dev.azure.com/cloud-agents/az-400/_packaging/food-packages/nuget/v3/index.json.\r\n  Response status code does not indicate success: 404 (Not Found).",
+      "projectPath": "D:\\git-classes\\az-400\\src\\services\\order-service\\order-service.csproj",
+      "filePath": "D:\\git-classes\\az-400\\src\\services\\order-service\\order-service.csproj",
+      "targetGraphs": []
+    }
+  ]
+}

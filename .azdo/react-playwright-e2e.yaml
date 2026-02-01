@@ -1,0 +1,68 @@
+name: 03-03-react-playwright-e2e
+
+trigger: none
+pr: none
+
+variables:
+  imageName: react-devops
+  acr: scACR
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/react-devops"
+  app: "react-devops-e2e-app"
+  grp: "az400-dev"
+  serviceConnection: wi-az400-dev
+  acaenv: "az400acaenv"
+  appRoot: src/react/react-devops
+  nodeVer: "22.x"
+  targetPort: 80
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: BuildImage
+    displayName: "Build Container Image"
+    jobs:
+      - job: BuildAndPush
+        displayName: "Build and Push to ACR"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: scACR
+              repository: $(imageName)
+              dockerfile: dockerfile
+              buildContext: $(appRoot)
+
+  - stage: Deploy
+    displayName: "Deploy to Azure Container Apps"
+    dependsOn: BuildImage
+    jobs:
+      - job: DeployToACA
+        displayName: Deploy to ACA
+        steps:
+          - template: templates/t-deploy-container-app.yaml
+            parameters:
+              acrName: $(acrName)
+              image: $(image)
+              app: $(app)
+              resourceGroup: $(grp)
+              serviceConnection: $(serviceConnection)
+              acaEnvironment: $(acaenv)
+              targetPort: 80
+              override: false
+
+  - stage: Test
+    displayName: "Run Playwright E2E Tests"
+    dependsOn: Deploy
+    condition: succeeded('Deploy')
+    jobs:
+      - job: PlaywrightTests
+        displayName: Execute E2E Tests
+        steps:
+          - template: templates/t-playwright-tests.yaml
+            parameters:
+              appRoot: $(appRoot)
+              nodeVer: $(nodeVer)
+              app: $(app)
+              grp: $(grp)
+              serviceConnection: $(serviceConnection)

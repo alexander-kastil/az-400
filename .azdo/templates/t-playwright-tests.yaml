@@ -1,0 +1,65 @@
+parameters:
+  - name: appRoot
+    type: string
+  - name: nodeVer
+    type: string
+    default: "22.x"
+  - name: app
+    type: string
+  - name: grp
+    type: string
+  - name: serviceConnection
+    type: string
+
+steps:
+  - checkout: self
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: ${{ parameters.nodeVer }}
+    displayName: "Install Node.js ${{ parameters.nodeVer }}"
+
+  - script: npm ci
+    displayName: "Install Dependencies"
+    workingDirectory: ${{ parameters.appRoot }}
+
+  - script: npx playwright install
+    displayName: "Install Playwright Browsers"
+    workingDirectory: ${{ parameters.appRoot }}
+
+  - task: AzureCLI@2
+    displayName: Get Container App URL
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        APP_URL=$(az containerapp show -n ${{ parameters.app }} -g ${{ parameters.grp }} --query "properties.configuration.ingress.fqdn" -o tsv)
+        APP_URL="https://${APP_URL}"
+        echo "Container App URL: ${APP_URL}"
+        echo "##vso[task.setvariable variable=appUrl]${APP_URL}"
+
+  - script: npm run test:e2e -- --reporter=junit --reporter=html
+    displayName: "Run Playwright Tests"
+    workingDirectory: ${{ parameters.appRoot }}
+    env:
+      BASE_URL: $(appUrl)
+    continueOnError: true
+
+  - task: PublishTestResults@2
+    displayName: "Publish Test Results"
+    condition: always()
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "${{ parameters.appRoot }}/junit.xml"
+      mergeTestResults: true
+      failTaskOnFailedTests: false
+      publishRunAttachments: true
+
+  - task: PublishPipelineArtifact@1
+    displayName: "Publish Playwright Report"
+    condition: always()
+    inputs:
+      targetPath: "${{ parameters.appRoot }}/playwright-report"
+      artifact: "playwright-report"
+      publishLocation: "pipeline"

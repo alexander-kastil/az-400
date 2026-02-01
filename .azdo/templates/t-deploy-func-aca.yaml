@@ -1,0 +1,53 @@
+parameters:
+  - name: acrName
+    type: string
+  - name: image
+    type: string
+  - name: app
+    type: string
+  - name: resourceGroup
+    type: string
+  - name: serviceConnection
+    type: string
+  - name: acaEnvironment
+    type: string
+  - name: storageAccount
+    type: string
+  - name: minReplicas
+    type: string
+    default: "1"
+  - name: maxReplicas
+    type: string
+    default: "10"
+
+steps:
+  - task: AzureCLI@2
+    displayName: "Fetch ACR credentials"
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        ACR_PASSWORD=$(az acr credential show --name ${{ parameters.acrName }} --query "passwords[0].value" -o tsv)
+        echo "##vso[task.setvariable variable=acrPassword;issecret=true]${ACR_PASSWORD}"
+
+  - task: AzureCLI@2
+    displayName: "Deploy function app to Container Apps"
+    inputs:
+      azureSubscription: "${{ parameters.serviceConnection }}"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        az functionapp create \
+          --name ${{ parameters.app }} \
+          --resource-group ${{ parameters.resourceGroup }} \
+          --environment ${{ parameters.acaEnvironment }} \
+          --storage-account ${{ parameters.storageAccount }} \
+          --functions-version 4 \
+          --runtime python \
+          --image ${{ parameters.image }} \
+          --registry-server ${{ parameters.acrName }}.azurecr.io \
+          --registry-username ${{ parameters.acrName }} \
+          --registry-password $(acrPassword) \
+          --min-replicas ${{ parameters.minReplicas }} \
+          --max-replicas ${{ parameters.maxReplicas }}

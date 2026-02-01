@@ -1,0 +1,47 @@
+# Prerequisites:
+# 1. Azure CLI: az login
+# 2. GitHub CLI: gh auth login (select HTTPS, authenticate via browser)
+#
+# This script configures the managed identity for GitHub Actions OIDC authentication
+# and automatically pushes the required secrets to your GitHub repository.
+
+env=dev
+grp=az400-$env
+app=catalog-api-gh-actions-$env
+miName=wi-az400-dev
+githubOrg=alexander-kastil
+githubRepo=az-400
+branch=main
+
+# Get managed identity client ID
+miClientId=$(az identity show -n $miName -g $grp --query clientId -o tsv)
+
+# Add federated credential for GitHub Actions
+az identity federated-credential create \
+  --name github-actions-catalog-api \
+  --identity-name $miName \
+  --resource-group $grp \
+  --issuer https://token.actions.githubusercontent.com \
+  --subject "repo:${githubOrg}/${githubRepo}:ref:refs/heads/${branch}" \
+  --audiences api://AzureADTokenExchange
+
+# Get app service resource ID
+appId=$(az webapp show -n $app -g $grp --query id -o tsv)
+
+# Assign Website Contributor role to MI on the app service
+az role assignment create \
+  --assignee $miClientId \
+  --role "Website Contributor" \
+  --scope $appId
+
+# Get tenant and subscription IDs
+tenantId=$(az account show --query tenantId -o tsv)
+subscriptionId=$(az account show --query id -o tsv)
+
+# Push secrets to GitHub using gh CLI
+echo "Pushing secrets to GitHub repository..."
+echo $miClientId | gh secret set AZURE_CLIENT_ID --repo ${githubOrg}/${githubRepo}
+echo $tenantId | gh secret set AZURE_TENANT_ID --repo ${githubOrg}/${githubRepo}
+echo $subscriptionId | gh secret set AZURE_SUBSCRIPTION_ID --repo ${githubOrg}/${githubRepo}
+
+echo "Managed identity configured and secrets pushed successfully"

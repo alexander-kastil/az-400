@@ -1,0 +1,15 @@
+env=dev
+grp=az400-bicep-$env
+loc=westeurope
+bicep=webapp-windows.bicep
+app=bicep-site-$env
+
+az group create -n $grp --location $loc
+
+az deployment group what-if --resource-group $grp \
+   --template-file $bicep \
+   --parameters webAppName=$app
+
+az deployment group create --resource-group $grp \
+    --template-file $bicep \
+    --parameters webAppName=$app

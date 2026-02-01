@@ -1,0 +1,42 @@
+env="dev"
+grp="az400-$env"
+loc="westeurope"
+identity_name="wi-az400-gh-actions"
+repo="alexander-kastil/az-400"
+issuer="https://token.actions.githubusercontent.com"
+audience="api://AzureADTokenExchange"
+
+echo "🔐 Creating managed identity for GitHub Actions"
+
+az group create -n $grp -l $loc --tags environment=$env
+az identity create --name $identity_name --resource-group $grp 2>/dev/null || true
+
+client_id=$(az identity show -n $identity_name -g $grp --query clientId -o tsv)
+tenant_id=$(az account show --query tenantId -o tsv)
+subscription_id=$(az account show --query id -o tsv)
+
+gh secret set AZURE_CLIENT_ID --body "$client_id"
+gh secret set AZURE_TENANT_ID --body "$tenant_id"
+gh secret set AZURE_SUBSCRIPTION_ID --body "$subscription_id"
+
+echo "✓ Secrets pushed to GitHub"
+
+az identity federated-credential create \
+  -n github-main \
+  --identity-name $identity_name \
+  -g $grp \
+  --issuer "$issuer" \
+  --subject "repo:$repo:ref:refs/heads/main" \
+  --audiences $audience 2>/dev/null || true
+
+for env_name in dev staging prod; do
+  az identity federated-credential create \
+    -n github-env-$env_name \
+    --identity-name $identity_name \
+    -g $grp \
+    --issuer "$issuer" \
+    --subject "repo:$repo:environment:$env_name" \
+    --audiences $audience 2>/dev/null || true
+done
+
+echo "✅ Federated credentials created"

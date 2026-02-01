@@ -1,0 +1,58 @@
+name: 03-03-angular-unittest.yml
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  nodeVer: "22.14.0"
+  appRoot: src/angular/angular-devops
+
+stages:
+  - stage: UnitTest
+    displayName: Angular UnitTest
+
+    jobs:
+      - job: AngularTest
+
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(nodeVer)
+            displayName: Install Node $(nodeVer)
+
+          - task: Cache@2
+            displayName: Setup Node Cache
+            inputs:
+              key: "$(System.DefaultWorkingDirectory)/$(appRoot)/package-lock.json"
+              path: "$(System.DefaultWorkingDirectory)/$(appRoot)/node_modules"
+              cacheHitVar: "npmCache"
+
+          - script: npm ci
+            displayName: npm ci
+            workingDirectory: $(appRoot)
+            condition: eq(variables['npmCache'],False)
+
+          - script: npm test
+            displayName: Run Angular tests
+            workingDirectory: $(appRoot)
+
+          - task: PublishTestResults@2
+            displayName: Publish test results
+            condition: succeededOrFailed()
+            inputs:
+              searchFolder: $(appRoot)
+              testRunTitle: Angular Tests
+              testResultsFormat: JUnit
+              testResultsFiles: "**/test-results.xml"
+
+          - task: PublishCodeCoverageResults@1
+            displayName: Publish coverage
+            condition: succeededOrFailed()
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: "$(appRoot)/coverage/cobertura-coverage.xml"
+              reportDirectory: "$(appRoot)/coverage"
+              failIfCoverageEmpty: false

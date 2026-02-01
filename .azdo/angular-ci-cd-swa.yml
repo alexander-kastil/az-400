@@ -1,0 +1,62 @@
+name: 03-02-angular-ci-cd-swa.yml
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  nodeVersion: "22.14.0"
+  dist: angular-devops
+  distFolder: "angular-devops"
+  appRoot: src/angular/angular-devops
+  # replace variables in environment.ts. Could be used for API URL etc.
+  greeting: "Hello from Azure DevOps Pipeline"
+  # add the deployment token as pipeline variable
+  deploymentToken: "021d8e7ce5c18210cb29e1fe44df74026e00a787f6dcccf6fb56bbe43818dc0101-fba83791-4a05-46f1-a3f0-3c8f42c776b4010311704d6f0010"
+
+stages:
+  - stage: Build
+    displayName: Build Angular
+    jobs:
+      - job: Build
+        displayName: Build Angular
+        steps:
+          - task: qetza.replacetokens.replacetokens-task.replacetokens@6
+            displayName: "Replace tokens in environment.ts"
+            inputs:
+              sources: "$(appRoot)/src/environments/environment.ts"
+              tokenPattern: "doublebraces"
+              escape: "off"
+              logLevel: "info"
+
+          - template: templates/t-angular-build.yml
+            parameters:
+              nodeVersion: $(nodeVersion)
+              appLocation: $(appRoot)
+              distFolder: $(distFolder)
+              buildConfiguration: "production"
+              artifactName: "app-build"
+              publishOutputPath: "$(appRoot)/dist/$(distFolder)/browser"
+
+  - stage: Deploy
+    displayName: Deploy to static WA
+    jobs:
+      - template: templates/t-angular-static-web-app-deploy.yml
+        parameters:
+          artifactName: "app-build"
+          targetPath: "$(Pipeline.Workspace)/app-build"
+          deploymentToken: "$(deploymentToken)"
+          appLocation: "/"
+          outputLocation: "/"
+          skipAppBuild: true
+          skipApiBuild: true
+          isStaticExport: true
+          workingDirectory: "$(Pipeline.Workspace)/app-build"
+          environmentName: "$(environment)"

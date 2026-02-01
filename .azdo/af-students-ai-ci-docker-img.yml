@@ -1,0 +1,33 @@
+name: 02-04-af-students-ai-ci-docker-img
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/ai/af-students-ai/*
+
+trigger: none
+pr: none
+
+variables:
+  appPath: src/ai/af-students-ai/
+  imageName: af-students-ai
+  acr: scACR
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: "Build"
+    displayName: "Build StudentsAI Image"
+    jobs:
+      - job: "Build"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: $(acr)
+              repository: $(imageName)
+              dockerfile: "$(appPath)dockerfile"
+              buildContext: $(appPath)

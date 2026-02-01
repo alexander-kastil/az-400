@@ -1,0 +1,7 @@
+version: v0.1
+testId: prime-service-loadtest
+displayName: Prime Service Load Test
+description: Load test for prime-service endpoint
+testType: JMX
+testPlan: test-prime-service.jmx
+engineInstances: 1

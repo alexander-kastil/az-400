@@ -1,0 +1,49 @@
+name: 06-02-catalog-ci-mend
+
+trigger: none
+pr: none
+
+variables:
+  dotnetSdkVersion: "10.0.x"
+  buildConfiguration: Release
+  releaseBranchName: master
+  appPath: src/services/catalog-service/api/
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+  - task: UseDotNet@2
+    displayName: "Use .NET Core SDK $(dotnetSdkVersion)"
+    inputs:
+      version: "$(dotnetSdkVersion)"
+
+  - task: DotNetCoreCLI@2
+    displayName: "Restore project dependencies"
+    inputs:
+      command: "restore"
+      projects: "$(appPath)/*.csproj"
+
+  - task: DotNetCoreCLI@2
+    displayName: "Build the project - $(buildConfiguration)"
+    inputs:
+      command: "build"
+      arguments: "--no-restore --configuration $(buildConfiguration)"
+      projects: "$(appPath)/*.csproj"
+
+  - task: DotNetCoreCLI@2
+    displayName: "Publish the project - $(buildConfiguration)"
+    inputs:
+      command: "publish"
+      projects: "$(appPath)/*.csproj"
+      publishWebProjects: false
+      arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
+      zipAfterPublish: true
+  - task: WhiteSource@21
+    inputs:
+      cwd: "$(System.DefaultWorkingDirectory)"
+      projectName: "FoodApp"
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact: drop"
+    condition: succeeded()

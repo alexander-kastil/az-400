@@ -1,0 +1,54 @@
+name: 03-02-catalog-ci-cd-aca
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - apps/catalog-api/*
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  acrName: "az400acrdev"
+  image: "az400acrdev.azurecr.io/catalog-service"
+  repository: "catalog-service"
+  app: "catalog-service-v1"
+  grp: "az400-dev"
+  serviceConnection: wi-az400-dev
+  dockerRegistry: scACR
+  acaenv: "az400acaenv"
+
+jobs:
+  - job: BuildCatalogImage
+    displayName: Build Catalog Container Image
+    steps:
+      - template: templates/t-build-docker-image.yaml
+        parameters:
+          acrServiceConnection: $(dockerRegistry)
+          repository: $(repository)
+          dockerfile: src/services/catalog-service/api/dockerfile
+          buildContext: src/services/catalog-service/api
+          tags: |
+            $(Build.BuildId)
+            latest
+
+  - job: DeployToACA
+    displayName: Deploy to ACA
+    dependsOn: BuildCatalogImage
+    steps:
+      - template: templates/t-deploy-container-app.yaml
+        parameters:
+          acrName: $(acrName)
+          image: $(image)
+          app: $(app)
+          resourceGroup: $(grp)
+          serviceConnection: $(serviceConnection)
+          acaEnvironment: $(acaenv)
+          targetPort: 8080
+          override: false

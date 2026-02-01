@@ -1,0 +1,38 @@
+parameters:
+  - name: acrServiceConnection
+    type: string
+  - name: repository
+    type: string
+  - name: dockerfile
+    type: string
+  - name: buildContext
+    type: string
+    default: "."
+  - name: tags
+    type: string
+    default: |
+      $(Build.BuildId)
+      latest
+
+steps:
+  - task: Docker@2
+    displayName: "Login to ACR"
+    inputs:
+      command: login
+      containerRegistry: "${{ parameters.acrServiceConnection }}"
+
+  - task: Docker@2
+    displayName: "Build and Push Image"
+    inputs:
+      containerRegistry: "${{ parameters.acrServiceConnection }}"
+      repository: "${{ parameters.repository }}"
+      command: "buildAndPush"
+      dockerfile: "${{ parameters.dockerfile }}"
+      buildContext: "${{ parameters.buildContext }}"
+      tags: ${{ parameters.tags }}
+
+  - task: Docker@2
+    displayName: "Logout of ACR"
+    inputs:
+      command: logout
+      containerRegistry: "${{ parameters.acrServiceConnection }}"

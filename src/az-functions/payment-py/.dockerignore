@@ -1,0 +1,55 @@
+# Exclude local settings that shouldn't be in the container
+local.settings.json
+
+# Exclude testing files
+test-payment.http
+*.http
+
+# Exclude Python cache and virtual environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Exclude IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Exclude Git files
+.git/
+.gitignore
+
+# Exclude Docker files (avoid recursion)
+dockerfile*
+.dockerignore
+
+# Exclude logs
+*.log
+
+# Exclude temporary files
+.tmp/
+temp/
+*.tmp
+
+# Exclude OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Exclude Azure deployment files
+.azure/
+.deployment

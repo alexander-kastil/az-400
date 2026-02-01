@@ -1,0 +1,28 @@
+name: "02-04-ci-docker-img"
+
+trigger: none
+pr: none
+
+variables:
+  imageName: angular-devops
+  acr: scACR
+  appPath: src/angular/angular-devops/
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: "BuildImg"
+    displayName: "Build Catalog Api Image"
+    jobs:
+      - job: "Build"
+        steps:
+          - template: templates/t-build-docker-image.yaml
+            parameters:
+              acrServiceConnection: $(acr)
+              repository: $(imageName)
+              dockerfile: "$(appPath)dockerfile"
+              buildContext: "$(appPath)"
+              tags: |
+                $(Build.BuildId)
+                latest

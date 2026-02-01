@@ -1,0 +1,14 @@
+env=$RANDOM
+grp=az204-appservice-$env
+appPlan=appservice-$env
+web=cliweb-$env
+loc=westeurope
+
+# create a resource group
+az group create -n $grp -l $loc
+
+# create an App Service plan
+az appservice plan create -n $appPlan -g $grp --sku FREE
+
+# create a Web App
+az webapp create -n $web -g $grp --plan $appPlan

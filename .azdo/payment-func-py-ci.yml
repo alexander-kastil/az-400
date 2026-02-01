@@ -1,0 +1,51 @@
+name: "02-02-payment-func-py-ci"
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/az-functions/payment-py/*
+
+trigger: none
+pr: none
+
+variables:
+  azureSubscription: wi-az400
+  functionAppName: "payment-func-py-app"
+  pythonVersion: "3.12"
+
+stages:
+  - stage: Build
+    displayName: "Build Python Function"
+    jobs:
+      - job: Build
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "$(pythonVersion)"
+          - script: |
+              python -m pip install --upgrade pip
+              pip install -r src/az-functions/payment-py/requirements.txt
+            displayName: "Install dependencies"
+          - script: |
+              cd src/az-functions/payment-py
+              if [ -f "test" ] || [ -d "tests" ]; then
+                pytest
+              else
+                echo "No tests found. Skipping."
+              fi
+            displayName: "Run tests"
+          - task: ArchiveFiles@2
+            displayName: "Archive function app"
+            inputs:
+              rootFolderOrFile: "src/az-functions/payment-py"
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: $(Build.ArtifactStagingDirectory)/payment-func-py.zip
+              replaceExistingArchive: true
+          - publish: $(Build.ArtifactStagingDirectory)/payment-func-py.zip
+            artifact: functionapp
