@@ -1,0 +1,49 @@
+name: Simple API CI Designer Import
+
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  buildConfiguration: Release
+
+pool:
+  vmImage: windows-latest
+
+jobs:
+  - job: Build
+    displayName: Build and Test
+    steps:
+      - checkout: self
+
+      - task: DotNetCoreCLI@2
+        displayName: Restore NuGet packages
+        inputs:
+          command: restore
+
+      - task: DotNetCoreCLI@2
+        displayName: Build solution
+        inputs:
+          command: build
+          arguments: --configuration $(buildConfiguration) --no-restore
+
+      - task: DotNetCoreCLI@2
+        displayName: Run unit tests
+        inputs:
+          command: test
+          arguments: --configuration $(buildConfiguration) --no-build --verbosity normal
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish artifacts
+        inputs:
+          command: publish
+          arguments: --configuration $(buildConfiguration) --no-build --output $(build.artifactstagingdirectory)
+          zipAfterPublish: true
+
+      - task: PublishBuildArtifacts@1
+        displayName: Upload artifacts
+        condition: always()
+        inputs:
+          pathToPublish: $(build.artifactstagingdirectory)
+          artifactName: drop

@@ -1,7 +1,8 @@
 {
   "name": "Azure Development",
   "image": "mcr.microsoft.com/devcontainers/python:3.12",
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postCreateCommand": "bash .devcontainer/install-packages.sh",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -125,20 +126,16 @@
       "version": "10.0"
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "20.12.2"
+      "version": "22"
     },
     "ghcr.io/devcontainers/features/azure-cli:1": {},
-    "ghcr.io/devcontainers/features/azure-dev-cli:1": {},
-    "ghcr.io/devcontainers/features/azure-functions-core-tools:1": {
-      "version": "4"
-    },
+    "ghcr.io/azure/azure-dev/azd:latest": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/sqlite:1": {},
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest"
     },
-    "ghcr.io/devcontainers-contrib/features/npm-package:1": {
-      "package": "@angular/cli@19"
+    "ghcr.io/devcontainers-extra/features/npm-package:1": {
+      "package": "@angular/cli@21"
     }
   },
   "forwardPorts": [
