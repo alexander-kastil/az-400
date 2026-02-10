@@ -10,6 +10,8 @@
 
 ![GitHub Flow branching model showing a simple main branch with feature branches](_images/github-flow.jpg)
 
+>Note: This is the recommended branching strategy for GitHub repositories, and is widely used in open source projects and teams practicing continuous delivery.
+
 **Overview** — GitHub Flow is a lightweight branching model designed for continuous deployment. Create feature branches from main, commit changes, open a pull request for review, and merge back to main when approved. Every merge to main should be deployable.
 
 **Key characteristics:**
