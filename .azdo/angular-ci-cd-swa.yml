@@ -19,7 +19,7 @@ variables:
   # replace variables in environment.ts. Could be used for API URL etc.
   greeting: "Hello from Azure DevOps Pipeline"
   # add the deployment token as pipeline variable
-  deploymentToken: "021d8e7ce5c18210cb29e1fe44df74026e00a787f6dcccf6fb56bbe43818dc0101-fba83791-4a05-46f1-a3f0-3c8f42c776b4010311704d6f0010"
+  deploymentToken: "<deployment-token>"
 
 stages:
   - stage: Build
