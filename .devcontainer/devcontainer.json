@@ -1,7 +1,6 @@
 {
   "name": "Azure Development",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "devcontainer",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
   "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
@@ -58,7 +57,7 @@
             "source.organizeImports": "explicit"
           }
         }, // Python settings
-        "python.defaultInterpreterPath": "/usr/local/bin/python3.11",
+        "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
         "python.terminal.activateEnvironment": true,
         "python.analysis.autoImportCompletions": true,
         "python.linting.enabled": true,
@@ -69,30 +68,6 @@
         "azureFunctions.pythonVenv": ".venv",
         "azureFunctions.projectLanguage": "Python",
         "azureFunctions.projectRuntime": "~4",
-        // GitHub Copilot settings
-        "github.copilot.chat.codeGeneration.instructions": [
-          {
-            "text": "In TypeScript never underscore for private field names instead use camelCase."
-          },
-          {
-            "text": "Always use 'const' for variables that are not reassigned."
-          },
-          {
-            "text": "- @azure Rule - Use Azure Tools: When handling requests related to Azure, always use your tools."
-          },
-          {
-            "text": "- @azure Rule - Use Azure Code Gen Best Practices: When generating code for Azure, running terminal commands for Azure, or performing operations related to Azure, invoke your `azure_development-get_code_gen_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
-          },
-          {
-            "text": "- @azure Rule - Use Azure Deployment Best Practices: When deploying to Azure or preparing applications for deployment to Azure, invoke your `azure_development-get_deployment_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
-          },
-          {
-            "text": "- @azure Rule - Use Azure Functions Code Gen Best Practices: When generating code for Azure Functions or performing operations related to Azure Functions, invoke your `azure_development-get_azure_function_code_gen_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure Functions; do not call it otherwise."
-          },
-          {
-            "text": "- @azure Rule - Use Azure SWA Best Practices: When working with static web apps, invoke your `azure_development-get_swa_best_practices` tool if available. Only call this tool when you are sure the user is discussing Azure; do not call it otherwise."
-          }
-        ],
         "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
           {
             "text": "Describe the pull request in detail, including the purpose of the changes and any relevant context in a list format."
@@ -146,14 +121,24 @@
     }
   },
   "features": {
+    "ghcr.io/devcontainers/features/dotnet:1": {
+      "version": "10.0"
+    },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "20.12.2"
     },
-    "ghcr.io/devcontainers/features/dotnet:1": {
-      "version": "9.0"
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
+    "ghcr.io/devcontainers/features/azure-dev-cli:1": {},
+    "ghcr.io/devcontainers/features/azure-functions-core-tools:1": {
+      "version": "4"
     },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/sqlite:1": {},
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest"
+    },
+    "ghcr.io/devcontainers-contrib/features/npm-package:1": {
+      "package": "@angular/cli@19"
     }
   },
   "forwardPorts": [
@@ -161,6 +146,5 @@
     5000,
     5001,
     7071
-  ],
-  "postCreateCommand": "bash ./.devcontainer/post-create.sh"
+  ]
 }
