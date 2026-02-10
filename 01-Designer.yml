@@ -1,4 +1,4 @@
-name: Simple API CI Designer Import
+name: Simple API CI Designer Importxx
 
 trigger:
   branches:
