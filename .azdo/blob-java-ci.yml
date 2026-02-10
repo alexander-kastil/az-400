@@ -1,0 +1,38 @@
+name: "02-02-blob-java-ci"
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  mavenPomFile: "$(System.DefaultWorkingDirectory)/src/jobs/blob-java/blob-quickstart/pom.xml"
+  mavenGoals: "clean package"
+  jdkVersion: "1.8"
+
+stages:
+  - stage: "Build"
+    jobs:
+      - job: "Build"
+        displayName: "Build Java Job"
+
+        steps:
+          - task: Maven@4
+            displayName: "Maven package (blob-java)"
+            inputs:
+              mavenPomFile: "$(mavenPomFile)"
+              mavenOptions: "-Xmx3072m"
+              javaHomeOption: "JDKVersion"
+              jdkVersionOption: "$(jdkVersion)"
+              jdkArchitectureOption: "x64"
+              publishJUnitResults: true
+              testResultsFiles: "**/TEST-*.xml"
+              goals: "$(mavenGoals)"
+
+          - task: PublishPipelineArtifact@1
+            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+            inputs:
+              artifactName: drop
+              targetPath: "$(System.DefaultWorkingDirectory)/src/jobs/blob-java/blob-quickstart/target"
+            displayName: "Publish Artifact: drop"
