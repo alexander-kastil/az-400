@@ -1,4 +1,4 @@
-name: Simple API CI Designer Importxx
+name: Simple API CI Designer Import Copilot
 
 trigger:
   branches:
