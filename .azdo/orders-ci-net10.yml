@@ -1,0 +1,62 @@
+name: "07-02-orders-ci"
+
+# trigger:
+#   branches:
+#     include:
+#       - master
+#   paths:
+#     include:
+#       - src/services/order-service/*
+
+trigger: none
+pr: none
+
+variables:
+  azureSubscription: wi-az400-dev
+  proj: az-400
+  feed: food-packages
+  dotnetSdkVersion: "10.0.x"
+  buildConfiguration: Release
+  appPath: src/services/order-service/
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: "Build"
+    jobs:
+      - job: "Build"
+        displayName: "Build with Dependencies"
+        steps:
+          - task: UseDotNet@2
+            displayName: "Use .NET Core SDK $(dotnetSdkVersion)"
+            inputs:
+              version: "$(dotnetSdkVersion)"
+          - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
+            displayName: "Write build info"
+          - task: NuGetAuthenticate@1
+            displayName: "Authenticate NuGet feeds"
+          - task: DotNetCoreCLI@2
+            displayName: "Restore project dependencies"
+            inputs:
+              command: "restore"
+              projects: "$(appPath)/*.csproj"
+              feedsToUse: "config"
+              nugetConfigPath: "$(appPath)nuget.config"
+          - task: DotNetCoreCLI@2
+            displayName: "Build"
+            inputs:
+              command: "build"
+              projects: "$(appPath)/*.csproj"
+              arguments: "--no-restore --configuration $(buildConfiguration)"
+          - task: DotNetCoreCLI@2
+            displayName: "Publish"
+            inputs:
+              command: "publish"
+              publishWebProjects: false
+              projects: "$(appPath)/*.csproj"
+              arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)"
+          - task: PublishPipelineArtifact@1
+            inputs:
+              artifactName: drop
+            displayName: "Publish Artifact: drop"
