@@ -1,7 +1,7 @@
 grp="az400-dev"
-loc="westeurope"
 devOpsOrg="integrationsonline"
 project="az-400"
+loc="westeurope"
 wfIdentity="wi-"$grp
 subscriptionId="cd091145-5ea2-4703-ba5d-41063b1d4308"
 issuer="99e5794d-47e1-4b9b-86eb-937aa20e4e11"

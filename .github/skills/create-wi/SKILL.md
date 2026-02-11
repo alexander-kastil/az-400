@@ -1,6 +1,7 @@
 ---
-name: create-workload-identity-service-connection
-description: Automate creation of Azure DevOps workload identity federation service connections. Use this when users need to create or delete Azure service connections with workload identity federation for secure OIDC-based authentication between Azure DevOps pipelines and Azure resources.
+name: create-wi
+description: Automate creation of Azure DevOps workload identity federation service connections. Use this when users need to create or delete Azure service connections with workload identity federation.
+license: MIT
 ---
 
 # Azure Workload Identity Federation Automation
