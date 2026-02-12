@@ -29,40 +29,12 @@ stages:
     jobs:
       - job: "Build"
         displayName: "Build job"
-
         steps:
-          - task: UseDotNet@2
-            displayName: "Use .NET Core SDK $(dotnetSdkVersion)"
-            inputs:
-              version: "$(dotnetSdkVersion)"
-
-          - task: DotNetCoreCLI@2
-            displayName: "Restore project dependencies"
-            inputs:
-              command: "restore"
-              projects: "$(appPath)/*.csproj"
-
-          - task: DotNetCoreCLI@2
-            displayName: "Build the project - $(buildConfiguration)"
-            inputs:
-              command: "build"
-              arguments: "--no-restore --configuration $(buildConfiguration)"
-              projects: "$(appPath)/*.csproj"
-
-          - task: DotNetCoreCLI@2
-            displayName: "Publish the project - $(buildConfiguration)"
-            inputs:
-              command: "publish"
-              projects: "$(appPath)/*.csproj"
-              publishWebProjects: false
-              arguments: "--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)"
-              zipAfterPublish: true
-
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-              ArtifactName: "drop"
-              publishLocation: "Container"
+          - template: ../templates/t-net-build.yaml
+            parameters:
+              cfg: $(buildConfiguration)
+              folder: $(appPath)
+              project: catalog-service
 
   - stage: "Deploy"
     displayName: "Deploy"
