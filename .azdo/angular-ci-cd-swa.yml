@@ -20,6 +20,7 @@ variables:
   greeting: "Hello from Azure DevOps Pipeline"
   # add the deployment token as pipeline variable
   deploymentToken: "<deployment-token>"
+  environment: "03-02-angular-ci-cd-swa"
 
 stages:
   - stage: Build
