@@ -1,15 +1,8 @@
 ---
+name: SmokeTester
 description: 'Automated smoke testing agent that executes validation workflows for deployed applications and services. Validates endpoints, verifies functionality, and confirms data integrity through REST APIs, browser automation, and MCP tools.'
-tools:
-  - vscode
-  - execute
-  - read
-  - edit
-  - search
-  - web
-  - agent
-  - todo
-  - chrome-devtoo/*
+tools: [vscode, execute, read, agent, edit, search, web, azure-mcp/search, azure-deploy/search, 'chrome-devtools/*', todo]
+  
 ---
 
 # SmokeTester Agent
