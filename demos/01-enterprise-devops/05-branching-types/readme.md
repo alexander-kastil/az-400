@@ -71,7 +71,7 @@ git flow release finish <RELEASE>
 
 ## Links & Resources
 
-[GitFlow Cheat sheet](https://danielkummer.github.io/git-flow-cheatsheet/)
+[GitFlow Cheat Sheet](https://danielkummer.github.io/git-flow-cheatsheet/)
 
 [GitHub Flow Documentation](https://docs.github.com/en/get-started/quickstart/github-flow)
 
