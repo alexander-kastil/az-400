@@ -1,5 +1,5 @@
 ---
-name: create-wi
+name: ado-create-wif
 description: Automate creation of Azure DevOps workload identity federation service connections. Use this when users need to create or delete Azure service connections with workload identity federation.
 license: MIT
 ---
@@ -29,30 +29,30 @@ Workload identity federation (WIF) is a secure authentication method that uses O
 
 ### Available Scripts
 
-Two scripts are provided for maximum flexibility. Scripts are located in the demos folder:
+Two scripts are provided for maximum flexibility. Scripts are located in the skill subfolder:
 
-**Script Location**: `demos/03-release-strategy/01-release-pipelines/01-service-connections/`
+**Script Location**: `.github/skills/ado-create-wif/`
 
 #### PowerShell Version (Windows)
 
 ```powershell
-cd demos/03-release-strategy/01-release-pipelines/01-service-connections
+cd .github/skills/ado-create-wif
 .\create-workload-identity.ps1
 ```
 
 - **Resource Group**: `az400-dev`
-- **Managed Identity**: `wi-az400`
+- **Managed Identity**: `wi-az400-dev`
 - **Best for**: Windows development environments, PowerShell automation workflows
 
 #### Bash Version (Linux/WSL)
 
 ```bash
-cd demos/03-release-strategy/01-release-pipelines/01-service-connections
+cd .github/skills/ado-create-wif
 bash create-workload-identity.azcli
 ```
 
-- **Resource Group**: `az400-bash`
-- **Managed Identity**: `wi-az400-bash`
+- **Resource Group**: `ado-test`
+- **Managed Identity**: `wi-ado-test`
 - **Best for**: Linux/WSL environments, cross-platform CI/CD pipelines, shell script integration
 
 #### Custom Resource Group
@@ -105,54 +105,6 @@ This ensures the federated credential always matches what Azure DevOps expects, 
 
 **Project Reference**: The service connection payload requires both project ID and name in the `serviceEndpointProjectReferences` array. Scripts automatically look up the project ID.
 
-## Deleting a Workload Identity Service Connection
-
-When you need to clean up resources, use the delete scripts. They handle the correct deletion order to avoid dependency errors.
-
-### Available Delete Scripts
-
-Both delete scripts are located in the demos folder:
-
-**Script Location**: `demos/03-release-strategy/01-release-pipelines/01-service-connections/`
-
-#### PowerShell Delete Script
-
-```powershell
-cd demos/03-release-strategy/01-release-pipelines/01-service-connections
-.\delete-workload-identity.ps1
-```
-
-#### Bash Delete Script
-
-```bash
-cd demos/03-release-strategy/01-release-pipelines/01-service-connections
-bash delete-workload-identity.sh
-```
-
-### Deletion Order
-
-The scripts follow this critical order to avoid dependency blocks:
-
-1. **Delete Federated Credential** (from managed identity)
-   - Must be deleted first; Azure blocks service connection deletion while federated credentials exist
-   - Error if skipped: "Cannot delete this service connection while federated credentials exist"
-
-2. **Delete Azure DevOps Service Connection**
-   - Removes the connection from the project
-   - Must follow federated credential deletion
-
-3. **Delete Role Assignments**
-   - Removes the Contributor role from the managed identity
-   - Can be done after service connection deletion
-
-4. **Delete Managed Identity**
-   - Removes the managed identity resource
-   - Safe to delete after role assignments are removed
-
-5. **Optionally Delete Resource Group** (interactive)
-   - Scripts prompt for confirmation before deleting the resource group
-   - Non-blocking; resource group retained if user declines
-
 ## Common Scenarios
 
 ### Scenario 1: Set up new Azure DevOps service connection for development
@@ -162,13 +114,7 @@ The scripts follow this critical order to avoid dependency blocks:
 3. Verify federated credential was created in Entra ID (Azure Portal → Managed Identities → Select identity → Federated credentials)
 4. Test the connection by running a sample pipeline
 
-### Scenario 2: Clean up test resources
-
-1. Run the delete script (PowerShell or Bash)
-2. Optionally confirm resource group deletion
-3. Verify deletion in Azure Portal and Azure DevOps UI
-
-### Scenario 3: Migrate from service principal auth to workload identity federation
+### Scenario 2: Migrate from service principal auth to workload identity federation
 
 1. Create new workload identity service connection using this skill
 2. Test it in a new pipeline or test environment
@@ -176,7 +122,7 @@ The scripts follow this critical order to avoid dependency blocks:
 4. Delete old service principal-based connections
 5. Update all pipelines to use the new workload identity connection
 
-### Scenario 4: Maintain separate connections for different environments (dev/test/prod)
+### Scenario 3: Maintain separate connections for different environments (dev/test/prod)
 
 1. Run create script with custom environment suffix: `wi-az400-test`, `wi-az400-prod`
 2. Verify each connection is isolated and shared appropriately
@@ -225,8 +171,8 @@ Scripts use hardcoded values for a standard deployment:
 - **Project**: `az-400`
 - **Region**: `westeurope`
 - **Contributor Role ID**: `b24988ac-6180-42a0-ab88-20f7382dd24c`
-
-To customize for a different environment, edit the script variables at the top before execution.
+- **PS Resource Group / Identity**: `az400-dev` / `wi-az400-dev`
+- **Bash Resource Group / Identity**: `ado-test` / `wi-ado-test`
 
 ## Related Documentation
 
