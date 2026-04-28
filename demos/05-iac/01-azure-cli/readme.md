@@ -8,7 +8,7 @@ This demo shows how to build infrastructure as code using bash scripts executed 
 
 ## Infrastructure Script
 
-The [create-api.sh](infra/cli/create-api.sh) script demonstrates key Azure CLI patterns:
+The [create-api.sh](/infra/cli/create-api.sh) script demonstrates key Azure CLI patterns:
 
 ```bash
 env=$1
