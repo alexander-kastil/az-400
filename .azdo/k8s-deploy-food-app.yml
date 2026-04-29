@@ -1,0 +1,45 @@
+name: 03-01-k8s-deploy-food-app
+
+trigger: none
+pr: none
+
+variables:
+  k8sNamespace: k8s
+  manifestsPath: demos/03-release-strategy/01-release-pipelines/02-deployment-job/03-container/02-kubernetes/k8s-basics
+  serviceConnection: wi-az400-dev
+  resourceGroup: az400-m03-k8s
+  aksClusterName: foodcluster-k8s
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Deploy
+    displayName: Deploy to AKS
+    jobs:
+      - deployment: DeployK8s
+        displayName: Deploy Kubernetes Manifests
+        environment: k8s-food-app
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: KubernetesManifest@1
+                  displayName: Create k8s namespace
+                  inputs:
+                    action: deploy
+                    namespace: $(k8sNamespace)
+                    manifests: $(manifestsPath)/foodapi.yaml
+                    azureSubscriptionEndpoint: $(serviceConnection)
+                    azureResourceGroup: $(resourceGroup)
+                    kubernetesCluster: $(aksClusterName)
+
+                - task: KubernetesManifest@1
+                  displayName: Deploy foodui
+                  inputs:
+                    action: deploy
+                    namespace: $(k8sNamespace)
+                    manifests: $(manifestsPath)/foodui.yaml
+                    azureSubscriptionEndpoint: $(serviceConnection)
+                    azureResourceGroup: $(resourceGroup)
+                    kubernetesCluster: $(aksClusterName)
