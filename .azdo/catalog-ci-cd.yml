@@ -38,21 +38,11 @@ stages:
 
   - stage: "Deploy"
     displayName: "Deploy"
-    dependsOn: [Build]
+    dependsOn: [ Build ]
 
     jobs:
-      - deployment: DeployAppService
-        displayName: Deploy to App Service YAML
-        environment: $(adoEnvironment)
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: AzureRmWebAppDeployment@4
-                  displayName: "Azure App Service Deploy: $(appService)"
-                  inputs:
-                    ConnectionType: "AzureRM"
-                    azureSubscription: $(serviceConnection)
-                    appType: "webApp"
-                    WebAppName: $(appService)
-                    packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"
+      - template: ../templates/t-net-deploy-appservice.yaml
+        parameters:
+          adoEnvironment: $(adoEnvironment)
+          serviceConnection: $(serviceConnection)
+          appService: $(appService)

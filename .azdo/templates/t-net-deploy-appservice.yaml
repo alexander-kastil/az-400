@@ -1,0 +1,24 @@
+parameters:
+  - name: adoEnvironment
+    type: string
+  - name: serviceConnection
+    type: string
+  - name: appService
+    type: string
+
+jobs:
+  - deployment: DeployAppService
+    displayName: Deploy to App Service YAML
+    environment: ${{ parameters.adoEnvironment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureRmWebAppDeployment@4
+              displayName: "Azure App Service Deploy: ${{ parameters.appService }}"
+              inputs:
+                ConnectionType: "AzureRM"
+                azureSubscription: ${{ parameters.serviceConnection }}
+                appType: "webApp"
+                WebAppName: ${{ parameters.appService }}
+                packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"
